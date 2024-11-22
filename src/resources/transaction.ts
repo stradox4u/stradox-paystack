@@ -1,5 +1,5 @@
 /**
- * @module Transaction
+ * @module
  * This module contains methods for interacting with the Transaction resource of the Paystack API
  * 
  */

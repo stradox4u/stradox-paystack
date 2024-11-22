@@ -1,5 +1,5 @@
 /**
- * @module PaystackShared
+ * @module
  * This module contains shared methods for interacting with Paystack's API
  */
 

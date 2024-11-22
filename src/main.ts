@@ -1,12 +1,14 @@
 /**
- * @module Paystack
+ * @module
  * This file is the entry point of the application
  */
+
 import PaystackApi from "./paystackApi.ts";
 
 let paystackInstance: PaystackApi;
 
 /**
+ * @function Paystack
  * This function grants access to the Paystack object, with which we can access the various resources in the Paystack API
  * @param {string} secretKey
  * @returns {PaystackApi}
