@@ -1,4 +1,4 @@
-import type { FetchData, FetchHeaders } from "../types/endpoint.ts";
+import type { FetchData, FetchHeaders, FetchMethod } from "../types/endpoint.ts";
 import type { PaystackResponseInterface } from "../types/response.ts";
 
 /**
@@ -31,7 +31,7 @@ export default class PaystackShared {
    * @param {Record<string, string>} queryParams 
    * @returns {Promise<PaystackResponseInterface | null>}
    */
-  public paystackFetch = async (url: string, method: string, body: Record<string, unknown>, params?: Record<string, string>, queryParams?: Record<string, unknown>): Promise<PaystackResponseInterface | null> => {
+  public paystackFetch = async (url: string, method: FetchMethod, body: Record<string, unknown>, params?: Record<string, string>, queryParams?: Record<string, unknown>): Promise<PaystackResponseInterface | null> => {
     let builtUrl = this.paystackUrl + url;
     if (params && Object.keys(params).length > 0) {
       Object.keys(params).forEach((key) => {

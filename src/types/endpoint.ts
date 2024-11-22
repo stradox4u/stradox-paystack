@@ -4,9 +4,10 @@ export interface FetchHeaders {
   'Content-Type'?: string;
 }
 
+export type FetchMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export interface FetchData {
-  method: string;
+  method: FetchMethod;
   headers: FetchHeaders;
   body?: string;
 }
