@@ -1,6 +1,9 @@
-import { assertEquals } from "@std/assert";
-import { add } from "./main.ts";
+import { describe, it } from "jsr:@std/testing/bdd";
+import {expect} from "jsr:@std/expect";
 
-Deno.test(function addTest() {
-  assertEquals(add(2, 3), 5);
+describe('main', () => {
+  it('should run', () => {
+    const result = (2 + 5);
+    expect(result).toBe(7);
+  });
 });

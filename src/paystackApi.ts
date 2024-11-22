@@ -1,11 +1,9 @@
-/**
- * @module
- * This module bundles together all the resources in the Paystack API
- */
-
 import Split from "./resources/split.ts";
 import Transaction from './resources/transaction.ts';
 
+/**
+ * This class aggregates the various resources in the Paystack API, and methods for interacting with them
+ */
 export default class PaystackApi {
   public transaction: Transaction;
   public split: Split;
