@@ -1,4 +1,4 @@
-import { ListApplePayDomainsQueries } from "../types/applePay.ts";
+import type { ListApplePayDomainsQueries } from "../types/applePay.ts";
 import type { PaystackResponseInterface } from "../types/response.ts";
 import PaystackShared from "./paystackShared.ts";
 

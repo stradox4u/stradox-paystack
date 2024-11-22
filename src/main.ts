@@ -29,7 +29,9 @@ import Customer from "./resources/customer.ts";
 import Split from "./resources/split.ts";
 import Terminal from "./resources/terminal.ts";
 import Transaction from './resources/transaction.ts';
-import VirtualAccount from './resources/virtualAccounts.ts';
+import VirtualAccount from './resources/virtualAccount.ts';
+import ApplePay from "./resources/applePay.ts";
+import Subaccount from "./resources/subaccount.ts";
 
 /**
  * This class aggregates the various resources in the Paystack API, and methods for interacting with them
@@ -40,6 +42,8 @@ export class Paystack {
   public terminal: Terminal;
   public customer: Customer;
   public virtualAccount: VirtualAccount;
+  public applePay: ApplePay;
+  public subaccount: Subaccount;
 
   private static paystackInstance: Paystack;
 
@@ -49,6 +53,8 @@ export class Paystack {
     this.terminal = new Terminal(secretKey);
     this.customer = new Customer(secretKey);
     this.virtualAccount = new VirtualAccount(secretKey);
+    this.applePay = new ApplePay(secretKey);
+    this.subaccount = new Subaccount(secretKey);
   }
 
   /**
