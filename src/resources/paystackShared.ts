@@ -6,18 +6,10 @@ import type { PaystackResponseInterface } from "../types/response.ts";
  */
 export default class PaystackShared {
   private secretKey: string;
-  private paystackUrl = 'https://api.paystack.co';
-  private static thisInstance: PaystackShared;
+  private rootUrl = 'https://api.paystack.co';
 
   constructor(secretKey: string) {
     this.secretKey = secretKey;
-  }
-
-  public static getInstance(secretKey: string) {
-    if (!PaystackShared.thisInstance) {
-      PaystackShared.thisInstance = new PaystackShared(secretKey);
-    }
-    return PaystackShared.thisInstance;
   }
 
 
@@ -32,7 +24,7 @@ export default class PaystackShared {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public paystackFetch = async (url: string, method: FetchMethod, body: Record<string, unknown>, params?: Record<string, string>, queryParams?: Record<string, unknown>): Promise<PaystackResponseInterface | null> => {
-    let builtUrl = this.paystackUrl + url;
+    let builtUrl = this.rootUrl + url;
     if (params && Object.keys(params).length > 0) {
       Object.keys(params).forEach((key) => {
         builtUrl = builtUrl.replace(`:${key}`, params[key]);

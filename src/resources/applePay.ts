@@ -2,12 +2,11 @@ import type { ListApplePayDomainsQueries } from "../types/applePay.ts";
 import type { PaystackResponseInterface } from "../types/response.ts";
 import PaystackShared from "./paystackShared.ts";
 
-export default class ApplePay {
-  private readonly rootUrl = '/apple-pay';
-  private readonly tools: PaystackShared;
+export default class ApplePay extends PaystackShared {
+  private readonly resourceUrl = '/apple-pay';
 
   constructor(secretKey: string) {
-    this.tools = PaystackShared.getInstance(secretKey);
+    super(secretKey);
   }
 
   /**
@@ -17,10 +16,10 @@ export default class ApplePay {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public register = async (body: { domainName: string; displayName: string }): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/domain';
+    const url = this.resourceUrl + '/domain';
     const method = 'POST';
 
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>);
   }
 
   /**
@@ -30,10 +29,10 @@ export default class ApplePay {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public list = async (queries: ListApplePayDomainsQueries): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/domain';
+    const url = this.resourceUrl + '/domain';
     const method = 'GET';
 
-    return await this.tools.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
   }
 
   /**
@@ -43,9 +42,9 @@ export default class ApplePay {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public unregister = async (body: { domainName: string }): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/domain';
+    const url = this.resourceUrl + '/domain';
     const method = 'DELETE';
 
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>);
   }
 }

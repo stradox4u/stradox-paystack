@@ -5,12 +5,11 @@ import PaystackShared from "./paystackShared.ts";
 /**
  * This class contains methods for working with the Split resource of the Paystack API
  */
-export default class Split {
-  private readonly rootUrl = '/split';
-  private readonly tools: PaystackShared;
+export default class Split extends PaystackShared {
+  private readonly resourceUrl = '/split';
 
   constructor(secretKey: string) {
-    this.tools = PaystackShared.getInstance(secretKey);
+    super(secretKey);
   }
 
   /**
@@ -19,10 +18,10 @@ export default class Split {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public create = async (body: CreateSplitBody): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl;
+    const url = this.resourceUrl;
     const method = 'POST';
   
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>);
   }
 
   /**
@@ -31,10 +30,10 @@ export default class Split {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public list = async (queries: ListSplitQueries): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl;
+    const url = this.resourceUrl;
     const method = 'GET';
 
-    return await this.tools.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
   }
 
   /**
@@ -43,10 +42,10 @@ export default class Split {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public fetch = async (splitId: string): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/:splitId';
+    const url = this.resourceUrl + '/:splitId';
     const method = 'GET';
   
-    return await this.tools.paystackFetch(url, method, {}, { splitId });
+    return await this.paystackFetch(url, method, {}, { splitId });
   }
 
   /**
@@ -56,10 +55,10 @@ export default class Split {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public update = async (splitId: string, body: UpdateSplitBody): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/:splitId';
+    const url = this.resourceUrl + '/:splitId';
     const method = 'PUT';
   
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>, { splitId });
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>, { splitId });
   }
 
   /**
@@ -69,10 +68,10 @@ export default class Split {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public addSubaccountSplit = async (splitId: string, body: AddSubaccountSplitBody): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/:splitId/subaccount/add';
+    const url = this.resourceUrl + '/:splitId/subaccount/add';
     const method = 'POST';
   
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>, { splitId });
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>, { splitId });
   }
 
   /**
@@ -82,9 +81,9 @@ export default class Split {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public removeSubaccountSplit = async(splitId: string, body: { subaccount: string }): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/:splitId/subaccount/remove';
+    const url = this.resourceUrl + '/:splitId/subaccount/remove';
     const method = 'POST';
   
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>, { splitId });
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>, { splitId });
   }
 }

@@ -5,12 +5,11 @@ import PaystackShared from "./paystackShared.ts";
 /**
  * This class contains methods for working with the Transaction resource of the Paystack API
  */
-export default class Transaction {
-  private readonly rootUrl = '/transaction';
-  private readonly tools: PaystackShared;
+export default class Transaction extends PaystackShared {
+  private readonly resourceUrl = '/transaction';
 
   constructor(secretKey: string) {
-    this.tools = PaystackShared.getInstance(secretKey);
+    super(secretKey);
   }
 
   /**
@@ -19,10 +18,10 @@ export default class Transaction {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public initialize = async (body: InitializeTransactionBody): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/initialize';
+    const url = this.resourceUrl + '/initialize';
     const method = 'POST';
   
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>);
   }
 
    /**
@@ -31,10 +30,10 @@ export default class Transaction {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public verify = async (reference: string): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/verify' + '/:reference';
+    const url = this.resourceUrl + '/verify' + '/:reference';
     const method = 'GET';
   
-    return await this.tools.paystackFetch(url, method, {}, { reference });
+    return await this.paystackFetch(url, method, {}, { reference });
   }
 
    /**
@@ -43,10 +42,10 @@ export default class Transaction {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public list = async (queries: ListTransactionQueries): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl;
+    const url = this.resourceUrl;
     const method = 'GET';
   
-    return await this.tools.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
   }
 
    /**
@@ -55,10 +54,10 @@ export default class Transaction {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public fetch = async (transactionId: string): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/:transactionId';
+    const url = this.resourceUrl + '/:transactionId';
     const method = 'GET';
   
-    return await this.tools.paystackFetch(url, method, {}, { transactionId});
+    return await this.paystackFetch(url, method, {}, { transactionId});
   }
 
    /**
@@ -67,10 +66,10 @@ export default class Transaction {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public chargeAuthorization = async (body: ChargeAuthorizationBody): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/charge_authorization';
+    const url = this.resourceUrl + '/charge_authorization';
     const method = 'POST';
   
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>);
   }
 
    /**
@@ -79,10 +78,10 @@ export default class Transaction {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public timeline = async (transactionIdOrReference: string): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/timeline' + '/:transactionIdOrReference';
+    const url = this.resourceUrl + '/timeline' + '/:transactionIdOrReference';
     const method = 'GET';
   
-    return await this.tools.paystackFetch(url, method, {}, { transactionIdOrReference });
+    return await this.paystackFetch(url, method, {}, { transactionIdOrReference });
   }
 
    /**
@@ -91,10 +90,10 @@ export default class Transaction {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public totals = async (queries: TotalTransactionQueries): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/totals';
+    const url = this.resourceUrl + '/totals';
     const method = 'GET';
   
-    return await this.tools.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
   }
 
    /**
@@ -103,10 +102,10 @@ export default class Transaction {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public export = async (queries: ExportTransactionQueries): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/export';
+    const url = this.resourceUrl + '/export';
     const method = 'GET';
   
-    return await this.tools.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
   }
 
    /**
@@ -115,9 +114,9 @@ export default class Transaction {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public partialDebit = async (body: PartialDebitBody): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/partial_debit';
+    const url = this.resourceUrl + '/partial_debit';
     const method = 'POST';
   
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>);
   }
 }

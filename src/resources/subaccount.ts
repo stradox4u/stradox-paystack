@@ -2,12 +2,11 @@ import type { PaystackResponseInterface } from "../types/response.ts";
 import type { CreateSubaccountBody, ListSubaccountQueries, UpdateSubaccountBody } from "../types/subaccount.ts";
 import PaystackShared from "./paystackShared.ts";
 
-export default class Subaccount {
-  private readonly rootUrl = '/subaccount';
-  private readonly tools: PaystackShared;
+export default class Subaccount extends PaystackShared {
+  private readonly resourceUrl = '/subaccount';
 
   constructor(secretKey: string) {
-    this.tools = PaystackShared.getInstance(secretKey);
+    super(secretKey);
   }
 
   /**
@@ -17,10 +16,10 @@ export default class Subaccount {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public create = async (body: CreateSubaccountBody): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl;
+    const url = this.resourceUrl;
     const method = 'POST';
 
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>);
   }
 
   /**
@@ -30,10 +29,10 @@ export default class Subaccount {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public list = async (queries: ListSubaccountQueries): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl;
+    const url = this.resourceUrl;
     const method = 'GET';
 
-    return await this.tools.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
   }
 
   /**
@@ -43,10 +42,10 @@ export default class Subaccount {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public fetch = async (subaccountCode: string): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/:subaccountCode';
+    const url = this.resourceUrl + '/:subaccountCode';
     const method = 'GET';
 
-    return await this.tools.paystackFetch(url, method, {}, { subaccountCode });
+    return await this.paystackFetch(url, method, {}, { subaccountCode });
   }
 
   /**
@@ -57,9 +56,9 @@ export default class Subaccount {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public update = async (subaccountCode: string, body: UpdateSubaccountBody): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/:subaccountCode';
+    const url = this.resourceUrl + '/:subaccountCode';
     const method = 'PUT';
 
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>, { subaccountCode });
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>, { subaccountCode });
   }
 }

@@ -2,12 +2,11 @@ import type { PaystackResponseInterface } from "../types/response.ts";
 import type { AssignVirtualAccountBody, CreateVirtualAccountBody, ListVirtualAccountQueries, RequeryVirtualAccountQueries, SplitVirtualAccountTransactionBody } from "../types/virtualAccounts.ts";
 import PaystackShared from "./paystackShared.ts";
 
-export default class DedicatedVirtualAccount {
-  private readonly rootUrl = '/dedicated_account';
-  private readonly tools: PaystackShared;
+export default class DedicatedVirtualAccount extends PaystackShared {
+  private readonly resourceUrl = '/dedicated_account';
 
   constructor(secretKey: string) {
-    this.tools = PaystackShared.getInstance(secretKey);
+    super(secretKey);
   }
 
   /**
@@ -17,10 +16,10 @@ export default class DedicatedVirtualAccount {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public create = async (body: CreateVirtualAccountBody): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl;
+    const url = this.resourceUrl;
     const method = 'POST';
 
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>);
   }
 
   /**
@@ -30,10 +29,10 @@ export default class DedicatedVirtualAccount {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public assign = async (body: AssignVirtualAccountBody): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/assign';
+    const url = this.resourceUrl + '/assign';
     const method = 'POST';
 
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>);
   }
 
   /**
@@ -43,10 +42,10 @@ export default class DedicatedVirtualAccount {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public list = async (queries: ListVirtualAccountQueries): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl;
+    const url = this.resourceUrl;
     const method = 'GET';
 
-    return await this.tools.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
   }
 
   /**
@@ -56,10 +55,10 @@ export default class DedicatedVirtualAccount {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public fetch = async (accountId: string): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/:accountId';
+    const url = this.resourceUrl + '/:accountId';
     const method = 'GET';
 
-    return await this.tools.paystackFetch(url, method, {}, { accountId });
+    return await this.paystackFetch(url, method, {}, { accountId });
   }
 
   /**
@@ -69,10 +68,10 @@ export default class DedicatedVirtualAccount {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public requery = async (queries: RequeryVirtualAccountQueries): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/requery';
+    const url = this.resourceUrl + '/requery';
     const method = 'GET';
 
-    return await this.tools.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
   }
 
   /**
@@ -82,10 +81,10 @@ export default class DedicatedVirtualAccount {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public deactivate = async (accountId: string): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/:accountId';
+    const url = this.resourceUrl + '/:accountId';
     const method = 'DELETE';
 
-    return await this.tools.paystackFetch(url, method, {}, { accountId });
+    return await this.paystackFetch(url, method, {}, { accountId });
   }
 
   /**
@@ -95,10 +94,10 @@ export default class DedicatedVirtualAccount {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public split = async (body: SplitVirtualAccountTransactionBody): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/split';
+    const url = this.resourceUrl + '/split';
     const method = 'POST';
 
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>);
   }
 
   /**
@@ -109,10 +108,10 @@ export default class DedicatedVirtualAccount {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public removeSplit = async (body: { account_number: string }): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/split';
+    const url = this.resourceUrl + '/split';
     const method = 'DELETE';
 
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>);
   }
 
   /**
@@ -121,9 +120,9 @@ export default class DedicatedVirtualAccount {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public fetchProviders = async (): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/available_providers';
+    const url = this.resourceUrl + '/available_providers';
     const method = 'GET';
 
-    return await this.tools.paystackFetch(url, method, {});
+    return await this.paystackFetch(url, method, {});
   }
 }
