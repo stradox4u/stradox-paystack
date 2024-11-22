@@ -4,15 +4,25 @@
  * 
  * @example
  * ```ts
- * import * as Paystack from "@stradox/paystack";
+ * import { Paystack } from "@stradox/paystack";
  * 
- * const paystack = Paystack(<your_secret_key>);
+ * const paystack = new Paystack(<your_secret_key>);
  * 
  * const transaction = await paystack.transaction.initialize({
  *  amount: 10000,
  *  email: "johndoe@test.com",
  * });
  *
+ * OR (to get a singleton instance of the Paystack class)
+ * 
+ * import { createPaystack } from "@stradox/paystack";
+ * 
+ * const paystack = createPaystack(<your_secret_key>);
+ * 
+ * const transaction = await paystack.transaction.initialize({
+ *  amount: 10000,
+ *  email: "johndoe@test.com",
+ * });
  */
 
 import Customer from "./resources/customer.ts";
@@ -23,7 +33,7 @@ import Transaction from './resources/transaction.ts';
 /**
  * This class aggregates the various resources in the Paystack API, and methods for interacting with them
  */
-class Paystack {
+export class Paystack {
   public transaction: Transaction;
   public split: Split;
   public terminal: Terminal;
