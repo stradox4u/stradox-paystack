@@ -1,3 +1,8 @@
+/**
+ * @module Split
+ * This module contains methods for interacting with the Split resource of the Paystack API
+ */
+
 import type { PaystackResponseInterface } from "../types/response.ts";
 import type { AddSubaccountSplitBody, CreateSplitBody, ListSplitQueries, UpdateSplitBody } from "../types/split.ts";
 import PaystackShared from "./paystackShared.ts";

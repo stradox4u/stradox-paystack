@@ -1,12 +1,13 @@
+/**
+ * @module Transaction
+ * This module contains methods for interacting with the Transaction resource of the Paystack API
+ * 
+ */
+
 import type { PaystackResponseInterface } from "../types/response.ts";
 import type { ChargeAuthorizationBody, ExportTransactionQueries, InitializeTransactionBody, ListTransactionQueries, PartialDebitBody, TotalTransactionQueries } from "../types/transaction.ts";
 import PaystackShared from "./paystackShared.ts";
 
-/**
- * @module Transaction
- * This module contains methods for interacting with Paystack's Transaction resource, through their API
- * 
- */
 export default class Transaction {
   private readonly rootUrl = '/transaction';
   private readonly tools: PaystackShared;

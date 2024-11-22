@@ -1,11 +1,11 @@
-import type { FetchData, FetchHeaders } from "../types/endpoint.ts";
-import type { PaystackResponseInterface } from "../types/response.ts";
-
-
 /**
  * @module PaystackShared
  * This module contains shared methods for interacting with Paystack's API
  */
+
+import type { FetchData, FetchHeaders } from "../types/endpoint.ts";
+import type { PaystackResponseInterface } from "../types/response.ts";
+
 export default class PaystackShared {
   private secretKey: string;
   private paystackUrl = 'https://api.paystack.co';
