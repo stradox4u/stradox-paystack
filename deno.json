@@ -1,7 +1,7 @@
 {
   "name": "@stradox/paystack",
-  "description": "A simple Paystack API wrapper, written in TypeScript",
-  "version": "0.1.0",
+  "description": "A Paystack API wrapper, written in TypeScript",
+  "version": "0.1.1",
   "license": "MIT",
   "exports": "./src/main.ts",
   "tasks": {

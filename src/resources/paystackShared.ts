@@ -1,5 +1,11 @@
-import { FetchData, FetchHeaders } from "../types/endpoint.ts";
+import type { FetchData, FetchHeaders } from "../types/endpoint.ts";
+import type { PaystackResponseInterface } from "../types/response.ts";
 
+
+/**
+ * @module PaystackShared
+ * This module contains shared methods for interacting with Paystack's API
+ */
 export default class PaystackShared {
   private secretKey: string;
   private paystackUrl = 'https://api.paystack.co';
@@ -17,7 +23,17 @@ export default class PaystackShared {
   }
 
 
-  public paystackFetch = async (url: string, method: string, body: Record<string, unknown>, params?: Record<string, string>, queryParams?: Record<string, unknown>) => {
+  /**
+   * @function paystackFetch
+   * This method is used to make requests to the Paystack API
+   * @param {string} url 
+   * @param {string} method 
+   * @param {Record<string, string>} body 
+   * @param {Record<string, string>} params 
+   * @param {Record<string, string>} queryParams 
+   * @returns {Promise<PaystackResponseInterface | null>}
+   */
+  public paystackFetch = async (url: string, method: string, body: Record<string, unknown>, params?: Record<string, string>, queryParams?: Record<string, unknown>): Promise<PaystackResponseInterface | null> => {
     let builtUrl = this.paystackUrl + url;
     if (params && Object.keys(params).length > 0) {
       Object.keys(params).forEach((key) => {
@@ -29,7 +45,7 @@ export default class PaystackShared {
         builtUrl += `${index === 0 ? '?' : '&'}${key}=${queryParams[key]}`;
       });
     }
-console.log("url: ", builtUrl);
+
     const headers: FetchHeaders = {
       Authorization: `Bearer ${this.secretKey}`,
       Accept: 'application/json',

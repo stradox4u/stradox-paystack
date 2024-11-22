@@ -1,5 +1,5 @@
-import { PaystackResponseInterface } from "../types/response.ts";
-import { AddSubaccountSplitBody, CreateSplitBody, ListSplitQueries, UpdateSplitBody } from "../types/split.ts";
+import type { PaystackResponseInterface } from "../types/response.ts";
+import type { AddSubaccountSplitBody, CreateSplitBody, ListSplitQueries, UpdateSplitBody } from "../types/split.ts";
 import PaystackShared from "./paystackShared.ts";
 
 export default class Split {
