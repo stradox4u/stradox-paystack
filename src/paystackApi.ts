@@ -1,4 +1,5 @@
 import Split from "./resources/split.ts";
+import Terminal from "./resources/terminal.ts";
 import Transaction from './resources/transaction.ts';
 
 /**
@@ -7,9 +8,11 @@ import Transaction from './resources/transaction.ts';
 export default class PaystackApi {
   public transaction: Transaction;
   public split: Split;
+  public terminal: Terminal;
 
   constructor(secretKey: string) {
     this.transaction = new Transaction(secretKey);
     this.split = new Split(secretKey);
+    this.terminal = new Terminal(secretKey);
   }
 }
