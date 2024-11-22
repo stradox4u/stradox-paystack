@@ -20,3 +20,14 @@ export interface SendEventBody<T extends TerminalInvoiceEvent | TerminalTransact
   action: T["action"];
   data: T["data"];
 }
+
+export interface ListTerminalQueries {
+  perPage: number;
+  next?: string;
+  previous?: string;
+}
+
+export interface UpdateTerminalBody {
+  name: string;
+  address: string;
+}

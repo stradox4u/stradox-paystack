@@ -62,11 +62,11 @@ export default class Transaction {
   }
 
    /**
-   * @function charge_authorization
+   * @function chargeAuthorization
    * @param {ChargeAuthorizationBody} body
    * @returns {Promise<PaystackResponseInterface | null>}
    */
-  public charge_authorization = async (body: ChargeAuthorizationBody): Promise<PaystackResponseInterface | null> => {
+  public chargeAuthorization = async (body: ChargeAuthorizationBody): Promise<PaystackResponseInterface | null> => {
     const url = this.rootUrl + '/charge_authorization';
     const method = 'POST';
   
@@ -110,11 +110,11 @@ export default class Transaction {
   }
 
    /**
-   * @function partial_debit
+   * @function partialDebit
    * @param {PartialDebitBody} body
    * @returns {Promise<PaystackResponseInterface | null>}
    */
-  public partial_debit = async (body: PartialDebitBody): Promise<PaystackResponseInterface | null> => {
+  public partialDebit = async (body: PartialDebitBody): Promise<PaystackResponseInterface | null> => {
     const url = this.rootUrl + '/partial_debit';
     const method = 'POST';
   
