@@ -5,12 +5,11 @@ import PaystackShared from "./paystackShared.ts";
 /**
  * This class contains methods for working with the Customer resource of the Paystack API
  */
-export default class Customer {
-  private readonly rootUrl = '/customer';
-  private readonly tools: PaystackShared;
+export default class Customer extends PaystackShared {
+  private readonly resourceUrl = '/customer';
 
   constructor(secretKey: string) {
-    this.tools = PaystackShared.getInstance(secretKey);
+    super(secretKey);
   }
 
   /**
@@ -20,10 +19,10 @@ export default class Customer {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public create = async (body: CreateCustomerBody): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl;
+    const url = this.resourceUrl;
     const method = 'POST';
 
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>);
   }
 
   /**
@@ -33,10 +32,10 @@ export default class Customer {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public list = async (queries: ListCustomerQueries): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl;
+    const url = this.resourceUrl;
     const method = 'GET';
 
-    return await this.tools.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, {}, {}, queries as unknown as Record<string, unknown>);
   }
 
   /**
@@ -46,10 +45,10 @@ export default class Customer {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public fetch = async (emailOrCode: string): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/:emailOrCode';
+    const url = this.resourceUrl + '/:emailOrCode';
     const method = 'GET';
 
-    return await this.tools.paystackFetch(url, method, {}, { emailOrCode });
+    return await this.paystackFetch(url, method, {}, { emailOrCode });
   }
 
   /**
@@ -60,10 +59,10 @@ export default class Customer {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public update = async (code: string, body: UpdateCustomerBody): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/:code';
+    const url = this.resourceUrl + '/:code';
     const method = 'PUT';
 
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>, { code });
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>, { code });
   }
 
   /**
@@ -74,10 +73,10 @@ export default class Customer {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public validate = async (code: string, body: ValidateCustomerBody): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/:code/identification';
+    const url = this.resourceUrl + '/:code/identification';
     const method = 'POST';
 
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>, { code });
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>, { code });
   }
 
   /**
@@ -87,10 +86,10 @@ export default class Customer {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public whiteOrBlacklist = async (body: WhiteOrBlacklistBody): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/set_risk_action';
+    const url = this.resourceUrl + '/set_risk_action';
     const method = 'POST';
 
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>);
   }
 
   /**
@@ -100,9 +99,9 @@ export default class Customer {
    * @returns {Promise<PaystackResponseInterface | null>}
    */
   public deactivateAuthorization = async (body: { authorization_code: string; }): Promise<PaystackResponseInterface | null> => {
-    const url = this.rootUrl + '/deactivate_authorization';
+    const url = this.resourceUrl + '/deactivate_authorization';
     const method = 'POST';
 
-    return await this.tools.paystackFetch(url, method, body as unknown as Record<string, unknown>);
+    return await this.paystackFetch(url, method, body as unknown as Record<string, unknown>);
   }
 }

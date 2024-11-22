@@ -43,7 +43,7 @@ export interface ValidateCustomerBody {
   country: string;
   /** Customer's Bank Verification Number */
   bvn: string;
-  /** You can get the list of banks by calling the `/bank` endpoint
+  /** You can get the list of banks by calling the `misc.listBanks` method
    * required if type is `bank_account`
    */
   bank_code: string;
