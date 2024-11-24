@@ -45,6 +45,7 @@ import BulkCharge from "./resources/bulkCharge.ts";
 import Integration from "./resources/integration.ts";
 import Charge from "./resources/charge.ts";
 import Dispute from "./resources/dispute.ts";
+import Refund from "./resources/refund.ts";
 
 /**
  * This class aggregates the various resources in the Paystack API, and methods for interacting with them
@@ -70,6 +71,7 @@ export class Paystack {
   public integration: Integration;
   public charge: Charge
   public dispute: Dispute;
+  public refund: Refund;
 
   private static paystackInstance: Paystack;
 
@@ -94,6 +96,7 @@ export class Paystack {
     this.integration = new Integration(secretKey);
     this.charge = new Charge(secretKey);
     this.dispute = new Dispute(secretKey);
+    this.refund = new Refund(secretKey);
   }
 
   /**
