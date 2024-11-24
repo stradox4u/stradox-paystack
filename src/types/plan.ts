@@ -1,4 +1,4 @@
-import { PaginatedList } from "./transaction.ts";
+import type { PaginatedList } from "./transaction.ts";
 
 export interface CreatePlanBody {
   /** Name of plan */
