@@ -1,4 +1,4 @@
-import type { PaginatedList, DateRangedList } from "./transaction.ts";
+import type { PaginatedList, DateRangedList } from "./common.ts";
 
 export interface CreateCustomerBody {
   /** Customer's email address */

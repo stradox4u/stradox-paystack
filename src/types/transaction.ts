@@ -1,16 +1,8 @@
+import type { DateRangedList, PaginatedList } from "./common.ts";
+
 type BearerType = 'account' | 'subaccount';
 
 type TransactionStatus = 'failed' | 'success' | 'abandoned' | 'pending' | 'cancelled';
-
-export interface PaginatedList {
-  perPage: number;
-  page: number;
-}
-
-export interface DateRangedList {
-  from?: Date;
-  to?: Date;
-}
 
 export interface InitializeTransactionBody {
   amount: number;
