@@ -39,6 +39,7 @@ import PaymentPage from "./resources/paymentPage.ts";
 import PaymentRequest from "./resources/paymentRequest.ts";
 import Settlement from "./resources/settlement.ts";
 import Recipient from "./resources/recipient.ts";
+import Transfer from "./resources/transfer.ts";
 
 /**
  * This class aggregates the various resources in the Paystack API, and methods for interacting with them
@@ -58,6 +59,7 @@ export class Paystack {
   public paymentRequest: PaymentRequest;
   public settlement: Settlement;
   public recipient: Recipient;
+  public transfer: Transfer;
 
   private static paystackInstance: Paystack;
 
@@ -76,6 +78,7 @@ export class Paystack {
     this.paymentRequest = new PaymentRequest(secretKey);
     this.settlement = new Settlement(secretKey);
     this.recipient = new Recipient(secretKey);
+    this.transfer = new Transfer(secretKey);
   }
 
   /**
