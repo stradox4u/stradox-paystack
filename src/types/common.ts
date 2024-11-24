@@ -11,3 +11,5 @@ export interface DateRangedList {
   /** A timestamp at which to stop listing */
   to?: Date;
 }
+
+export interface PaginatedDateRangedList extends PaginatedList, DateRangedList {}
