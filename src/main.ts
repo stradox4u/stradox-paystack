@@ -36,6 +36,8 @@ import Plan from "./resources/plan.ts";
 import Subscription from "./resources/subscription.ts";
 import Product from "./resources/product.ts";
 import PaymentPage from "./resources/paymentPage.ts";
+import PaymentRequest from "./resources/paymentRequest.ts";
+import Settlement from "./resources/settlement.ts";
 
 /**
  * This class aggregates the various resources in the Paystack API, and methods for interacting with them
@@ -52,6 +54,8 @@ export class Paystack {
   public subscription: Subscription;
   public product: Product
   public paymentPage: PaymentPage;
+  public paymentRequest: PaymentRequest;
+  public settlement: Settlement;
 
   private static paystackInstance: Paystack;
 
@@ -67,6 +71,8 @@ export class Paystack {
     this.subscription = new Subscription(secretKey);
     this.product = new Product(secretKey);
     this.paymentPage = new PaymentPage(secretKey);
+    this.paymentRequest = new PaymentRequest(secretKey);
+    this.settlement = new Settlement(secretKey);
   }
 
   /**
