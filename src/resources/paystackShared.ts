@@ -23,7 +23,7 @@ export default class PaystackShared {
    * @param {Record<string, string>} queryParams 
    * @returns {Promise<PaystackResponseInterface | null>}
    */
-  protected paystackFetch = async (url: string, method: FetchMethod, body: Record<string, unknown>, params?: Record<string, string>, queryParams?: Record<string, unknown>): Promise<PaystackResponseInterface | null> => {
+  protected paystackFetch = async (url: string, method: FetchMethod, body: Record<string, unknown> | string, params?: Record<string, string>, queryParams?: Record<string, unknown>): Promise<PaystackResponseInterface | null> => {
     let builtUrl = this.rootUrl + url;
     if (params && Object.keys(params).length > 0) {
       Object.keys(params).forEach((key) => {
@@ -46,7 +46,7 @@ export default class PaystackShared {
     };
 
     const data: FetchData = { method, headers };
-    if (method !== 'GET') {
+    if (method !== 'GET' && typeof body !== 'string') {
       data.body = JSON.stringify(body);
     }
   
