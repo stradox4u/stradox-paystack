@@ -47,7 +47,7 @@ export default class BulkCharge extends PaystackShared {
    * @param idOrCode - An ID or code for the charge whose batches you want to retrieve
    * @returns {Promise<PaystackResponseInterface | null>}
    */
-  public fetchBath = async (idOrCode: string): Promise<PaystackResponseInterface | null> => {
+  public fetchBatch = async (idOrCode: string): Promise<PaystackResponseInterface | null> => {
     const url = this.resourceUrl + '/:idOrCode';
     const method = 'GET';
 

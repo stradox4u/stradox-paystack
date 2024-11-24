@@ -88,12 +88,12 @@ export default class Charge extends PaystackShared {
   }
 
   /**
-   * @function checkPendingCharge
+   * @function checkPending
    * Check pending charge
    * @param reference - The reference to check
    * @returns {Promise<PaystackResponseInterface | null>}
    */
-  public checkPendingCharge = async (reference: string): Promise<PaystackResponseInterface | null> => {
+  public checkPending = async (reference: string): Promise<PaystackResponseInterface | null> => {
     const url = this.resourceUrl + '/:reference';
     const method = 'GET';
 
