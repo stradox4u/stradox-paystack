@@ -40,6 +40,14 @@ import PaymentRequest from "./resources/paymentRequest.ts";
 import Settlement from "./resources/settlement.ts";
 import Recipient from "./resources/recipient.ts";
 import Transfer from "./resources/transfer.ts";
+import TransferControl from "./resources/transferControl.ts";
+import BulkCharge from "./resources/bulkCharge.ts";
+import Integration from "./resources/integration.ts";
+import Charge from "./resources/charge.ts";
+import Dispute from "./resources/dispute.ts";
+import Refund from "./resources/refund.ts";
+import Verification from "./resources/verification.ts";
+import Misc from "./resources/misc.ts";
 
 /**
  * This class aggregates the various resources in the Paystack API, and methods for interacting with them
@@ -60,6 +68,14 @@ export class Paystack {
   public settlement: Settlement;
   public recipient: Recipient;
   public transfer: Transfer;
+  public transferControl: TransferControl;
+  public bulkCharge: BulkCharge;
+  public integration: Integration;
+  public charge: Charge
+  public dispute: Dispute;
+  public refund: Refund;
+  public verification: Verification;
+  public misc: Misc;
 
   private static paystackInstance: Paystack;
 
@@ -79,6 +95,14 @@ export class Paystack {
     this.settlement = new Settlement(secretKey);
     this.recipient = new Recipient(secretKey);
     this.transfer = new Transfer(secretKey);
+    this.transferControl = new TransferControl(secretKey);
+    this.bulkCharge = new BulkCharge(secretKey);
+    this.integration = new Integration(secretKey);
+    this.charge = new Charge(secretKey);
+    this.dispute = new Dispute(secretKey);
+    this.refund = new Refund(secretKey);
+    this.verification = new Verification(secretKey);
+    this.misc = new Misc(secretKey);
   }
 
   /**
