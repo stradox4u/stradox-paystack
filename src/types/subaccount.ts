@@ -1,4 +1,4 @@
-import type { DateRangedList, PaginatedList } from "./transaction.ts";
+import type { DateRangedList, PaginatedList } from "./common.ts";
 
 export interface CreateSubaccountBody {
   /** Name of business for subaccount */

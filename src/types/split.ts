@@ -1,4 +1,4 @@
-import type { DateRangedList, PaginatedList } from "./transaction.ts";
+import type { DateRangedList, PaginatedList } from "./common.ts";
 
 type SplitBearerType = 'subaccount' | 'account' | 'all-proportional' | 'all';
 
