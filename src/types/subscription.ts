@@ -1,4 +1,4 @@
-import type { PaginatedList } from "./transaction.ts";
+import type { PaginatedList } from "./common.ts";
 
 export interface CreateSubscriptionBody {
   /** Customer's email address or customer code */
