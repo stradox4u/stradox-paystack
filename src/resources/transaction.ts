@@ -49,7 +49,7 @@ export default class Transaction extends PaystackShared {
   /**
    * @function verify
    * @param {string} reference
-   * @returns {Promise<PaystackResponseInterface<VerifyTransactionData> | null>} verificationData - The verification data
+   * @returns {Promise<PaystackResponseInterface<VerifyTransactionData> | null>} verificationData - A promise resolving to the verification data
    */
   public verify = async (
     reference: string,
@@ -65,7 +65,7 @@ export default class Transaction extends PaystackShared {
   /**
    * @function list
    * @param {ListTransactionQueries} queries
-   * @returns {Promise<PaystackResponseInterface<ListTransactionData[]> | null>} transactionData - An array of transaction data
+   * @returns {Promise<PaystackResponseInterface<ListTransactionData[]> | null>} transactionData - A promise resolving to an array of transaction data
    */
   public list = async (
     queries: ListTransactionQueries,
@@ -85,7 +85,7 @@ export default class Transaction extends PaystackShared {
   /**
    * @function fetch
    * @param {string} transactionId
-   * @returns {Promise<PaystackResponseInterface<FetchTransactionData> | null>} transactionData - The transaction data
+   * @returns {Promise<PaystackResponseInterface<FetchTransactionData> | null>} transactionData - A promise resolving to the transaction data
    */
   public fetch = async (
     transactionId: string,
@@ -101,7 +101,7 @@ export default class Transaction extends PaystackShared {
   /**
    * @function chargeAuthorization
    * @param {ChargeAuthorizationBody} body
-   * @returns {Promise<PaystackResponseInterface<ChargeAuthorizationData> | null>} authorizationData - The authorization data
+   * @returns {Promise<PaystackResponseInterface<ChargeAuthorizationData> | null>} authorizationData - A promise resolving to the authorization data
    */
   public chargeAuthorization = async (
     body: ChargeAuthorizationBody,
@@ -119,7 +119,7 @@ export default class Transaction extends PaystackShared {
   /**
    * @function timeline
    * @param {string} transactionIdOrReference
-   * @returns {Promise<PaystackResponseInterface<TransactionTimelineData> | null>} timelineData - The timeline of the transaction
+   * @returns {Promise<PaystackResponseInterface<TransactionTimelineData> | null>} timelineData - A promise resolving to the timeline of the transaction
    */
   public timeline = async (
     transactionIdOrReference: string,
@@ -135,7 +135,7 @@ export default class Transaction extends PaystackShared {
   /**
    * @function totals
    * @param {TotalTransactionQueries} queries
-   * @returns {Promise<PaystackResponseInterface<TransactionTotalsData> | null>} transactionTotals - The totals of all the transactions
+   * @returns {Promise<PaystackResponseInterface<TransactionTotalsData> | null>} transactionTotals - A promise resolving to the totals of all the transactions
    */
   public totals = async (
     queries: TotalTransactionQueries,
@@ -155,7 +155,7 @@ export default class Transaction extends PaystackShared {
   /**
    * @function export
    * @param {ExportTransactionQueries} queries
-   * @returns {Promise<PaystackResponseInterface<ExportTransactionData> | null>} exportData - The exported transaction data, including a download url and an expiry date
+   * @returns {Promise<PaystackResponseInterface<ExportTransactionData> | null>} exportData - A promise resolving to the exported transaction data, including a download url and an expiry date
    */
   public export = async (
     queries: ExportTransactionQueries,
@@ -175,7 +175,7 @@ export default class Transaction extends PaystackShared {
   /**
    * @function partialDebit
    * @param {PartialDebitBody} body
-   * @returns {Promise<PaystackResponseInterface<PartialDebitData> | null>} partialDebitData - The data describing the partial debit transaction
+   * @returns {Promise<PaystackResponseInterface<PartialDebitData> | null>} partialDebitData - A promise resolving to the data describing the partial debit transaction
    */
   public partialDebit = async (
     body: PartialDebitBody,

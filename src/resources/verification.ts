@@ -19,7 +19,7 @@ export default class Verification extends PaystackShared {
    * @function resolveAccount
    * Confirm an account belongs to the right customer
    * @param queries
-   * @returns {Promise<PaystackResponseInterface<ResolveAccountData> | null>} accountInfo - The account information
+   * @returns {Promise<PaystackResponseInterface<ResolveAccountData> | null>} accountInfo - A promise resolving to the account information
    */
   public resolveAccount = async (
     queries: ResolveAccountQueries,
@@ -40,7 +40,7 @@ export default class Verification extends PaystackShared {
    * @function validateAccount
    * Confirm the authenticity of a customer's account number before sending money
    * @param body
-   * @returns {Promise<PaystackResponseInterface<ValidateAccountData> | null>} verificationState - The state of the account verification
+   * @returns {Promise<PaystackResponseInterface<ValidateAccountData> | null>} verificationState - A promise resolving to the state of the account verification
    */
   public validateAccount = async (
     body: ValidateAccountBody,
@@ -59,7 +59,7 @@ export default class Verification extends PaystackShared {
    * @function resolveBin
    * Get more information about a customer's card
    * @param bin - First 6 characters of card
-   * @returns {Promise<PaystackResponseInterface<ResolveBinData> | null>} cardInfo - The card's information
+   * @returns {Promise<PaystackResponseInterface<ResolveBinData> | null>} cardInfo - A promise resolving to the card's information
    */
   public resolveBin = async (
     bin: string,
