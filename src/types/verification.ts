@@ -21,3 +21,24 @@ export interface ValidateAccountBody {
   /** Customer's mode of identity number */
   document_number: string;
 }
+
+export interface ResolveAccountData {
+  account_number: string;
+  account_name: string;
+}
+
+export interface ValidateAccountData {
+  verified: boolean;
+  verificationMessage: string;
+}
+
+export interface ResolveBinData {
+  bin: string;
+  brand: string;
+  sub_brand: string;
+  country_code: string;
+  country_name: string;
+  card_type: string;
+  bank: string;
+  linked_bank_id: number;
+}
