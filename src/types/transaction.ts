@@ -106,7 +106,7 @@ export interface VerifyTransactionData {
   subaccount: Record<string, unknown>;
 }
 
-interface Customer {
+export interface Customer {
   id: number;
   first_name: string;
   last_name: string;
@@ -118,7 +118,7 @@ interface Customer {
   international_format_phone: string;
 }
 
-interface Authorization {
+export interface Authorization {
   authorization_code: string;
   bin: string;
   last4: string;
@@ -134,7 +134,7 @@ interface Authorization {
   account_name: string;
 }
 
-interface Log {
+export interface Log {
   start_time: number;
   time_spent: number;
   attempts: number;
@@ -204,7 +204,7 @@ export interface FetchTransactionData {
   channel: string;
   currency: string;
   ip_address: string;
-  metadata: string;
+  metadata: Record<string, unknown>;
   log: Log;
   fees: number;
   fees_split: unknown;
