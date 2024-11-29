@@ -223,7 +223,7 @@ export interface FetchTransactionData {
   connect: unknown;
 }
 
-interface Metadata {
+export interface Metadata {
   custom_fields: Customfield[];
 }
 

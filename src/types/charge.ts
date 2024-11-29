@@ -1,3 +1,5 @@
+import { Authorization, Customer, Log, Metadata } from "./transaction.ts";
+
 export interface CreateChargeBody {
   /** Customer's email address */
   email: string;
@@ -77,4 +79,75 @@ export interface SubmitAddressBody extends ReferenceOnly {
   state: string;
   /** Zipcode submitted by user */
   zipcode: string;
+}
+
+export interface CreateChargeData {
+  amount: number;
+  currency: string;
+  transaction_date: string;
+  status: string;
+  reference: string;
+  domain: string;
+  metadata: Metadata;
+  gateway_response: string;
+  message: string;
+  channel: string;
+  ip_address: string;
+  log: Log;
+  fees: number;
+  authorization: Authorization;
+  customer: Customer;
+  plan: Record<string, unknown>;
+}
+
+export interface SubmitDataResponseData {
+  id: number;
+  domain: string;
+  status: string;
+  reference: string;
+  amount: number;
+  message: string;
+  gateway_response: string;
+  paid_at: string;
+  created_at: string;
+  channel: string;
+  currency: string;
+  ip_address: string;
+  metadata: string;
+  log: Log;
+  fees: number;
+  fees_split: unknown;
+  authorization: Authorization;
+  customer: Customer;
+  plan: Record<string, unknown>;
+  split: Record<string, unknown>;
+  order_id: null;
+  paidAt: string;
+  createdAt: string;
+  requested_amount: number;
+  pos_transaction_data: null;
+  source: null;
+  fees_breakdown: null;
+  transaction_date: string;
+  plan_object: Record<string, unknown>;
+  subaccount: Record<string, unknown>;
+}
+
+export interface CheckPendingData {
+  amount: number;
+  currency: string;
+  transaction_date: string;
+  status: string;
+  reference: string;
+  domain: string;
+  metadata: Metadata;
+  gateway_response: string;
+  message: string;
+  channel: string;
+  ip_address: string;
+  log: Log;
+  fees: number;
+  authorization: Authorization;
+  customer: Customer;
+  plan: Record<string, unknown>;
 }
