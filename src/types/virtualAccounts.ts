@@ -80,3 +80,120 @@ export interface SplitVirtualAccountTransactionBody {
    */
   preferred_bank?: string;
 }
+
+export interface CreateVirtualAccountData {
+  bank: Bank;
+  account_name: string;
+  account_number: string;
+  assigned: boolean;
+  currency: string;
+  metadata: Record<string, unknown>;
+  active: boolean;
+  id: number;
+  created_at: string;
+  updated_at: string;
+  assignment: Assignment;
+  customer: Customer;
+}
+
+interface Customer {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  customer_code: string;
+  phone: string;
+  risk_action: string;
+  international_format_phone?: string;
+  metadata?: Metadata;
+}
+
+interface Assignment {
+  integration: number;
+  assignee_id: number;
+  assignee_type: string;
+  expired: boolean;
+  account_type: string;
+  assigned_at: string;
+}
+
+interface Bank {
+  name: string;
+  id: number;
+  slug: string;
+}
+
+export interface ListVirtualAccountsMeta {
+  total: number;
+  skipped: number;
+  perPage: number;
+  page: number;
+  pageCount: number;
+}
+
+export interface ListVirtualAccountsDatum {
+  customer: Customer;
+  bank: Bank;
+  id: number;
+  account_name: string;
+  account_number: string;
+  created_at: string;
+  updated_at: string;
+  currency: string;
+  split_config: SplitConfig;
+  active: boolean;
+  assigned: boolean;
+}
+
+interface SplitConfig {
+  subaccount: string;
+}
+
+interface Bank {
+  name: string;
+  id: number;
+  slug: string;
+}
+
+export interface FetchVirtualAccountData extends ListVirtualAccountsDatum {}
+
+interface Metadata {
+  calling_code: string;
+}
+
+export interface DeactivateVirtualAccountData extends Omit<ListVirtualAccountsDatum, 'customer' | 'split_config'> {
+  metadata: Record<string, unknown>;
+  assignment: Assignment;
+}
+
+interface Assignment {
+  assignee_id: number;
+  assignee_type: string;
+  assigned_at: string;
+  integration: number;
+  account_type: string;
+}
+
+export interface SplitTransactionData extends ListVirtualAccountsDatum {
+  metadata: Record<string, unknown>;
+  assignment: Assignment;
+}
+
+export interface RemoveSplitData {
+  id: number;
+  split_config: SplitConfig;
+  account_name: string;
+  account_number: string;
+  currency: string;
+  assigned: boolean;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FetchProvidersDatum {
+  provider_slug: string;
+  bank_id: number;
+  bank_name: string;
+  id: number;
+}
