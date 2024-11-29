@@ -39,3 +39,90 @@ export interface ListTransferQueries extends PaginatedDateRangedList {
   /** Filter by the recipient ID */
   recipient: number;
 }
+
+export interface InitiateTransferData {
+  integration: number;
+  domain: string;
+  amount: number;
+  currency: string;
+  source: string;
+  reason: string;
+  recipient: number;
+  status: string;
+  transfer_code: string;
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FinalizeTransferData extends InitiateTransferData {
+  reference: string;
+  source_details: unknown;
+  failures: unknown;
+  titan_code: string;
+  transferred_at: string;
+}
+
+export interface BulkInitiateTransferDatum {
+  reference: string;
+  recipient: string;
+  amount: number;
+  transfer_code: string;
+  currency: string;
+  status: string;
+}
+
+export interface ListTransfersMeta {
+  total: number;
+  skipped: number;
+  perPage: number;
+  page: number;
+  pageCount: number;
+}
+
+export interface ListTransfersDatum extends Omit<InitiateTransferData, 'recipient'> {
+  recipient: Recipient;
+  source_details: unknown;
+  failures: unknown;
+}
+
+interface Recipient {
+  domain: string;
+  type: string;
+  currency: string;
+  name: string;
+  details: Details;
+  description: string;
+  metadata: Record<string, unknown>;
+  recipient_code: string;
+  active: boolean;
+  id: number;
+  integration: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Details {
+  account_number: string;
+  account_name: string;
+  bank_code: string;
+  bank_name: string;
+}
+
+export interface FetchTransferData extends ListTransfersDatum {
+  reference: string;
+  titan_code: string;
+  request: number;
+  transferred_at: string;
+  session: Session;
+  fee_charged: number;
+  fees_breakdown: unknown;
+  gateway_response: string;
+}
+
+interface Session {
+  provider: string;
+  id: unknown;
+}
+
+export interface VerifyTransferData extends FetchTransferData {}
