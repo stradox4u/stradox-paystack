@@ -59,6 +59,9 @@ const transaction = await paystack.transaction.initialize({
  email: "johndoe@test.com",
 });
 ```
+This package is ESM only, and uses the `import` statement to import modules. As a result, it works best if you set `"type": "module"` in your `package.json` file. It will not work with CommonJS `require` statements.
+
+Without this, you will need to do some gymnastics, such as using a dynamic import and then awaiting the result before using the package.
 
 ### Methods
 The following methods are exposed by the `Paystack` class:
