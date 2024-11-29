@@ -1,4 +1,5 @@
 import type { PaginatedList } from "./common.ts";
+import type { Authorization } from "./transaction.ts";
 
 export interface CreateSubscriptionBody {
   /** Customer's email address or customer code */
@@ -25,4 +26,21 @@ export interface ToggleSubscriptionBody {
   code: string;
   /** Email token */
   token: string;
+}
+
+export interface CreateSubscriptionData {
+  customer: number;
+  plan: number;
+  integration: number;
+  domain: string;
+  start: number;
+  status: string;
+  quantity: number;
+  amount: number;
+  subscription_code: string;
+  email_token: string;
+  authorization: Authorization;
+  id: number;
+  createdAt: string;
+  updatedAt: string;
 }
