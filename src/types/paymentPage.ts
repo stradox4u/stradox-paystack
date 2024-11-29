@@ -58,3 +58,125 @@ export interface AddProductBody {
   /** Ids of all the products */
   product: number[];
 }
+
+export interface CreatePaymentPageData {
+  name: string;
+  description: string;
+  amount: number;
+  split_code: string;
+  integration: number;
+  domain: string;
+  slug: string;
+  currency: string;
+  type: string;
+  collect_phone: boolean;
+  active: boolean;
+  published: boolean;
+  migrate: boolean;
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ListPaymentPageMeta {
+  total: number;
+  skipped: number;
+  perPage: string;
+  page: number;
+  pageCount: number;
+}
+
+export interface ListPaymentPageDatum {
+  integration: number;
+  plan: null | number;
+  domain: string;
+  name: string;
+  description: null | string;
+  amount: null | number;
+  currency: string;
+  slug: string;
+  custom_fields: Customfield[] | null;
+  redirect_url: null | string;
+  active: boolean;
+  migrate: unknown;
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Customfield {
+  display_name: string;
+  variable_name: string;
+}
+
+export interface FetchPaymentPageData {
+  integration: number;
+  domain: string;
+  name: string;
+  description: string;
+  amount: number;
+  currency: string;
+  slug: string;
+  active: boolean;
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  products: Product[];
+}
+
+interface Product {
+  product_id: number;
+  name: string;
+  description: string;
+  product_code: string;
+  page: number;
+  price: number;
+  currency: string;
+  quantity: number;
+  type: string;
+  features: unknown;
+  is_shippable: number;
+  domain: string;
+  integration: number;
+  active: number;
+  in_stock: number;
+}
+
+export interface UpdatePaymentPageData {
+  domain: string;
+  name: string;
+  description: string;
+  amount: number;
+  currency: string;
+  slug: string;
+  active: boolean;
+  id: number;
+  integration: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AddProductsData {
+  integration: number;
+  plan: unknown;
+  domain: string;
+  name: string;
+  description: string;
+  amount: number;
+  currency: string;
+  slug: string;
+  custom_fields: unknown[];
+  type: string;
+  redirect_url: string;
+  success_message: string;
+  collect_phone: boolean;
+  active: boolean;
+  published: boolean;
+  migrate: boolean;
+  notification_email: string;
+  metadata: Record<string, unknown>;
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  products: Product[];
+}
