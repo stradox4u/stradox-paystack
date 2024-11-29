@@ -34,7 +34,13 @@ export interface ListStatesQueries {
   country: number;
 }
 
-export interface PaystackBank {
+export interface ListBanksMeta {
+  next: string;
+  previous: string;
+  perPage: number;
+}
+
+export interface ListBanksDatum {
   name: string;
   slug: string;
   code: string;
@@ -51,7 +57,7 @@ export interface PaystackBank {
   updatedAt: string;
 }
 
-export interface PaystackCountry {
+export interface ListCountriesDatum {
   id: number;
   name: string;
   iso_code: string;
@@ -77,7 +83,7 @@ interface Currency {
   data: string[];
 }
 
-export interface PaystackState {
+export interface ListStatesDatum {
   name: string;
   slug: string;
   abbreviation: string;

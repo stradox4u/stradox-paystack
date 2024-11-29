@@ -5,10 +5,10 @@ import type {
   ExportDisputesData,
   GetUploadUrlData,
   GetUploadUrlQueries,
-  ListDisputeData,
+  ListDisputeDatum,
   ListDisputeMeta,
   ListDisputeQueries,
-  ListTransactionDisputesData,
+  ListTransactionDisputesDatum,
   ResolveDisputeBody,
   ResolveDisputeData,
   UpdateDisputeBody,
@@ -28,17 +28,17 @@ export default class Dispute extends PaystackShared {
    * @function list
    * List disputes filed against you
    * @param queries
-   * @returns {Promise<PaystackResponseInterface<ListDisputeData[], ListDisputeMeta> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type ListDisputeData[]
+   * @returns {Promise<PaystackResponseInterface<ListDisputeDatum[], ListDisputeMeta> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type ListDisputeData[]
    */
   public list = async (
     queries: ListDisputeQueries,
   ): Promise<
-    PaystackResponseInterface<ListDisputeData[], ListDisputeMeta> | null
+    PaystackResponseInterface<ListDisputeDatum[], ListDisputeMeta> | null
   > => {
     const url = this.resourceUrl;
     const method = "GET";
 
-    return await this.paystackFetch<ListDisputeData[], ListDisputeMeta>(
+    return await this.paystackFetch<ListDisputeDatum[], ListDisputeMeta>(
       url,
       method,
       {},
@@ -51,15 +51,15 @@ export default class Dispute extends PaystackShared {
    * @function fetch
    * Get more details about a dispute
    * @param disputeId - The dispute ID you want to fetch
-   * @returns {Promise<PaystackResponseInterface<ListDisputeData> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type ListDisputeData
+   * @returns {Promise<PaystackResponseInterface<ListDisputeDatum> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type ListDisputeData
    */
   public fetch = async (
     disputeId: string,
-  ): Promise<PaystackResponseInterface<ListDisputeData> | null> => {
+  ): Promise<PaystackResponseInterface<ListDisputeDatum> | null> => {
     const url = this.resourceUrl + "/:disputeId";
     const method = "GET";
 
-    return await this.paystackFetch<ListDisputeData>(url, method, {}, {
+    return await this.paystackFetch<ListDisputeDatum>(url, method, {}, {
       disputeId,
     });
   };
@@ -68,17 +68,17 @@ export default class Dispute extends PaystackShared {
    * @function listTransactionDisputes
    * Retrieves disputes for a particular transaction
    * @param transactionId - The transaction ID you want to fetch
-   * @returns {Promise<PaystackResponseInterface<ListTransactionDisputesData[]> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type ListTransactionDisputesData[]
+   * @returns {Promise<PaystackResponseInterface<ListTransactionDisputesDauma[]> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type ListTransactionDisputesData[]
    */
   public listTransactionDisputes = async (
     transactionId: string,
   ): Promise<
-    PaystackResponseInterface<ListTransactionDisputesData[]> | null
+    PaystackResponseInterface<ListTransactionDisputesDatum[]> | null
   > => {
     const url = this.resourceUrl + "/transaction/:transactionId";
     const method = "GET";
 
-    return await this.paystackFetch<ListTransactionDisputesData[]>(
+    return await this.paystackFetch<ListTransactionDisputesDatum[]>(
       url,
       method,
       {},

@@ -1,9 +1,10 @@
 import type {
+ListBanksDatum,
+ListBanksMeta,
   ListBanksQueries,
+  ListCountriesDatum,
+  ListStatesDatum,
   ListStatesQueries,
-  PaystackBank,
-  PaystackCountry,
-  PaystackState,
 } from "../types/misc.ts";
 import type { PaystackResponseInterface } from "../types/response.ts";
 import PaystackShared from "./paystackShared.ts";
@@ -17,15 +18,15 @@ export default class Misc extends PaystackShared {
    * @function listBanks
    * Get a list of all supported banks and their properties
    * @param queries
-   * @returns {Promise<PaystackResponseInterface<PaystackBank[]> | null>} bankList - A promise resolving to an array of PaystackBank objects
+   * @returns {Promise<PaystackResponseInterface<ListBanksDatum[], ListBanksMeta> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type ListBanksDatum[]
    */
   public listBanks = async (
     queries: ListBanksQueries,
-  ): Promise<PaystackResponseInterface<PaystackBank[]> | null> => {
+  ): Promise<PaystackResponseInterface<ListBanksDatum[], ListBanksMeta> | null> => {
     const url = "/bank";
     const method = "GET";
 
-    return await this.paystackFetch<PaystackBank[]>(
+    return await this.paystackFetch<ListBanksDatum[], ListBanksMeta>(
       url,
       method,
       {},
@@ -37,30 +38,30 @@ export default class Misc extends PaystackShared {
   /**
    * @function listCountries
    * Get a list of countries that Paystack currently supports
-   * @returns {Promise<PaystackResponseInterface<PaystackCountry[]> | null>} countryList - A promise resolving to an array of PaystackCountry objects
+   * @returns {Promise<PaystackResponseInterface<ListCountriesDatum[]> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type ListCountriesDatum[]
    */
   public listCountries = async (): Promise<
-    PaystackResponseInterface<PaystackCountry[]> | null
+    PaystackResponseInterface<ListCountriesDatum[]> | null
   > => {
     const url = "/country";
     const method = "GET";
 
-    return await this.paystackFetch<PaystackCountry[]>(url, method, {});
+    return await this.paystackFetch<ListCountriesDatum[]>(url, method, {});
   };
 
   /**
    * @function listStates
    * Get a list of states for a country for address verification
    * @param queries
-   * @returns {Promise<PaystackResponseInterface<PaystackState[]> | null>} stateList - A promise resolving to an array of PaystackState objects
+   * @returns {Promise<PaystackResponseInterface<ListStatesDatum[]> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type ListStatesDatum[]
    */
   public listStates = async (
     queries: ListStatesQueries,
-  ): Promise<PaystackResponseInterface<PaystackState[]> | null> => {
+  ): Promise<PaystackResponseInterface<ListStatesDatum[]> | null> => {
     const url = "/address_verification/states";
     const method = "GET";
 
-    return await this.paystackFetch<PaystackState[]>(
+    return await this.paystackFetch<ListStatesDatum[]>(
       url,
       method,
       {},

@@ -65,7 +65,7 @@ export interface ListDisputeMeta {
   pageCount: number;
 }
 
-export interface ListDisputeData {
+export interface ListDisputeDatum {
   id: number;
   refund_amount: number;
   currency: string;
@@ -113,7 +113,7 @@ interface History {
   createdAt: string;
 }
 
-export interface ListTransactionDisputesData {
+export interface ListTransactionDisputesDatum {
   history: DisputeHistory[];
   messages: DisputeMessage[];
   currency: string;
@@ -155,7 +155,7 @@ interface DisputeHistory {
   updatedAt: string;
 }
 
-export interface UpdateDisputeData extends Omit<ListTransactionDisputesData, 'history' | 'messages' | 'integration'> {
+export interface UpdateDisputeData extends Omit<ListTransactionDisputesDatum, 'history' | 'messages' | 'integration'> {
   source: string;
   customer: Customer;
   organization: number;
