@@ -55,3 +55,81 @@ export interface UpdateSubaccountBody {
    */
   metadata?: string;
 }
+
+export interface CreateSubaccountData {
+  business_name: string;
+  account_number: string;
+  percentage_charge: number;
+  settlement_bank: string;
+  currency: string;
+  bank: number;
+  integration: number;
+  domain: string;
+  account_name: string;
+  product: string;
+  managed_by_integration: number;
+  subaccount_code: string;
+  is_verified: boolean;
+  settlement_schedule: string;
+  active: boolean;
+  migrate: boolean;
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ListSubaccountsMeta {
+  total: number;
+  skipped: number;
+  perPage: number;
+  page: number;
+  pageCount: number;
+}
+
+export interface ListSubaccountsDatum {
+  id: number;
+  subaccount_code: string;
+  business_name: string;
+  description: string;
+  primary_contact_name: string;
+  primary_contact_email: string;
+  primary_contact_phone: string;
+  metadata: Record<string, unknown>;
+  percentage_charge: number;
+  settlement_bank: string;
+  bank_id: number;
+  account_number: string;
+  currency: string;
+  active: number;
+}
+
+
+
+export interface FetchSubaccountData {
+  domain: string;
+  subaccount_code: string;
+  business_name: string;
+  description: string;
+  primary_contact_name: string;
+  primary_contact_email: string;
+  primary_contact_phone: string;
+  metadata: Record<string, unknown>;
+  percentage_charge: number;
+  is_verified: boolean;
+  settlement_bank: string;
+  account_number: string;
+  settlement_schedule: string;
+  active: boolean;
+  migrate: boolean;
+  currency: string;
+  account_name: string;
+  product: string;
+  id: number;
+  integration: number;
+  bank: number;
+  managed_by_integration: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UpdateSubaccountData extends FetchSubaccountData {}

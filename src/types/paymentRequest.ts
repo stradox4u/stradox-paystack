@@ -1,4 +1,5 @@
 import type { DateRangedList, PaginatedList } from "./common.ts";
+import type { Authorization, Customer, ListTransactionData } from "./transaction.ts";
 
 interface LineItem {
   name: string;
@@ -60,3 +61,156 @@ export interface FinalizePaymentRequestBody {
 }
 
 export type UpdatePaymentRequestBody = Omit<CreatePaymentRequestBody, 'has_invoice'>;
+
+export interface CreatePaymentRequestData {
+  id: number;
+  domain: string;
+  amount: number;
+  currency: string;
+  due_date: string;
+  has_invoice: boolean;
+  invoice_number: number;
+  description: string;
+  line_items: LineItem[];
+  tax: LineItem[];
+  request_code: string;
+  status: string;
+  paid: boolean;
+  metadata: null;
+  notifications: unknown[];
+  offline_reference: string;
+  customer: number;
+  created_at: string;
+}
+
+export interface ListPaymentRequestMeta {
+  total: number;
+  skipped: number;
+  perPage: number;
+  page: number;
+  pageCount: number;
+}
+
+export interface ListPaymentRequestDatum {
+  id: number;
+  domain: string;
+  amount: number;
+  currency: string;
+  due_date: string;
+  has_invoice: boolean;
+  invoice_number: number;
+  description: string;
+  pdf_url: string;
+  line_items: LineItem[];
+  tax: LineItem[];
+  request_code: string;
+  status: string;
+  paid: boolean;
+  paid_at: string;
+  metadata: Record<string, unknown>;
+  notifications: unknown[];
+  offline_reference: string;
+  customer: RequestCustomer;
+  created_at: string;
+}
+
+interface RequestCustomer extends Omit<Customer, 'metadata'> {
+  metadata: Metadata;
+}
+
+interface Metadata {
+  calling_code: string;
+}
+
+export interface FetchPaymentRequestData {
+  transactions: ListTransactionData[];
+  domain: string;
+  request_code: string;
+  description: string;
+  line_items: LineItem[];
+  tax: LineItem[];
+  amount: number;
+  discount: number;
+  currency: string;
+  due_date: string;
+  status: string;
+  paid: boolean;
+  paid_at: string;
+  metadata: Record<string, unknown>;
+  has_invoice: boolean;
+  invoice_number: number;
+  offline_reference: string;
+  pdf_url: string;
+  notifications: unknown[];
+  archived: boolean;
+  source: string;
+  payment_method: unknown;
+  note: unknown;
+  amount_paid: string;
+  id: number;
+  integration: number;
+  customer: Customer;
+  createdAt: string;
+  updatedAt: string;
+  pending_amount: number;
+}
+
+export interface FullPaymentRequestCustomer extends Omit<RequestCustomer, 'international_format_phone'> {
+  transactions: ListTransactionData[];
+  subscriptions: unknown[];
+  authorizations: Authorization[];
+  domain: string;
+  integration: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface VerifyPaymentRequestData {
+  id: number;
+  domain: string;
+  amount: number;
+  currency: string;
+  due_date: string;
+  has_invoice: boolean;
+  invoice_number: number;
+  description: string;
+  pdf_url: string;
+  line_items: LineItem[];
+  tax: LineItem[];
+  request_code: string;
+  status: string;
+  paid: boolean;
+  paid_at: string;
+  metadata: Record<string, unknown>;
+  notifications: unknown[];
+  offline_reference: string;
+  customer: RequestCustomer;
+  created_at: string;
+  integration: Integration;
+  pending_amount: number;
+}
+
+interface Integration {
+  key: string;
+  name: string;
+  logo: string;
+  allowed_currencies: string[];
+}
+
+
+export interface RequestTotalData {
+  pending: CurrencyData[];
+  successful: CurrencyData[];
+  total: CurrencyData[];
+}
+
+interface CurrencyData {
+  currency: string;
+  amount: number;
+}
+
+export interface FinalizePaymentRequestData extends Omit<VerifyPaymentRequestData, 'integration'> {}
+
+export interface UpdatePaymentRequestData extends Omit<FinalizePaymentRequestData, 'pending_amount'> {}
+
+

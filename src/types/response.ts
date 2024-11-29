@@ -1,5 +1,6 @@
-export interface PaystackResponseInterface {
+export interface PaystackResponseInterface<T, S = undefined> {
   status: boolean;
   message: string;
-  data: Record<string, unknown>;
+  data: T;
+  meta?: S;
 }

@@ -33,3 +33,58 @@ export interface ListStatesQueries {
   /** The country code of the states to list. It is gotten after the charge request */
   country: number;
 }
+
+export interface ListBanksMeta {
+  next: string;
+  previous: string;
+  perPage: number;
+}
+
+export interface ListBanksDatum {
+  name: string;
+  slug: string;
+  code: string;
+  longcode: string;
+  gateway: string;
+  pay_with_bank: boolean;
+  active: boolean;
+  is_deleted: boolean;
+  country: string;
+  currency: string;
+  type: string;
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ListCountriesDatum {
+  id: number;
+  name: string;
+  iso_code: string;
+  default_currency_code: string;
+  integration_defaults: Record<string, unknown>;
+  relationships: Relationships;
+}
+
+interface Relationships {
+  currency: Currency;
+  integration_feature: Integrationfeature;
+  integration_type: Currency;
+  payment_method: Currency;
+}
+
+interface Integrationfeature {
+  type: string;
+  data: unknown[];
+}
+
+interface Currency {
+  type: string;
+  data: string[];
+}
+
+export interface ListStatesDatum {
+  name: string;
+  slug: string;
+  abbreviation: string;
+}

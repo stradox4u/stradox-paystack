@@ -7,3 +7,7 @@ export interface ListApplePayDomainsQueries {
    * It should be used to fetch the previous page of the list after an initial next request */
   previous?: string;
 }
+
+export interface ListDomainsData {
+  domainNames: string[];
+}
