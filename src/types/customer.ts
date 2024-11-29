@@ -1,5 +1,5 @@
 import type { PaginatedList, DateRangedList } from "./common.ts";
-import { Authorization, ListTransactionData } from "./transaction.ts";
+import type { Authorization, ListTransactionData } from "./transaction.ts";
 
 export interface CreateCustomerBody {
   /** Customer's email address */
@@ -88,6 +88,12 @@ export interface ListCustomerData {
   id: number;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ListCustomerMeta {
+  next: string;
+  previous: string | null;
+  perPage: number;
 }
 
 export interface FetchCustomerData {

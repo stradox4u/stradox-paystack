@@ -3,6 +3,7 @@ import type {
   CreateCustomerData,
   FetchCustomerData,
   ListCustomerData,
+  ListCustomerMeta,
   ListCustomerQueries,
   UpdateCustomerBody,
   UpdateCustomerData,
@@ -46,15 +47,15 @@ export default class Customer extends PaystackShared {
    * @function list
    * List customers available on your integration
    * @param queries
-   * @returns {Promise<PaystackResponseInterface<ListCustomerData[]> | null>} response - A promise that resolves to an object containing an array of customer objects
+   * @returns {Promise<PaystackResponseInterface<ListCustomerData[], ListCustomerMeta> | null>} response - A promise that resolves to an object containing an array of customer objects
    */
   public list = async (
     queries: ListCustomerQueries,
-  ): Promise<PaystackResponseInterface<ListCustomerData[]> | null> => {
+  ): Promise<PaystackResponseInterface<ListCustomerData[], ListCustomerMeta> | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
-    return await this.paystackFetch<ListCustomerData[]>(
+    return await this.paystackFetch<ListCustomerData[], ListCustomerMeta>(
       url,
       method,
       {},

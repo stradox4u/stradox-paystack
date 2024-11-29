@@ -1,4 +1,4 @@
-import { Authorization, Customer, Log, Metadata } from "./transaction.ts";
+import type { Authorization, Customer, Log, Metadata } from "./transaction.ts";
 
 export interface CreateChargeBody {
   /** Customer's email address */

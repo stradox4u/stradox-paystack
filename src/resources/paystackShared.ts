@@ -24,15 +24,15 @@ export default class PaystackShared {
    * @param {Record<string, string>} body
    * @param {Record<string, string>} params
    * @param {Record<string, string>} queryParams
-   * @returns {Promise<PaystackResponseInterface<T> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type T
+   * @returns {Promise<PaystackResponseInterface<T, S = undefined> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type T
    */
-  protected async paystackFetch<T>(
+  protected async paystackFetch<T, S = undefined>(
     url: string,
     method: FetchMethod,
     body: Record<string, unknown> | string,
     params?: Record<string, string>,
     queryParams?: Record<string, unknown>,
-  ): Promise<PaystackResponseInterface<T> | null> {
+  ): Promise<PaystackResponseInterface<T, S> | null> {
     let builtUrl = this.rootUrl + url;
     if (params && Object.keys(params).length > 0) {
       Object.keys(params).forEach((key) => {
