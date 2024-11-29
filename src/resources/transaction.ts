@@ -8,6 +8,7 @@ import type {
   InitializeTransactionBody,
   InitializeTransactionData,
   ListTransactionData,
+  ListTransactionMeta,
   ListTransactionQueries,
   PartialDebitBody,
   PartialDebitData,
@@ -65,15 +66,15 @@ export default class Transaction extends PaystackShared {
   /**
    * @function list
    * @param {ListTransactionQueries} queries
-   * @returns {Promise<PaystackResponseInterface<ListTransactionData[]> | null>} transactionData - A promise resolving to an array of transaction data
+   * @returns {Promise<PaystackResponseInterface<ListTransactionData[], ListTransactionMeta> | null>} transactionData - A promise resolving to an array of transaction data
    */
   public list = async (
     queries: ListTransactionQueries,
-  ): Promise<PaystackResponseInterface<ListTransactionData[]> | null> => {
+  ): Promise<PaystackResponseInterface<ListTransactionData[], ListTransactionMeta> | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
-    return await this.paystackFetch<ListTransactionData[]>(
+    return await this.paystackFetch<ListTransactionData[], ListTransactionMeta>(
       url,
       method,
       {},

@@ -25,7 +25,15 @@ export interface InitiateBulkChargeData {
   updatedAt: string;
 }
 
-export interface ListBatchesData {
+export interface ListBatchesMeta {
+  total: number;
+  skipped: number;
+  perPage: number;
+  page: number;
+  pageCount: number;
+}
+
+export interface ListBatchesDatum {
   domain: string;
   batch_code: string;
   status: string;
@@ -45,7 +53,9 @@ export interface FetchBatchData {
   updatedAt: string;
 }
 
-export interface FetchChargesData {
+export interface FetchChargesMeta extends ListBatchesMeta {}
+
+export interface FetchChargesDatum {
   integration: number;
   bulkcharge: number;
   customer: Customer;

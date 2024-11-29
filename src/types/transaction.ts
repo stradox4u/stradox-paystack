@@ -151,6 +151,11 @@ interface History {
   time: number;
 }
 
+export interface ListTransactionMeta {
+  next: string;
+  previous: string;
+  perPage: number;
+}
 export interface ListTransactionData {
   id: number;
   domain: string;

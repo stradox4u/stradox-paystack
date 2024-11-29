@@ -45,3 +45,36 @@ export interface UpdateTerminalBody {
   /** The address of the terminal */
   address: string;
 }
+
+export interface SendEventData {
+  id: string;
+}
+
+export interface FetchEventStatusData {
+  delivered: boolean;
+}
+
+export interface FetchStatusData {
+  online: boolean;
+  available: boolean;
+}
+
+export interface ListTerminalMeta {
+  next: string;
+  previous: string;
+  perPage: number;
+}
+
+export interface ListTerminalDatum {
+  id: number;
+  serial_number: string;
+  device_make: string;
+  terminal_id: string;
+  integration: number;
+  domain: string;
+  name: string;
+  address: string;
+  status: string;
+}
+
+export interface FetchTerminalData extends ListTerminalDatum {}

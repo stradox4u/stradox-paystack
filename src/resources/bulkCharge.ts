@@ -1,10 +1,12 @@
 import type {
   FetchBatchData,
-  FetchChargesData,
+  FetchChargesDatum,
+  FetchChargesMeta,
   FetchChargesQueries,
   InitiateBulkCharge,
   InitiateBulkChargeData,
-  ListBatchesData,
+  ListBatchesDatum,
+  ListBatchesMeta,
 } from "../types/bulkCharge.ts";
 import type { PaginatedDateRangedList } from "../types/common.ts";
 import type { PaystackResponseInterface } from "../types/response.ts";
@@ -44,15 +46,15 @@ export default class BulkCharge extends PaystackShared {
    * This lists all bulk charge batches created by the integration. Statuses can be `active`,
    * `paused` or `complete`.
    * @param queries
-   * @returns {Promise<PaystackResponseInterface<ListBatchesData[]> | null>} response - A promise that resolves to an object containing an array of batch data
+   * @returns {Promise<PaystackResponseInterface<ListBatchesDatum[], ListBatchesMeta> | null>} response - A promise that resolves to an object containing an array of batch data
    */
   public listBatches = async (
     queries: PaginatedDateRangedList,
-  ): Promise<PaystackResponseInterface<ListBatchesData[]> | null> => {
+  ): Promise<PaystackResponseInterface<ListBatchesDatum[], ListBatchesMeta> | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
-    return await this.paystackFetch<ListBatchesData[]>(
+    return await this.paystackFetch<ListBatchesDatum[], ListBatchesMeta>(
       url,
       method,
       {},
@@ -90,11 +92,11 @@ export default class BulkCharge extends PaystackShared {
   public fetchCharges = async (
     idOrCode: string,
     queries: FetchChargesQueries,
-  ): Promise<PaystackResponseInterface<FetchChargesData[]> | null> => {
+  ): Promise<PaystackResponseInterface<FetchChargesDatum[], FetchChargesMeta> | null> => {
     const url = this.resourceUrl + "/:idOrCode/charges";
     const method = "GET";
 
-    return await this.paystackFetch<FetchChargesData[]>(url, method, {}, {
+    return await this.paystackFetch<FetchChargesDatum[], FetchChargesMeta>(url, method, {}, {
       idOrCode,
     }, queries as unknown as Record<string, unknown>);
   };
