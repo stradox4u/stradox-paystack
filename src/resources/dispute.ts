@@ -68,7 +68,7 @@ export default class Dispute extends PaystackShared {
    * @function listTransactionDisputes
    * Retrieves disputes for a particular transaction
    * @param transactionId - The transaction ID you want to fetch
-   * @returns {Promise<PaystackResponseInterface<ListTransactionDisputesDauma[]> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type ListTransactionDisputesData[]
+   * @returns {Promise<PaystackResponseInterface<ListTransactionDisputesDatum[]> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type ListTransactionDisputesData[]
    */
   public listTransactionDisputes = async (
     transactionId: string,

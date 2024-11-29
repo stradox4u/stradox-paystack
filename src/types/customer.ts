@@ -75,7 +75,7 @@ export interface CreateCustomerData {
   updatedAt: string;
 }
 
-export interface ListCustomerData {
+export interface ListCustomerDatum {
   integration: number;
   first_name: null | string;
   last_name: null | string;
