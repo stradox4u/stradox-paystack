@@ -4,7 +4,7 @@ import { assertSpyCallArgs, assertSpyCalls, returnsNext, stub } from "@std/testi
 import { attachQueries } from "./handleQueries.ts";
 
 describe("Unit: Dispute", () => {
-  const paystack = new Paystack(Deno.env.get("PAYSTACK_SECRET_KEY") as string);
+  const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   const baseUrl = "https://api.paystack.co";
 
   it("Should correctly list disputes", async () => {

@@ -32,12 +32,12 @@ export default class BulkCharge extends PaystackShared {
     const url = this.resourceUrl;
     const method = "POST";
 
-    const bodyString = JSON.stringify("{" + JSON.stringify(body) + "}");
+    // const bodyString = JSON.stringify("{" + JSON.stringify(body) + "}");
 
     return await this.paystackFetch<InitiateBulkChargeData>(
       url,
       method,
-      bodyString,
+      body,
     );
   };
 

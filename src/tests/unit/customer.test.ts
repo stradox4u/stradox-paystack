@@ -9,7 +9,7 @@ import {
 import { attachQueries } from "./handleQueries.ts";
 
 describe("Unit: Customer", () => {
-  const paystack = new Paystack(Deno.env.get("PAYSTACK_SECRET_KEY") as string);
+  const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   const baseUrl = "https://api.paystack.co";
 
   it("Should correctly create a customer", async () => {
