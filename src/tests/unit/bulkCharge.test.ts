@@ -20,7 +20,7 @@ describe("Unit: Bulk Charge", () => {
         json: async () => (await Promise.resolve({
           status: false,
           message:
-            "Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association",
+            "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -55,7 +55,7 @@ describe("Unit: Bulk Charge", () => {
         json: async () => (await Promise.resolve({
           status: false,
           message:
-            "Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association",
+            "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -88,7 +88,7 @@ describe("Unit: Bulk Charge", () => {
         json: async () => (await Promise.resolve({
           status: false,
           message:
-            "Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association",
+            "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -116,7 +116,7 @@ describe("Unit: Bulk Charge", () => {
         json: async () => (await Promise.resolve({
           status: false,
           message:
-            "Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association",
+            "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -154,7 +154,7 @@ describe("Unit: Bulk Charge", () => {
         json: async () => (await Promise.resolve({
           status: false,
           message:
-            "Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association",
+            "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -182,7 +182,7 @@ describe("Unit: Bulk Charge", () => {
         json: async () => (await Promise.resolve({
           status: false,
           message:
-            "Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association",
+            "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );

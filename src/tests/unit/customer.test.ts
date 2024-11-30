@@ -1,6 +1,11 @@
 import { describe, it } from "@std/testing/bdd";
 import { Paystack } from "../../main.ts";
-import { assertSpyCallArgs, assertSpyCalls, returnsNext, stub } from "@std/testing/mock";
+import {
+  assertSpyCallArgs,
+  assertSpyCalls,
+  returnsNext,
+  stub,
+} from "@std/testing/mock";
 import { attachQueries } from "./handleQueries.ts";
 
 describe("Unit: Customer", () => {
@@ -8,9 +13,17 @@ describe("Unit: Customer", () => {
   const baseUrl = "https://api.paystack.co";
 
   it("Should correctly create a customer", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json: async () => (await Promise.resolve({
+          status: false,
+          message:
+            "Some message from server",
+        })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const body = {
       email: "johndoe@test.com",
@@ -25,7 +38,7 @@ describe("Unit: Customer", () => {
             variable_name: "customer_name",
           },
         ],
-      }
+      },
     };
 
     const expectedUrl = `${baseUrl}/customer`;
@@ -45,16 +58,24 @@ describe("Unit: Customer", () => {
   });
 
   it("Should correctly list customers", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json: async () => (await Promise.resolve({
+          status: false,
+          message:
+            "Some message from server",
+        })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const queries = {
       perPage: 10,
       page: 1,
       from: new Date("2021-01-01"),
       to: new Date("2021-12-31"),
-    }
+    };
 
     const expectedUrl = attachQueries(queries, `${baseUrl}/customer`);
 
@@ -71,9 +92,17 @@ describe("Unit: Customer", () => {
   });
 
   it("Should correctly fetch a customer", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json: async () => (await Promise.resolve({
+          status: false,
+          message:
+            "Some message from server",
+        })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const customerEmail = "johndoe@test.com";
     const expectedUrl = `${baseUrl}/customer/${customerEmail}`;
@@ -91,9 +120,17 @@ describe("Unit: Customer", () => {
   });
 
   it("Should correctly update a customer", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json: async () => (await Promise.resolve({
+          status: false,
+          message:
+            "Some message from server",
+        })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const customerCode = "CUS_1234567890";
     const body = {
@@ -108,7 +145,7 @@ describe("Unit: Customer", () => {
             variable_name: "customer_name",
           },
         ],
-      }
+      },
     };
     const expectedUrl = `${baseUrl}/customer/${customerCode}`;
 
@@ -127,9 +164,17 @@ describe("Unit: Customer", () => {
   });
 
   it("Should correctly validate a customer", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json: async () => (await Promise.resolve({
+          status: false,
+          message:
+            "Some message from server",
+        })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const customerCode = "CUS_1234567890";
     const body = {
@@ -142,8 +187,7 @@ describe("Unit: Customer", () => {
       bvn: "1234567890",
       bank_code: "044",
       account_number: "1234567890",
-
-    }
+    };
     const expectedUrl = `${baseUrl}/customer/${customerCode}/identification`;
 
     await paystack.customer.validate(customerCode, body);
@@ -161,14 +205,22 @@ describe("Unit: Customer", () => {
   });
 
   it("Should correctly whitelist a customer", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json: async () => (await Promise.resolve({
+          status: false,
+          message:
+            "Some message from server",
+        })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const body = {
       customer: "CUS_1234567890",
       risk_action: "deny" as const,
-    }
+    };
     const expectedUrl = `${baseUrl}/customer/set_risk_action`;
 
     await paystack.customer.whiteOrBlacklist(body);
@@ -186,13 +238,21 @@ describe("Unit: Customer", () => {
   });
 
   it("Should correctly deactivate an authorization", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json: async () => (await Promise.resolve({
+          status: false,
+          message:
+            "Some message from server",
+        })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const body = {
       authorization_code: "AUTH_1234567890",
-    }
+    };
     const expectedUrl = `${baseUrl}/customer/deactivate_authorization`;
 
     await paystack.customer.deactivateAuthorization(body);
