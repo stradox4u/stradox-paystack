@@ -57,6 +57,8 @@ export default class PaystackShared {
     const data: FetchData = { method, headers };
     if (method !== "GET" && typeof body !== "string") {
       data.body = JSON.stringify(body);
+    } else if (method !== "GET") {
+      data.body = body as string;
     }
 
     const response = await fetch(
