@@ -38,7 +38,7 @@ describe("Unit: Bulk Charge", () => {
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "POST",
-      body: JSON.stringify("{" + JSON.stringify(bulkChargeData) + "}"),
+      body: JSON.stringify(bulkChargeData),
       headers: {
         Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         "Content-Type": "application/json",

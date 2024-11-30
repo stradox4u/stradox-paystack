@@ -30,10 +30,12 @@ describe("Feature: Dispute", () => {
       expect(response.message).toBe("Invalid dispute ID");
     }
   });
-  
+
   it("Correctly lists a transaction's disputes", async () => {
-    const response = await paystack.dispute.listTransactionDisputes("TRF_1k2k3k4k5k6k7k8k9k0k");
-    
+    const response = await paystack.dispute.listTransactionDisputes(
+      "TRF_1k2k3k4k5k6k7k8k9k0k",
+    );
+
     if (response) {
       expect(response.status).toBe(false);
       expect(response.message).toBe("An error occurred");

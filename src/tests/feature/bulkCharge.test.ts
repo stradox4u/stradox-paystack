@@ -8,8 +8,16 @@ describe("Feature: Bulk Charge", () => {
 
   it("Correctly initiates a bulk charge", async () => {
     const response = await paystack.bulkCharge.initiate([
-      { authorization: "AUTH_ncx8hews93", amount: 2500, reference: "dam1266638dhhd" },
-      { authorization: "AUTH_xfuz7dy4b9", amount: 1500, reference: "dam1266638dhhe" }
+      {
+        authorization: "AUTH_ncx8hews93",
+        amount: 2500,
+        reference: "dam1266638dhhd",
+      },
+      {
+        authorization: "AUTH_xfuz7dy4b9",
+        amount: 1500,
+        reference: "dam1266638dhhe",
+      },
     ]);
 
     if (response) {

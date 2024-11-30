@@ -29,7 +29,7 @@ describe("Unit: Dispute", () => {
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${Deno.env.get("PAYSTACK_SECRET_KEY")}`,
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         Accept: "application/json",
       },
     }]);
@@ -49,7 +49,7 @@ describe("Unit: Dispute", () => {
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${Deno.env.get("PAYSTACK_SECRET_KEY")}`,
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         Accept: "application/json",
       },
     }]);
@@ -69,7 +69,7 @@ describe("Unit: Dispute", () => {
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${Deno.env.get("PAYSTACK_SECRET_KEY")}`,
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         Accept: "application/json",
       },
     }]);
@@ -93,7 +93,7 @@ describe("Unit: Dispute", () => {
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${Deno.env.get("PAYSTACK_SECRET_KEY")}`,
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         Accept: "application/json",
         "Content-Type": "application/json",
       },
@@ -123,7 +123,7 @@ describe("Unit: Dispute", () => {
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${Deno.env.get("PAYSTACK_SECRET_KEY")}`,
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         Accept: "application/json",
         "Content-Type": "application/json",
       },
@@ -149,7 +149,7 @@ describe("Unit: Dispute", () => {
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${Deno.env.get("PAYSTACK_SECRET_KEY")}`,
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         Accept: "application/json",
       },
     }]);
@@ -175,7 +175,7 @@ describe("Unit: Dispute", () => {
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${Deno.env.get("PAYSTACK_SECRET_KEY")}`,
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         Accept: "application/json",
         "Content-Type": "application/json",
       },
@@ -200,7 +200,7 @@ describe("Unit: Dispute", () => {
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${Deno.env.get("PAYSTACK_SECRET_KEY")}`,
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         Accept: "application/json",
       },
     }]);

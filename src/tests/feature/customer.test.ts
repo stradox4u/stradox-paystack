@@ -66,7 +66,7 @@ describe("Feature: Customer", () => {
             variable_name: "customer_name",
           },
         ],
-      }
+      },
     });
 
     if (response) {
