@@ -2,7 +2,7 @@ import { describe, it } from "@std/testing/bdd";
 import { stub, assertSpyCalls, assertSpyCallArgs, returnsNext } from "@std/testing/mock";
 import { Paystack } from "../../main.ts";
 
-describe("Unit: Apple Pay", () => {
+describe("Unit Tests for Apple Pay", () => {
   const domain = 'example.com';
   const displayName = 'example domain';
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);

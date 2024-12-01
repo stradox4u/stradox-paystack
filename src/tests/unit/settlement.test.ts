@@ -6,12 +6,13 @@ import {
   returnsNext,
   stub,
 } from "@std/testing/mock";
+import { attachQueries } from "./handleQueries.ts";
 
-describe("Unit Tests for Integration", () => {
+describe("Unit Tests for Settlement", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   const baseUrl = "https://api.paystack.co";
 
-  it("Should properly fetch the timeout", async () => {
+  it("Should correctly lists settlements", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -23,9 +24,14 @@ describe("Unit Tests for Integration", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const expectedUrl = `${baseUrl}/integration/payment_session_timeout`;
+    const queries = {
+      perPage: 10,
+      page: 1,
+    };
 
-    await paystack.integration.fetchTimeout();
+    const expectedUrl = attachQueries(queries, `${baseUrl}/settlement`);
+
+    await paystack.settlement.list(queries);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -37,7 +43,7 @@ describe("Unit Tests for Integration", () => {
     }]);
   });
 
-  it("Should properly update the timeout", async () => {
+  it("Should correctly list a settlement's transactions", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -49,22 +55,25 @@ describe("Unit Tests for Integration", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const timeout = 500;
-    const expectedUrl = `${baseUrl}/integration/payment_session_timeout`;
+    const queries = {
+      perPage: 10,
+      page: 1,
+    };
+    const settlementId = "123";
+    const expectedUrl = attachQueries(
+      queries,
+      `${baseUrl}/settlement/${settlementId}/transactions`,
+    );
 
-    await paystack.integration.updateTimeout({
-      timeout,
-    });
+    await paystack.settlement.listTransactions(settlementId, queries);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "PUT",
+      method: "GET",
       headers: {
         Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         Accept: "application/json",
-        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ timeout }),
     }]);
   });
 });

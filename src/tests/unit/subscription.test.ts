@@ -7,12 +7,13 @@ import {
   stub,
 } from "@std/testing/mock";
 import { attachQueries } from "./handleQueries.ts";
+import { faker } from "@faker-js/faker";
 
-describe("Unit Tests for Customer", () => {
+describe("Unit Tests for Subscription", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   const baseUrl = "https://api.paystack.co";
 
-  it("Should correctly create a customer", async () => {
+  it("Should correctly create a subscription", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -25,24 +26,14 @@ describe("Unit Tests for Customer", () => {
     );
 
     const body = {
-      email: "johndoe@test.com",
-      first_name: "John",
-      last_name: "Doe",
-      phone: "08123456789",
-      metadata: {
-        custom_fields: [
-          {
-            value: "John Doe",
-            display_name: "Customer Name",
-            variable_name: "customer_name",
-          },
-        ],
-      },
+      customer: "CUS_xnxdt6s1zg1f4nx",
+      plan: "PLN_gx2wn530m0i3w3m",
+      authorization: "AUTH_8dfhjjdt",
     };
 
-    const expectedUrl = `${baseUrl}/customer`;
+    const expectedUrl = `${baseUrl}/subscription`;
 
-    await paystack.customer.create(body);
+    await paystack.subscription.create(body);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -56,7 +47,7 @@ describe("Unit Tests for Customer", () => {
     }]);
   });
 
-  it("Should correctly list customers", async () => {
+  it("Should correctly list subscriptions", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -75,36 +66,9 @@ describe("Unit Tests for Customer", () => {
       to: new Date("2021-12-31"),
     };
 
-    const expectedUrl = attachQueries(queries, `${baseUrl}/customer`);
+    const expectedUrl = attachQueries(queries, `${baseUrl}/subscription`);
 
-    await paystack.customer.list(queries);
-
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-      },
-    }]);
-  });
-
-  it("Should correctly fetch a customer", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json: async () => (await Promise.resolve({
-          status: false,
-          message: "Some message from server",
-        })),
-      }) as unknown as Promise<Response>]),
-    );
-
-    const customerEmail = "johndoe@test.com";
-    const expectedUrl = `${baseUrl}/customer/${customerEmail}`;
-
-    await paystack.customer.fetch(customerEmail);
+    await paystack.subscription.list(queries);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -116,7 +80,7 @@ describe("Unit Tests for Customer", () => {
     }]);
   });
 
-  it("Should correctly update a customer", async () => {
+  it("Should correctly fetch a subscription", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -128,38 +92,22 @@ describe("Unit Tests for Customer", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const customerCode = "CUS_1234567890";
-    const body = {
-      first_name: "John",
-      last_name: "Doe",
-      phone: "08123456789",
-      metadata: {
-        custom_fields: [
-          {
-            value: "John Doe",
-            display_name: "Customer Name",
-            variable_name: "customer_name",
-          },
-        ],
-      },
-    };
-    const expectedUrl = `${baseUrl}/customer/${customerCode}`;
+    const subscriptionId = "SUBSCRIPTION_ID";
+    const expectedUrl = `${baseUrl}/subscription/${subscriptionId}`;
 
-    await paystack.customer.update(customerCode, body);
+    await paystack.subscription.fetch(subscriptionId);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "PUT",
+      method: "GET",
       headers: {
         Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify(body),
     }]);
   });
 
-  it("Should correctly validate a customer", async () => {
+  it("Should correctly enable a subscription", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -171,21 +119,14 @@ describe("Unit Tests for Customer", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const customerCode = "CUS_1234567890";
     const body = {
-      first_name: "John",
-      middle_name: "Mirthless",
-      last_name: "Doe",
-      type: "bank_account" as const,
-      value: "1234567890",
-      country: "NG",
-      bvn: "1234567890",
-      bank_code: "044",
-      account_number: "1234567890",
+      code: "SUBSCRIPTION_CODE",
+      token: faker.string.alphanumeric(10),
     };
-    const expectedUrl = `${baseUrl}/customer/${customerCode}/identification`;
 
-    await paystack.customer.validate(customerCode, body);
+    const expectedUrl = `${baseUrl}/subscription/enable`;
+
+    await paystack.subscription.enable(body);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -199,7 +140,7 @@ describe("Unit Tests for Customer", () => {
     }]);
   });
 
-  it("Should correctly whitelist a customer", async () => {
+  it("Should correctly disable a subscription", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -212,12 +153,13 @@ describe("Unit Tests for Customer", () => {
     );
 
     const body = {
-      customer: "CUS_1234567890",
-      risk_action: "deny" as const,
+      code: "SUBSCRIPTION_CODE",
+      token: faker.string.alphanumeric(10),
     };
-    const expectedUrl = `${baseUrl}/customer/set_risk_action`;
 
-    await paystack.customer.whiteOrBlacklist(body);
+    const expectedUrl = `${baseUrl}/subscription/disable`;
+
+    await paystack.subscription.disable(body);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -231,7 +173,7 @@ describe("Unit Tests for Customer", () => {
     }]);
   });
 
-  it("Should correctly deactivate an authorization", async () => {
+  it("Should correctly generate an update subscription link", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -243,22 +185,50 @@ describe("Unit Tests for Customer", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const body = {
-      authorization_code: "AUTH_1234567890",
-    };
-    const expectedUrl = `${baseUrl}/customer/deactivate_authorization`;
+    const subscriptionCode = "SUBSCRIPTION_CODE";
 
-    await paystack.customer.deactivateAuthorization(body);
+    const expectedUrl =
+      `${baseUrl}/subscription/${subscriptionCode}/manage/link`;
+
+    await paystack.subscription.generateLink(subscriptionCode);
+
+    assertSpyCalls(fetchStub, 1);
+    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
+        Accept: "application/json",
+      },
+    }]);
+  });
+
+  it("Should correctly send an update subscription link", async () => {
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json: async () => (await Promise.resolve({
+          status: false,
+          message: "Some message from server",
+        })),
+      }) as unknown as Promise<Response>]),
+    );
+
+    const subscriptionCode = "SUBSCRIPTION_CODE";
+
+    const expectedUrl =
+      `${baseUrl}/subscription/${subscriptionCode}/manage/email`;
+
+    await paystack.subscription.sendLink(subscriptionCode);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify({}),
     }]);
   });
 });

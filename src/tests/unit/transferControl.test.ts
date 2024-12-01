@@ -1,19 +1,69 @@
 import { describe, it } from "@std/testing/bdd";
 import { Paystack } from "../../main.ts";
-import { faker } from "@faker-js/faker";
 import {
   assertSpyCallArgs,
   assertSpyCalls,
   returnsNext,
   stub,
 } from "@std/testing/mock";
-import { attachQueries } from "./handleQueries.ts";
 
-describe("Unit Tests for Payment Page", () => {
+describe("Unit Tests for Transfer Controls", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   const baseUrl = "https://api.paystack.co";
 
-  it("Should correctly create the payment page", async () => {
+  it("Should correctly check the balance", async () => {
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
+
+    const expectedUrl = `${baseUrl}/balance`;
+    await paystack.transferControl.checkBalance();
+
+    assertSpyCalls(fetchStub, 1);
+    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
+        Accept: "application/json",
+      },
+    }]);
+  });
+
+  it("Should correctly fetch the balance ledger", async () => {
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
+
+    const expectedUrl = `${baseUrl}/balance/ledger`;
+    await paystack.transferControl.fetchLedger();
+
+    assertSpyCalls(fetchStub, 1);
+    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
+        Accept: "application/json",
+      },
+    }]);
+  });
+
+  it("Should correctly resend the OTP", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -27,14 +77,12 @@ describe("Unit Tests for Payment Page", () => {
     );
 
     const body = {
-      name: faker.word.words(2),
-      description: faker.lorem.sentence(),
-      amount: faker.number.int({ min: 10_000, max: 5_000_000 }) as number * 100,
+      transfer_code: "transfer_code",
+      reason: "resend_otp" as const,
     };
 
-    const expectedUrl = `${baseUrl}/page`;
-
-    await paystack.paymentPage.create(body);
+    const expectedUrl = `${baseUrl}/transfer/resend_otp`;
+    await paystack.transferControl.resendOtp(body);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -48,7 +96,7 @@ describe("Unit Tests for Payment Page", () => {
     }]);
   });
 
-  it("Should correctly list payment pages", async () => {
+  it("Should correctly disable the OTP requirement", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -61,118 +109,21 @@ describe("Unit Tests for Payment Page", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const queries = {
-      perPage: 10,
-      page: 1,
-    };
-
-    const expectedUrl = attachQueries(queries, `${baseUrl}/page`);
-
-    await paystack.paymentPage.list(queries);
+    const expectedUrl = `${baseUrl}/transfer/disable_otp`;
+    await paystack.transferControl.disableOtp();
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
+      method: "POST",
       headers: {
         Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         Accept: "application/json",
       },
+      body: JSON.stringify({}),
     }]);
   });
 
-  it("Should correctly fetch a payment page", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
-
-    const slug = faker.word.noun();
-    const expectedUrl = `${baseUrl}/page/${slug}`;
-
-    await paystack.paymentPage.fetch(slug);
-
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-      },
-    }]);
-  });
-
-  it("Should correctly update a payment page", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
-
-    const slug = faker.word.noun();
-    const body = {
-      name: faker.word.words(2),
-      description: faker.lorem.sentence(),
-      amount: faker.number.int({ min: 10_000, max: 5_000_000 }) as number * 100,
-    };
-
-    const expectedUrl = `${baseUrl}/page/${slug}`;
-
-    await paystack.paymentPage.update(slug, body);
-
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    }]);
-  });
-
-  it("Should correctly check slug availability", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
-
-    const slug = faker.word.noun();
-    const expectedUrl = `${baseUrl}/page/check_slug_availability/${slug}`;
-
-    await paystack.paymentPage.checkSlugAvailability(slug);
-
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-      },
-    }]);
-  });
-
-  it("Should correctly add products", async () => {
+  it("Should correctly finalize the disabling of the OTP requirement", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -186,13 +137,11 @@ describe("Unit Tests for Payment Page", () => {
     );
 
     const body = {
-      products: [473, 492],
+      otp: "otp",
     };
-    const pageId = crypto.randomUUID();
 
-    const expectedUrl = `${baseUrl}/page/${pageId}/product`;
-
-    await paystack.paymentPage.addProducts(pageId, body);
+    const expectedUrl = `${baseUrl}/transfer/disable_otp_finalize`;
+    await paystack.transferControl.finalizeDisableOtp(body);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -203,6 +152,33 @@ describe("Unit Tests for Payment Page", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
+    }]);
+  });
+
+  it("Should correctly enable the OTP requirement", async () => {
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
+
+    const expectedUrl = `${baseUrl}/transfer/enable_otp`;
+    await paystack.transferControl.enableOtp();
+
+    assertSpyCalls(fetchStub, 1);
+    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
+        Accept: "application/json",
+      },
+      body: JSON.stringify({}),
     }]);
   });
 });

@@ -1,6 +1,5 @@
 import { describe, it } from "@std/testing/bdd";
 import { Paystack } from "../../main.ts";
-import { faker } from "@faker-js/faker";
 import {
   assertSpyCallArgs,
   assertSpyCalls,
@@ -9,11 +8,11 @@ import {
 } from "@std/testing/mock";
 import { attachQueries } from "./handleQueries.ts";
 
-describe("Unit Tests for Payment Page", () => {
+describe("Unit Tests for Transfer", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   const baseUrl = "https://api.paystack.co";
 
-  it("Should correctly create the payment page", async () => {
+  it("Should correctly initiate a transfer", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -27,28 +26,108 @@ describe("Unit Tests for Payment Page", () => {
     );
 
     const body = {
-      name: faker.word.words(2),
-      description: faker.lorem.sentence(),
-      amount: faker.number.int({ min: 10_000, max: 5_000_000 }) as number * 100,
+      source: "balance" as const,
+      amount: 10000,
+      recipient: "RCP_1x2x3x4x5x6x7x8x9x0",
+      reason: "Holiday Flexing",
     };
 
-    const expectedUrl = `${baseUrl}/page`;
+    const expectedUrl = `${baseUrl}/transfer`;
 
-    await paystack.paymentPage.create(body);
+    await paystack.transfer.initiate(body);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(body),
     }]);
   });
 
-  it("Should correctly list payment pages", async () => {
+  it("Should correctly finalize a transfer", async () => {
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
+
+    const body = {
+      transfer_code: "TRF_1x2x3x4x5x6x7x8x9x0",
+      otp: "123456",
+    };
+
+    const expectedUrl = `${baseUrl}/transfer/finalize_transfer`;
+
+    await paystack.transfer.finalize(body);
+
+    assertSpyCalls(fetchStub, 1);
+    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body),
+    }]);
+  });
+
+  it("Should correctly initiate a bulk transfer", async () => {
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
+
+    const body = {
+      source: "balance" as const,
+      transfers: [
+        {
+          recipient: "RCP_1x2x3x4x5x6x7x8x9x0",
+          amount: 10000,
+          reason: "Holiday Flexing",
+        },
+        {
+          recipient: "RCP_1x2x3x4x5x6x7x8x9x1",
+          amount: 20000,
+          reason: "Holiday Flexing",
+        },
+      ],
+    };
+
+    const expectedUrl = `${baseUrl}/transfer/bulk`;
+
+    await paystack.transfer.initiateBulk(body);
+
+    assertSpyCalls(fetchStub, 1);
+    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body),
+    }]);
+  });
+
+  it("Should correctly list transfers", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -64,11 +143,12 @@ describe("Unit Tests for Payment Page", () => {
     const queries = {
       perPage: 10,
       page: 1,
+      recipient: 654321,
     };
 
-    const expectedUrl = attachQueries(queries, `${baseUrl}/page`);
+    const expectedUrl = attachQueries(queries, `${baseUrl}/transfer`);
 
-    await paystack.paymentPage.list(queries);
+    await paystack.transfer.list(queries);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -80,7 +160,7 @@ describe("Unit Tests for Payment Page", () => {
     }]);
   });
 
-  it("Should correctly fetch a payment page", async () => {
+  it("Should correctly fetch a transfer", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -93,10 +173,11 @@ describe("Unit Tests for Payment Page", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const slug = faker.word.noun();
-    const expectedUrl = `${baseUrl}/page/${slug}`;
+    const transferCode = "TRF_1x2x3x4x5x6x7x8x9x0";
 
-    await paystack.paymentPage.fetch(slug);
+    const expectedUrl = `${baseUrl}/transfer/${transferCode}`;
+
+    await paystack.transfer.fetch(transferCode);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -108,7 +189,7 @@ describe("Unit Tests for Payment Page", () => {
     }]);
   });
 
-  it("Should correctly update a payment page", async () => {
+  it("Should correctly verify a transfer", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -121,46 +202,11 @@ describe("Unit Tests for Payment Page", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const slug = faker.word.noun();
-    const body = {
-      name: faker.word.words(2),
-      description: faker.lorem.sentence(),
-      amount: faker.number.int({ min: 10_000, max: 5_000_000 }) as number * 100,
-    };
+    const transferCode = "TRF_1x2x3x4x5x6x7x8x9x0";
 
-    const expectedUrl = `${baseUrl}/page/${slug}`;
+    const expectedUrl = `${baseUrl}/transfer/verify/${transferCode}`;
 
-    await paystack.paymentPage.update(slug, body);
-
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    }]);
-  });
-
-  it("Should correctly check slug availability", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
-
-    const slug = faker.word.noun();
-    const expectedUrl = `${baseUrl}/page/check_slug_availability/${slug}`;
-
-    await paystack.paymentPage.checkSlugAvailability(slug);
+    await paystack.transfer.verify(transferCode);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -169,40 +215,6 @@ describe("Unit Tests for Payment Page", () => {
         Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         Accept: "application/json",
       },
-    }]);
-  });
-
-  it("Should correctly add products", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
-
-    const body = {
-      products: [473, 492],
-    };
-    const pageId = crypto.randomUUID();
-
-    const expectedUrl = `${baseUrl}/page/${pageId}/product`;
-
-    await paystack.paymentPage.addProducts(pageId, body);
-
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
     }]);
   });
 });

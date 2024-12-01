@@ -1,26 +1,27 @@
 import { describe, it } from "@std/testing/bdd";
 import { Paystack } from "../../main.ts";
 import { assertSpyCallArgs, assertSpyCalls, returnsNext, stub } from "@std/testing/mock";
+import { attachQueries } from "./handleQueries.ts";
 
-describe("Unit Tests for Product", () => {
+describe("Unit Tests for Subaccount", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   const baseUrl = "https://api.paystack.co";
 
-  it("Should correctly create a product", async () => {
+  it("Should correctly create a subaccount", async () => {
     using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
       json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
     }) as unknown as Promise<Response>]));
 
     const body = {
-      name: "Test Product",
-      description: "This is a test product",
-      price: 500_000,
-      currency: "NGN",
+      business_name: "Business Name",
+      bank_code: "057",
+      account_number: "0000000000",
+      percentage_charge: 5,
     };
 
-    const expectedUrl = `${baseUrl}/product`;
+    const expectedUrl = `${baseUrl}/subaccount`;
 
-    await paystack.product.create(body);
+    await paystack.subaccount.create(body);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -34,7 +35,7 @@ describe("Unit Tests for Product", () => {
     }]);
   });
 
-  it("Should correctly list products", async () => {
+  it("Should correctly list subaccounts", async () => {
     using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
       json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
     }) as unknown as Promise<Response>]));
@@ -42,32 +43,13 @@ describe("Unit Tests for Product", () => {
     const queries = {
       perPage: 10,
       page: 1,
+      from: new Date("2021-01-01"),
+      to: new Date("2021-12-31"),
     };
 
-    const expectedUrl = `${baseUrl}/product`;
+    const expectedUrl = attachQueries(queries, `${baseUrl}/subaccount`);
 
-    await paystack.product.list(queries);
-
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [`${expectedUrl}?perPage=${queries.perPage}&page=${queries.page}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-      },
-    }]);
-  });
-
-  it("Should correctly fetch a product", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
-
-    const prodId = "PROD_1234567890";
-
-    const expectedUrl = `${baseUrl}/product/${prodId}`;
-
-    await paystack.product.fetch(prodId);
+    await paystack.subaccount.list(queries);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -79,22 +61,43 @@ describe("Unit Tests for Product", () => {
     }]);
   });
 
-  it("Should correctly update a product", async () => {
+  it("Should correctly fetch a subaccount", async () => {
     using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
       json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
     }) as unknown as Promise<Response>]));
 
-    const prodId = "PROD_1234567890";
+    const subacctId = "SUBACCOUNT_ID";
+    const expectedUrl = `${baseUrl}/subaccount/${subacctId}`;
+
+    await paystack.subaccount.fetch(subacctId);
+
+    assertSpyCalls(fetchStub, 1);
+    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
+        Accept: "application/json",
+      },
+    }]);
+  });
+
+  it("Should correctly update a subaccount", async () => {
+    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
+      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
+    }) as unknown as Promise<Response>]));
+
+    const subacctId = "SUBACCOUNT_ID";
     const body = {
-      name: "Test Product Edited",
-      description: "This is an edited test product",
-      price: 1_000_000,
-      currency: "NGN",
+      business_name: "Business Name",
+      description: "Some updated description",
+      bank_code: "057",
+      account_number: "0000000000",
+      percentage_charge: 5,
     };
 
-    const expectedUrl = `${baseUrl}/product/${prodId}`;
+    const expectedUrl = `${baseUrl}/subaccount/${subacctId}`;
 
-    await paystack.product.update(prodId, body);
+    await paystack.subaccount.update(subacctId, body);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {

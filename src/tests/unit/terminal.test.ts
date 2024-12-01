@@ -6,13 +6,110 @@ import {
   returnsNext,
   stub,
 } from "@std/testing/mock";
-import { attachQueries } from "./handleQueries.ts";
+import { faker } from "@faker-js/faker";
 
-describe("Unit Tests for Dispute", () => {
+describe("Unit Tests for Terminal", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   const baseUrl = "https://api.paystack.co";
 
-  it("Should correctly list disputes", async () => {
+  it("Should correctly send an event to the terminal", async () => {
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
+
+    const terminalId = "TT_1234567890";
+    const body = {
+      type: "invoice" as const,
+      action: "process" as const,
+      data: {
+        id: "INV_1234567890",
+        reference: "OPLKJHGF",
+      },
+    };
+
+    const expectedUrl = `${baseUrl}/terminal/${terminalId}/event`;
+
+    await paystack.terminal.sendEvent(terminalId, body);
+
+    assertSpyCalls(fetchStub, 1);
+    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body),
+    }]);
+  });
+
+  it("Should correctly fetch an event's status", async () => {
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
+
+    const terminalId = "TT_1234567890";
+    const eventId = "EV_1234567890";
+
+    const expectedUrl = `${baseUrl}/terminal/${terminalId}/event/${eventId}`;
+
+    await paystack.terminal.fetchEventStatus(terminalId, eventId);
+
+    assertSpyCalls(fetchStub, 1);
+    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
+        Accept: "application/json",
+      },
+    }]);
+  });
+
+  it("Should correctly fetch a terminal's status", async () => {
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
+
+    const terminalId = "TT_1234567890";
+    const expectedUrl = `${baseUrl}/terminal/${terminalId}/presence`;
+
+    await paystack.terminal.fetchStatus(terminalId);
+
+    assertSpyCalls(fetchStub, 1);
+    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
+        Accept: "application/json",
+      },
+    }]);
+  });
+
+  it("Should correctly list terminals", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -28,27 +125,25 @@ describe("Unit Tests for Dispute", () => {
     const queries = {
       perPage: 10,
       page: 1,
-      from: new Date("2021-01-01"),
-      to: new Date("2021-12-31"),
-      status: "awaiting-bank-feedback" as const,
-      transaction: "TRF_1k2k3k4k5k6k7k8k9k0k",
     };
+    const expectedUrl = `${baseUrl}/terminal`;
 
-    const expectedUrl = attachQueries(queries, `${baseUrl}/dispute`);
-
-    await paystack.dispute.list(queries);
+    await paystack.terminal.list(queries);
 
     assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
+    assertSpyCallArgs(fetchStub, 0, [
+      `${expectedUrl}?perPage=${queries.perPage}&page=${queries.page}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
+          Accept: "application/json",
+        },
       },
-    }]);
+    ]);
   });
 
-  it("Should correctly fetch a dispute", async () => {
+  it("Should correctly fetch a terminal", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -61,10 +156,10 @@ describe("Unit Tests for Dispute", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const disputeId = "DS_1k2k3k4k5k6k7k8k9k0k";
-    const expectedUrl = `${baseUrl}/dispute/${disputeId}`;
+    const terminalId = "TT_1234567890";
+    const expectedUrl = `${baseUrl}/terminal/${terminalId}`;
 
-    await paystack.dispute.fetch(disputeId);
+    await paystack.terminal.fetch(terminalId);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -76,7 +171,7 @@ describe("Unit Tests for Dispute", () => {
     }]);
   });
 
-  it("Should correctly list a transaction's disputes", async () => {
+  it("Should correctly update a terminal", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -89,56 +184,29 @@ describe("Unit Tests for Dispute", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const transactionId = "TRF_1k2k3k4k5k6k7k8k9k0k";
-    const expectedUrl = `${baseUrl}/dispute/transaction/${transactionId}`;
-
-    await paystack.dispute.listTransactionDisputes(transactionId);
-
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-      },
-    }]);
-  });
-
-  it("Should correctly update a dispute", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
-
-    const disputeId = "DS_1k2k3k4k5k6k7k8k9k0k";
+    const terminalId = "TT_1234567890";
     const body = {
-      refund_amount: 1_000_000,
-      uploaded_filename: "file.pdf",
+      name: "My Terminal",
+      address: faker.location.streetAddress(),
     };
-    const expectedUrl = `${baseUrl}/dispute/${disputeId}`;
 
-    await paystack.dispute.update(disputeId, body);
+    const expectedUrl = `${baseUrl}/terminal/${terminalId}`;
+
+    await paystack.terminal.update(terminalId, body);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(body),
     }]);
   });
 
-  it("Should correctly add evidence to a dispute", async () => {
+  it("Should correctly commission a terminal", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -151,32 +219,27 @@ describe("Unit Tests for Dispute", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const disputeId = "DS_1k2k3k4k5k6k7k8k9k0k";
     const body = {
-      customer_email: "johndoe@test.com",
-      customer_name: "John Doe",
-      customer_phone: "+2340000000000",
-      service_details: "Service details",
-      delivery_address: "Delivery address",
-      delivery_date: "2021-12-31",
+      serial_number: faker.string.numeric(12),
     };
-    const expectedUrl = `${baseUrl}/dispute/${disputeId}/evidence`;
 
-    await paystack.dispute.addEvidence(disputeId, body);
+    const expectedUrl = `${baseUrl}/terminal/commission_device`;
+
+    await paystack.terminal.commission(body);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(body),
     }]);
   });
 
-  it("Should correctly get an upload URL", async () => {
+  it("Should correctly decommission a terminal", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -189,92 +252,23 @@ describe("Unit Tests for Dispute", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const disputeId = "DS_1k2k3k4k5k6k7k8k9k0k";
-    const queries = {
-      upload_filename: "evidence.pdf",
-    };
-
-    const expectedUrl = attachQueries(
-      queries,
-      `${baseUrl}/dispute/${disputeId}/upload_url`,
-    );
-
-    await paystack.dispute.getUploadUrl(disputeId, queries);
-
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-      },
-    }]);
-  });
-
-  it("Should correctly resolve a dispute", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
-
-    const disputeId = "DS_1k2k3k4k5k6k7k8k9k0k";
     const body = {
-      resolution: "declined" as const,
-      message: "Dishonest customer",
-      refund_amount: 1_000_000,
-      uploaded_filename: "file.pdf",
+      serial_number: faker.string.numeric(12),
     };
-    const expectedUrl = `${baseUrl}/dispute/${disputeId}/resolve`;
 
-    await paystack.dispute.resolve(disputeId, body);
+    const expectedUrl = `${baseUrl}/terminal/decommission_device`;
+
+    await paystack.terminal.decommission(body);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "PUT",
+      method: "POST",
       headers: {
         Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(body),
-    }]);
-  });
-
-  it("Should correctly export disputes", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
-
-    const queries = {
-      from: new Date("2021-01-01"),
-      to: new Date("2021-12-31"),
-    };
-    const expectedUrl = attachQueries(queries, `${baseUrl}/dispute/export`);
-
-    await paystack.dispute.export(queries);
-
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-      },
     }]);
   });
 });

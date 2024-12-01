@@ -4,7 +4,7 @@ import { expect } from "@std/expect";
 
 const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
 
-describe("Feature: Apple Pay", () => {
+describe("Feature Tests for Apple Pay", () => {
   const domain = "example.com";
   const displayName = "example domain";
 

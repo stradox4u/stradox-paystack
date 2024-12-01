@@ -2,7 +2,7 @@ import { describe, it } from "@std/testing/bdd";
 import { Paystack } from "../../main.ts";
 import { expect } from "@std/expect";
 
-describe("Feature: Integration", () => {
+describe("Feature Tests for Integration", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
 
   it("Correctly fetches the list of banks", async () => {

@@ -3,7 +3,7 @@ import { Paystack } from "../../main.ts";
 import { faker } from "@faker-js/faker";
 import { expect } from "@std/expect";
 
-describe("Feature: Payment Request", () => {
+describe("Feature Tests for Payment Request", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   let paymentRequestCode: string;
   let customerId: number;
