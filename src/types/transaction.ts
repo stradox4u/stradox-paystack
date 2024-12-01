@@ -41,10 +41,7 @@ export interface ChargeAuthorizationBody {
   queue?: boolean;
 }
 
-export interface TotalTransactionQueries extends PaginatedList {
-  from: Date;
-  to: Date;
-}
+export interface TotalTransactionQueries extends PaginatedList, DateRangedList {}
 
 export interface ExportTransactionQueries extends PaginatedList, DateRangedList {
   customer?: number;
