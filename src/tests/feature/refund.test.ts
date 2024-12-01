@@ -45,7 +45,6 @@ describe("Feature: Refund", () => {
     const response = await paystack.refund.fetch(refundId.toString());
 
     if (response) {
-      console.log({ response });
       expect(response.status).toBe(false);
       expect(response.message).toBe("Refund not found");
     }
