@@ -1,6 +1,7 @@
 import type { PaystackResponseInterface } from "../types/response.ts";
 import type {
   CreateSubscriptionBody,
+  CreateSubscriptionData,
   FetchSubscriptionData,
   GenerateLinkData,
   ListSubscriptionQueries,
@@ -21,15 +22,15 @@ export default class Subscription extends PaystackShared {
    * @function create
    * Create a subsciption on your integration
    * @param body
-   * @returns {Promise<PaystackResponseInterface<CreateSubscriptionBody> | null>} response - A promise that resolves to an object with a data property of type CreateSubscriptionBody
+   * @returns {Promise<PaystackResponseInterface<CreateSubscriptionData> | null>} response - A promise that resolves to an object with a data property of type CreateSubscriptionBody
    */
   public create = async (
     body: CreateSubscriptionBody,
-  ): Promise<PaystackResponseInterface<CreateSubscriptionBody> | null> => {
+  ): Promise<PaystackResponseInterface<CreateSubscriptionData> | null> => {
     const url = this.resourceUrl;
     const method = "POST";
 
-    return await this.paystackFetch<CreateSubscriptionBody>(
+    return await this.paystackFetch<CreateSubscriptionData>(
       url,
       method,
       body as unknown as Record<string, unknown>,
