@@ -51,30 +51,34 @@ describe("Feature Tests for Transfer", () => {
       bank_code: "057",
     });
 
-    const firstRecipientCode = firstRecipientResponse?.data.recipient_code as string;
-    const secondRecipientCode = secondRecipientResponse?.data.recipient_code as string;
+    const firstRecipientCode = firstRecipientResponse?.data
+      .recipient_code as string;
+    const secondRecipientCode = secondRecipientResponse?.data
+      .recipient_code as string;
 
     const body = {
       source: "balance" as const,
       transfers: [
-      {
-        recipient: firstRecipientCode,
-        amount: 10000,
-        reason: "Holiday Flexing",
-      },
-      {
-        recipient: secondRecipientCode,
-        amount: 10000,
-        reason: "Holiday Flexing",
-      },
-      ]
+        {
+          recipient: firstRecipientCode,
+          amount: 10000,
+          reason: "Holiday Flexing",
+        },
+        {
+          recipient: secondRecipientCode,
+          amount: 10000,
+          reason: "Holiday Flexing",
+        },
+      ],
     };
 
     const response = await paystack.transfer.initiateBulk(body);
-    
+
     if (response) {
       expect(response.status).toBe(false);
-      expect(response.message).toBe("You need to disable the OTP requirement to use this feature.");
+      expect(response.message).toBe(
+        "You need to disable the OTP requirement to use this feature.",
+      );
     }
   });
 
