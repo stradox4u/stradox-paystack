@@ -112,7 +112,6 @@ describe("Feature Tests for Transfer", () => {
     const response = await paystack.transfer.verify(transferRef);
 
     if (response) {
-      console.log({ response });
       expect(response.status).toBe(false);
       expect(response.message).toBe("Transfer not found");
     }
