@@ -61,7 +61,10 @@ describe("Feature Tests for Subscription", () => {
     if (response) {
       expect(response.status).toBe(true);
       expect(response.message).toBe("Subscription retrieved successfully");
-      expect(response.data).toHaveProperty("subscription_code", subscriptionCode);
+      expect(response.data).toHaveProperty(
+        "subscription_code",
+        subscriptionCode,
+      );
     }
   });
 
@@ -78,24 +81,26 @@ describe("Feature Tests for Subscription", () => {
       expect(response.message).toBe("Subscription not found");
     }
   });
-  
+
   it("Correctly disables a subscription", async () => {
     const body = {
       code: subscriptionCode,
       token: faker.string.alphanumeric(10),
     };
-    
+
     const response = await paystack.subscription.disable(body);
-    
+
     if (response) {
       expect(response.status).toBe(false);
-      expect(response.message).toBe("Subscription with code not found or already inactive");
+      expect(response.message).toBe(
+        "Subscription with code not found or already inactive",
+      );
     }
   });
-  
+
   it("Correctly generates an update subscription link", async () => {
     const response = await paystack.subscription.generateLink(subscriptionCode);
-    
+
     if (response) {
       expect(response.status).toBe(true);
       expect(response.message).toBe("Link generated");
