@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - develop
 
 jobs:
   build_and_test:
@@ -19,4 +20,12 @@ jobs:
       - name: Test with Deno
         env:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          MY_ACCT_NAME: ${{ secrets.MY_ACCT_NAME }}
+          MY_ACCT_NUMBER: ${{ secrets.MY_ACCT_NUMBER }}
+          MY_ACCT_TYPE: ${{ secrets.MY_ACCT_TYPE }}
+          MY_BANK_CODE: ${{ secrets.MY_BANK_CODE }}
+          MY_COUNTRY_CODE: ${{ secrets.MY_COUNTRY_CODE }}
+          MY_DOCUMENT_TYPE: ${{ secrets.MY_DOCUMENT_TYPE }}
+          MY_DOCUMENT_NUMBER: ${{ secrets.MY_DOCUMENT_NUMBER }}
+          MY_CARD_BIN: ${{ secrets.MY_CARD_BIN }}
         run: deno test --allow-env --allow-net

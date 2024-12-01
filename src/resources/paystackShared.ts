@@ -29,7 +29,7 @@ export default class PaystackShared {
   protected async paystackFetch<T, S = undefined>(
     url: string,
     method: FetchMethod,
-    body: Record<string, unknown> | string,
+    body: Record<string, unknown> | unknown[],
     params?: Record<string, string>,
     queryParams?: Record<string, unknown>,
   ): Promise<PaystackResponseInterface<T, S> | null> {
@@ -55,10 +55,8 @@ export default class PaystackShared {
     }
 
     const data: FetchData = { method, headers };
-    if (method !== "GET" && typeof body !== "string") {
+    if (method !== "GET") {
       data.body = JSON.stringify(body);
-    } else if (method !== "GET") {
-      data.body = body as string;
     }
 
     const response = await fetch(
