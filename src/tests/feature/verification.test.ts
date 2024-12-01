@@ -27,7 +27,13 @@ describe("Feature Tests for Verification", () => {
       account_type: Deno.env.get("MY_ACCT_TYPE")! as ("personal" | "business"),
       bank_code: Deno.env.get("MY_BANK_CODE")!,
       country_code: Deno.env.get("MY_COUNTRY_CODE")!,
-      document_type: Deno.env.get("MY_DOCUMENT_TYPE")! as ("identityNumber" | "passportNumber" | "businessRegistrationNumber"),
+      document_type: Deno.env.get(
+        "MY_DOCUMENT_TYPE",
+      )! as (
+        | "identityNumber"
+        | "passportNumber"
+        | "businessRegistrationNumber"
+      ),
       document_number: Deno.env.get("MY_DOCUMENT_NUMBER")!,
     };
 
@@ -35,16 +41,18 @@ describe("Feature Tests for Verification", () => {
 
     if (response) {
       expect(response.status).toBe(false);
-      expect(response.message).toBe("Account Validation is not supported in this country");
+      expect(response.message).toBe(
+        "Account Validation is not supported in this country",
+      );
       expect(response.data).not.toBeDefined();
     }
   });
-  
+
   it("Correctly resolves a BIN", async () => {
     const bin = Deno.env.get("MY_CARD_BIN") as string;
-    
+
     const response = await paystack.verification.resolveBin(bin);
-    
+
     if (response) {
       expect(response.status).toBe(true);
       expect(response.message).toBe("Bin resolved");

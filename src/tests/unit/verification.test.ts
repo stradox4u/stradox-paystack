@@ -1,7 +1,12 @@
 import { describe, it } from "@std/testing/bdd";
 import { Paystack } from "../../main.ts";
 import { attachQueries } from "./handleQueries.ts";
-import { assertSpyCallArgs, assertSpyCalls, returnsNext, stub } from "@std/testing/mock";
+import {
+  assertSpyCallArgs,
+  assertSpyCalls,
+  returnsNext,
+  stub,
+} from "@std/testing/mock";
 import { faker } from "@faker-js/faker";
 
 describe("Unit Tests for Verification", () => {
@@ -9,9 +14,17 @@ describe("Unit Tests for Verification", () => {
   const baseUrl = "https://api.paystack.co";
 
   it("Should correctly resolve account", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const queries = {
       account_number: "0022728151",
@@ -32,9 +45,17 @@ describe("Unit Tests for Verification", () => {
   });
 
   it("Should correctly validate account", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const body = {
       account_name: faker.person.fullName(),
@@ -62,9 +83,17 @@ describe("Unit Tests for Verification", () => {
   });
 
   it("Should correctly resolve card bin", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const bin = "539920";
 
