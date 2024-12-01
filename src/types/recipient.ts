@@ -21,7 +21,7 @@ export interface UpdateRecipientBody {
   /** A name for the recipient */
   name: string;
   /** Email address of the recipient */
-  email: string;
+  email?: string;
 }
 
 export interface CreateRecipientData {
@@ -48,11 +48,11 @@ interface Details {
 }
 
 export interface BulkCreateRecipientData {
-  success: Success[];
+  success: BulkCreateRecipientSuccess[];
   errors: unknown[];
 }
 
-interface Success {
+export interface BulkCreateRecipientSuccess {
   domain: string;
   name: string;
   type: string;
