@@ -56,7 +56,7 @@ export interface UpdatePaymentPageBody {
 
 export interface AddProductBody {
   /** Ids of all the products */
-  product: number[];
+  products: number[];
 }
 
 export interface CreatePaymentPageData {

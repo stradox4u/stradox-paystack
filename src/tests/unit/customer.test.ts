@@ -9,7 +9,7 @@ import {
 import { attachQueries } from "./handleQueries.ts";
 
 describe("Unit: Customer", () => {
-  const paystack = new Paystack(Deno.env.get("PAYSTACK_SECRET_KEY") as string);
+  const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   const baseUrl = "https://api.paystack.co";
 
   it("Should correctly create a customer", async () => {
@@ -19,8 +19,7 @@ describe("Unit: Customer", () => {
       returnsNext([Promise.resolve({
         json: async () => (await Promise.resolve({
           status: false,
-          message:
-            "Some message from server",
+          message: "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -49,7 +48,7 @@ describe("Unit: Customer", () => {
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${Deno.env.get("PAYSTACK_SECRET_KEY")}`,
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         "Content-Type": "application/json",
         Accept: "application/json",
       },
@@ -64,8 +63,7 @@ describe("Unit: Customer", () => {
       returnsNext([Promise.resolve({
         json: async () => (await Promise.resolve({
           status: false,
-          message:
-            "Some message from server",
+          message: "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -85,7 +83,7 @@ describe("Unit: Customer", () => {
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${Deno.env.get("PAYSTACK_SECRET_KEY")}`,
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         Accept: "application/json",
       },
     }]);
@@ -98,8 +96,7 @@ describe("Unit: Customer", () => {
       returnsNext([Promise.resolve({
         json: async () => (await Promise.resolve({
           status: false,
-          message:
-            "Some message from server",
+          message: "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -113,7 +110,7 @@ describe("Unit: Customer", () => {
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${Deno.env.get("PAYSTACK_SECRET_KEY")}`,
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         Accept: "application/json",
       },
     }]);
@@ -126,8 +123,7 @@ describe("Unit: Customer", () => {
       returnsNext([Promise.resolve({
         json: async () => (await Promise.resolve({
           status: false,
-          message:
-            "Some message from server",
+          message: "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -155,7 +151,7 @@ describe("Unit: Customer", () => {
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "PUT",
       headers: {
-        Authorization: `Bearer ${Deno.env.get("PAYSTACK_SECRET_KEY")}`,
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         "Content-Type": "application/json",
         Accept: "application/json",
       },
@@ -170,8 +166,7 @@ describe("Unit: Customer", () => {
       returnsNext([Promise.resolve({
         json: async () => (await Promise.resolve({
           status: false,
-          message:
-            "Some message from server",
+          message: "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -196,7 +191,7 @@ describe("Unit: Customer", () => {
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${Deno.env.get("PAYSTACK_SECRET_KEY")}`,
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         "Content-Type": "application/json",
         Accept: "application/json",
       },
@@ -211,8 +206,7 @@ describe("Unit: Customer", () => {
       returnsNext([Promise.resolve({
         json: async () => (await Promise.resolve({
           status: false,
-          message:
-            "Some message from server",
+          message: "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -229,7 +223,7 @@ describe("Unit: Customer", () => {
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${Deno.env.get("PAYSTACK_SECRET_KEY")}`,
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         "Content-Type": "application/json",
         Accept: "application/json",
       },
@@ -244,8 +238,7 @@ describe("Unit: Customer", () => {
       returnsNext([Promise.resolve({
         json: async () => (await Promise.resolve({
           status: false,
-          message:
-            "Some message from server",
+          message: "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -261,7 +254,7 @@ describe("Unit: Customer", () => {
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${Deno.env.get("PAYSTACK_SECRET_KEY")}`,
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         "Content-Type": "application/json",
         Accept: "application/json",
       },

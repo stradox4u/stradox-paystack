@@ -5,8 +5,8 @@ import { expect } from "@std/expect";
 const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
 
 describe("Feature: Apple Pay", () => {
-  const domain = 'example.com';
-  const displayName = 'example domain';
+  const domain = "example.com";
+  const displayName = "example domain";
 
   it("Should register a domain for Apple Pay", async () => {
     const response = await paystack.applePay.register({
@@ -16,7 +16,9 @@ describe("Feature: Apple Pay", () => {
 
     if (response) {
       expect(response.status).toBe(false);
-      expect(response.message).toBe("Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association");
+      expect(response.message).toBe(
+        "Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association",
+      );
     }
   });
 
@@ -40,7 +42,9 @@ describe("Feature: Apple Pay", () => {
 
     if (response) {
       expect(response.status).toBe(true);
-      expect(response.message).toBe("Domain successfully unregistered on Apple Pay");
+      expect(response.message).toBe(
+        "Domain successfully unregistered on Apple Pay",
+      );
     }
   });
 });

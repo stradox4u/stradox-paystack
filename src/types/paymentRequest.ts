@@ -14,7 +14,7 @@ interface TaxItem {
 
 export interface CreatePaymentRequestBody {
   /** Customer ID or code */
-  customer: string;
+  customer: string | number;
   /** Payment request amount. It should be used when line items and tax values aren't specified. */
   amount: number;
   /** ISO 8601 representation of request due date */

@@ -31,7 +31,7 @@ export interface ListBanksQueries {
 
 export interface ListStatesQueries {
   /** The country code of the states to list. It is gotten after the charge request */
-  country: number;
+  country: string;
 }
 
 export interface ListBanksMeta {

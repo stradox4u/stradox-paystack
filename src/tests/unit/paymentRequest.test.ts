@@ -8,11 +8,57 @@ import {
 } from "@std/testing/mock";
 import { attachQueries } from "./handleQueries.ts";
 
-describe("Unit: Dispute", () => {
+describe("Unit: Payment Request", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   const baseUrl = "https://api.paystack.co";
 
-  it("Should correctly list disputes", async () => {
+  it("Should correctly create a payment request", async () => {
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
+
+    const body = {
+      customer: "CUS_1t0k2s2j",
+      amount: 100_000,
+      line_items: [
+        {
+          name: "Item 1",
+          quantity: 1,
+          amount: 50_000,
+        },
+        {
+          name: "Item 2",
+          quantity: 1,
+          amount: 50_000,
+        },
+      ],
+    };
+
+    const expectedUrl = `${baseUrl}/paymentrequest`;
+
+    await paystack.paymentRequest.create(body);
+
+    assertSpyCalls(fetchStub, 1);
+    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    }]);
+  });
+
+  it("Should correctly list payment requests", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -28,15 +74,15 @@ describe("Unit: Dispute", () => {
     const queries = {
       perPage: 10,
       page: 1,
-      from: new Date("2021-01-01"),
-      to: new Date("2021-12-31"),
-      status: "awaiting-bank-feedback" as const,
-      transaction: "TRF_1k2k3k4k5k6k7k8k9k0k",
+      customer: "CUS_1t0k2s2j",
+      status: "pending",
+      currency: "NGN",
+      include_archive: true,
     };
 
-    const expectedUrl = attachQueries(queries, `${baseUrl}/dispute`);
+    const expectedUrl = attachQueries(queries, `${baseUrl}/paymentrequest`);
 
-    await paystack.dispute.list(queries);
+    await paystack.paymentRequest.list(queries);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -48,7 +94,7 @@ describe("Unit: Dispute", () => {
     }]);
   });
 
-  it("Should correctly fetch a dispute", async () => {
+  it("Should correctly fetch a payment request", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -61,10 +107,10 @@ describe("Unit: Dispute", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const disputeId = "DS_1k2k3k4k5k6k7k8k9k0k";
-    const expectedUrl = `${baseUrl}/dispute/${disputeId}`;
+    const id = "PRQ_1t0k2s2j";
+    const expectedUrl = `${baseUrl}/paymentrequest/${id}`;
 
-    await paystack.dispute.fetch(disputeId);
+    await paystack.paymentRequest.fetch(id);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -76,7 +122,7 @@ describe("Unit: Dispute", () => {
     }]);
   });
 
-  it("Should correctly list a transaction's disputes", async () => {
+  it("Should correctly verify a payment request", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -89,10 +135,10 @@ describe("Unit: Dispute", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const transactionId = "TRF_1k2k3k4k5k6k7k8k9k0k";
-    const expectedUrl = `${baseUrl}/dispute/transaction/${transactionId}`;
+    const code = "PRQ_1t0k2s2j";
+    const expectedUrl = `${baseUrl}/paymentrequest/verify/${code}`;
 
-    await paystack.dispute.listTransactionDisputes(transactionId);
+    await paystack.paymentRequest.verify(code);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -104,7 +150,7 @@ describe("Unit: Dispute", () => {
     }]);
   });
 
-  it("Should correctly update a dispute", async () => {
+  it("Should correctly send a notification", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -117,52 +163,70 @@ describe("Unit: Dispute", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const disputeId = "DS_1k2k3k4k5k6k7k8k9k0k";
+    const code = "PRQ_1t0k2s2j";
+    const expectedUrl = `${baseUrl}/paymentrequest/notify/${code}`;
+
+    await paystack.paymentRequest.sendNotification(code);
+
+    assertSpyCalls(fetchStub, 1);
+    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
+        Accept: "application/json",
+      },
+      body: JSON.stringify({}),
+    }]);
+  });
+
+  it("Should correctly get payment request totals", async () => {
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
+
+    const expectedUrl = `${baseUrl}/paymentrequest/totals`;
+
+    await paystack.paymentRequest.requestTotal();
+
+    assertSpyCalls(fetchStub, 1);
+    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
+        Accept: "application/json",
+      },
+    }]);
+  });
+
+  it("Should correctly finalize a payment request", async () => {
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
+
+    const code = "PRQ_1t0k2s2j";
     const body = {
-      refund_amount: 1_000_000,
-      uploaded_filename: "file.pdf",
+      send_notification: true,
     };
-    const expectedUrl = `${baseUrl}/dispute/${disputeId}`;
 
-    await paystack.dispute.update(disputeId, body);
+    const expectedUrl = `${baseUrl}/paymentrequest/finalize/${code}`;
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    }]);
-  });
-
-  it("Should correctly add evidence to a dispute", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
-
-    const disputeId = "DS_1k2k3k4k5k6k7k8k9k0k";
-    const body = {
-      customer_email: "johndoe@test.com",
-      customer_name: "John Doe",
-      customer_phone: "+2340000000000",
-      service_details: "Service details",
-      delivery_address: "Delivery address",
-      delivery_date: "2021-12-31",
-    };
-    const expectedUrl = `${baseUrl}/dispute/${disputeId}/evidence`;
-
-    await paystack.dispute.addEvidence(disputeId, body);
+    await paystack.paymentRequest.finalize(code, body);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -176,7 +240,7 @@ describe("Unit: Dispute", () => {
     }]);
   });
 
-  it("Should correctly get an upload URL", async () => {
+  it("Should correctly update a payment request", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -189,51 +253,15 @@ describe("Unit: Dispute", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const disputeId = "DS_1k2k3k4k5k6k7k8k9k0k";
-    const queries = {
-      upload_filename: "evidence.pdf",
-    };
-
-    const expectedUrl = attachQueries(
-      queries,
-      `${baseUrl}/dispute/${disputeId}/upload_url`,
-    );
-
-    await paystack.dispute.getUploadUrl(disputeId, queries);
-
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-      },
-    }]);
-  });
-
-  it("Should correctly resolve a dispute", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
-
-    const disputeId = "DS_1k2k3k4k5k6k7k8k9k0k";
+    const code = "PRQ_1t0k2s2j";
     const body = {
-      resolution: "declined" as const,
-      message: "Dishonest customer",
-      refund_amount: 1_000_000,
-      uploaded_filename: "file.pdf",
+      amount: 250_000,
+      customer: "CUS_1t0k2s2j",
     };
-    const expectedUrl = `${baseUrl}/dispute/${disputeId}/resolve`;
 
-    await paystack.dispute.resolve(disputeId, body);
+    const expectedUrl = `${baseUrl}/paymentrequest/${code}`;
+
+    await paystack.paymentRequest.update(code, body);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
@@ -247,7 +275,7 @@ describe("Unit: Dispute", () => {
     }]);
   });
 
-  it("Should correctly export disputes", async () => {
+  it("Should correctly archive a payment request", async () => {
     using fetchStub = stub(
       globalThis,
       "fetch",
@@ -260,21 +288,20 @@ describe("Unit: Dispute", () => {
       }) as unknown as Promise<Response>]),
     );
 
-    const queries = {
-      from: new Date("2021-01-01"),
-      to: new Date("2021-12-31"),
-    };
-    const expectedUrl = attachQueries(queries, `${baseUrl}/dispute/export`);
+    const code = "PRQ_1t0k2s2j";
 
-    await paystack.dispute.export(queries);
+    const expectedUrl = `${baseUrl}/paymentrequest/archive/${code}`;
+
+    await paystack.paymentRequest.archive(code);
 
     assertSpyCalls(fetchStub, 1);
     assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
+      method: "POST",
       headers: {
         Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
         Accept: "application/json",
       },
+      body: JSON.stringify({}),
     }]);
   });
 });
