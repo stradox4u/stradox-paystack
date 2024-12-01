@@ -1,7 +1,12 @@
 import { describe, it } from "@std/testing/bdd";
 import { Paystack } from "../../main.ts";
 import { faker } from "@faker-js/faker";
-import { assertSpyCallArgs, assertSpyCalls, returnsNext, stub } from "@std/testing/mock";
+import {
+  assertSpyCallArgs,
+  assertSpyCalls,
+  returnsNext,
+  stub,
+} from "@std/testing/mock";
 import { attachQueries } from "./handleQueries.ts";
 
 describe("Unit: Payment Page", () => {
@@ -9,15 +14,23 @@ describe("Unit: Payment Page", () => {
   const baseUrl = "https://api.paystack.co";
 
   it("Should correctly create the payment page", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
-    
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
+
     const body = {
       name: faker.word.words(2),
       description: faker.lorem.sentence(),
-      amount: faker.number.int({min: 10_000, max: 5_000_000}) as number * 100,
-    }
+      amount: faker.number.int({ min: 10_000, max: 5_000_000 }) as number * 100,
+    };
 
     const expectedUrl = `${baseUrl}/page`;
 
@@ -36,9 +49,17 @@ describe("Unit: Payment Page", () => {
   });
 
   it("Should correctly list payment pages", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const queries = {
       perPage: 10,
@@ -60,9 +81,17 @@ describe("Unit: Payment Page", () => {
   });
 
   it("Should correctly fetch a payment page", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const slug = faker.word.noun();
     const expectedUrl = `${baseUrl}/page/${slug}`;
@@ -80,9 +109,17 @@ describe("Unit: Payment Page", () => {
   });
 
   it("Should correctly update a payment page", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const slug = faker.word.noun();
     const body = {
@@ -108,9 +145,17 @@ describe("Unit: Payment Page", () => {
   });
 
   it("Should correctly check slug availability", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const slug = faker.word.noun();
     const expectedUrl = `${baseUrl}/page/check_slug_availability/${slug}`;
@@ -128,12 +173,20 @@ describe("Unit: Payment Page", () => {
   });
 
   it("Should correctly add products", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const body = {
-      products: [473, 492]
+      products: [473, 492],
     };
     const pageId = crypto.randomUUID();
 

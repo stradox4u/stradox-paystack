@@ -1,17 +1,30 @@
 import { describe, it } from "@std/testing/bdd";
 import { Paystack } from "../../main.ts";
 import { attachQueries } from "./handleQueries.ts";
-import { assertSpyCallArgs, assertSpyCalls, returnsNext, stub } from "@std/testing/mock";
+import {
+  assertSpyCallArgs,
+  assertSpyCalls,
+  returnsNext,
+  stub,
+} from "@std/testing/mock";
 
 describe("Unit: Misc", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   const baseUrl = "https://api.paystack.co";
 
   it("Should properly list banks", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
-    
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
+
     const queries = {
       country: "nigeria" as const,
       use_cursor: true,
@@ -33,9 +46,17 @@ describe("Unit: Misc", () => {
   });
 
   it("Should properly list countries", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const expectedUrl = `${baseUrl}/country`;
 
@@ -52,15 +73,26 @@ describe("Unit: Misc", () => {
   });
 
   it("Should properly list states", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const queries = {
       country: "CA",
-    }
+    };
 
-    const expectedUrl = attachQueries(queries, `${baseUrl}/address_verification/states`);
+    const expectedUrl = attachQueries(
+      queries,
+      `${baseUrl}/address_verification/states`,
+    );
 
     await paystack.misc.listStates(queries);
 

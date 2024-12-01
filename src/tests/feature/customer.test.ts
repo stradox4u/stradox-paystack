@@ -87,8 +87,8 @@ describe("Feature: Customer", () => {
       bvn: "12345678901",
       type: "bank_account",
       country: "NG",
-      first_name: "Jane",
-      last_name: "Dove",
+      first_name: faker.person.firstName(),
+      last_name: faker.person.lastName(),
       value: "0123456789",
     });
 

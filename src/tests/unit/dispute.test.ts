@@ -1,6 +1,11 @@
 import { describe, it } from "@std/testing/bdd";
 import { Paystack } from "../../main.ts";
-import { assertSpyCallArgs, assertSpyCalls, returnsNext, stub } from "@std/testing/mock";
+import {
+  assertSpyCallArgs,
+  assertSpyCalls,
+  returnsNext,
+  stub,
+} from "@std/testing/mock";
 import { attachQueries } from "./handleQueries.ts";
 
 describe("Unit: Dispute", () => {
@@ -8,9 +13,17 @@ describe("Unit: Dispute", () => {
   const baseUrl = "https://api.paystack.co";
 
   it("Should correctly list disputes", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const queries = {
       perPage: 10,
@@ -36,9 +49,17 @@ describe("Unit: Dispute", () => {
   });
 
   it("Should correctly fetch a dispute", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const disputeId = "DS_1k2k3k4k5k6k7k8k9k0k";
     const expectedUrl = `${baseUrl}/dispute/${disputeId}`;
@@ -56,9 +77,17 @@ describe("Unit: Dispute", () => {
   });
 
   it("Should correctly list a transaction's disputes", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const transactionId = "TRF_1k2k3k4k5k6k7k8k9k0k";
     const expectedUrl = `${baseUrl}/dispute/transaction/${transactionId}`;
@@ -76,9 +105,17 @@ describe("Unit: Dispute", () => {
   });
 
   it("Should correctly update a dispute", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const disputeId = "DS_1k2k3k4k5k6k7k8k9k0k";
     const body = {
@@ -102,9 +139,17 @@ describe("Unit: Dispute", () => {
   });
 
   it("Should correctly add evidence to a dispute", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const disputeId = "DS_1k2k3k4k5k6k7k8k9k0k";
     const body = {
@@ -132,16 +177,27 @@ describe("Unit: Dispute", () => {
   });
 
   it("Should correctly get an upload URL", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const disputeId = "DS_1k2k3k4k5k6k7k8k9k0k";
     const queries = {
       upload_filename: "evidence.pdf",
-    }
+    };
 
-    const expectedUrl = attachQueries(queries, `${baseUrl}/dispute/${disputeId}/upload_url`);
+    const expectedUrl = attachQueries(
+      queries,
+      `${baseUrl}/dispute/${disputeId}/upload_url`,
+    );
 
     await paystack.dispute.getUploadUrl(disputeId, queries);
 
@@ -156,9 +212,17 @@ describe("Unit: Dispute", () => {
   });
 
   it("Should correctly resolve a dispute", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const disputeId = "DS_1k2k3k4k5k6k7k8k9k0k";
     const body = {
@@ -184,9 +248,17 @@ describe("Unit: Dispute", () => {
   });
 
   it("Should correctly export disputes", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const queries = {
       from: new Date("2021-01-01"),

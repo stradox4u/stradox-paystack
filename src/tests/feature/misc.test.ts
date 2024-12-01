@@ -28,12 +28,12 @@ describe("Feature: Integration", () => {
       expect(response.data).toBeInstanceOf(Array);
     }
   });
-  
+
   it("Correctly fetches the list of states", async () => {
     const response = await paystack.misc.listStates({
       country: "CA",
     });
-    
+
     if (response) {
       expect(response.status).toBe(true);
       expect(response.message).toBe("States retrieved");

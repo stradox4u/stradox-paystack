@@ -40,10 +40,10 @@ describe("Feature: Payment Page", () => {
       expect(response.data).toBeInstanceOf(Array);
     }
   });
-  
+
   it("Correctly fetches a payment page", async () => {
     const response = await paystack.paymentPage.fetch(pageId.toString());
-    
+
     if (response) {
       expect(response.status).toBe(true);
       expect(response.message).toBe("Page retrieved");
@@ -56,7 +56,7 @@ describe("Feature: Payment Page", () => {
       name: faker.word.words(2),
       description: faker.lorem.sentence(6),
       amount: 200_000,
-    }
+    };
 
     const response = await paystack.paymentPage.update(pageId.toString(), body);
 
@@ -72,13 +72,13 @@ describe("Feature: Payment Page", () => {
   it("Correctly checks slug availability", async () => {
     const slug = crypto.randomUUID();
     const response = await paystack.paymentPage.checkSlugAvailability(slug);
-    
+
     if (response) {
       expect(response.status).toBe(true);
       expect(response.message).toBe("Slug is available");
     }
   });
-  
+
   it("Correctly adds products to a page", async () => {
     const productResponse = await paystack.product.create({
       name: faker.commerce.productName(),
@@ -87,12 +87,15 @@ describe("Feature: Payment Page", () => {
       currency: "NGN",
     });
     const productId = productResponse?.data.id as number;
-    
+
     const body = {
       products: [productId],
     };
 
-    const response = await paystack.paymentPage.addProducts(pageId.toString(), body);
+    const response = await paystack.paymentPage.addProducts(
+      pageId.toString(),
+      body,
+    );
 
     if (response) {
       expect(response.status).toBe(false);

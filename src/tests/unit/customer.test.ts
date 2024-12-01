@@ -19,8 +19,7 @@ describe("Unit: Customer", () => {
       returnsNext([Promise.resolve({
         json: async () => (await Promise.resolve({
           status: false,
-          message:
-            "Some message from server",
+          message: "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -64,8 +63,7 @@ describe("Unit: Customer", () => {
       returnsNext([Promise.resolve({
         json: async () => (await Promise.resolve({
           status: false,
-          message:
-            "Some message from server",
+          message: "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -98,8 +96,7 @@ describe("Unit: Customer", () => {
       returnsNext([Promise.resolve({
         json: async () => (await Promise.resolve({
           status: false,
-          message:
-            "Some message from server",
+          message: "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -126,8 +123,7 @@ describe("Unit: Customer", () => {
       returnsNext([Promise.resolve({
         json: async () => (await Promise.resolve({
           status: false,
-          message:
-            "Some message from server",
+          message: "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -170,8 +166,7 @@ describe("Unit: Customer", () => {
       returnsNext([Promise.resolve({
         json: async () => (await Promise.resolve({
           status: false,
-          message:
-            "Some message from server",
+          message: "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -211,8 +206,7 @@ describe("Unit: Customer", () => {
       returnsNext([Promise.resolve({
         json: async () => (await Promise.resolve({
           status: false,
-          message:
-            "Some message from server",
+          message: "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
@@ -244,8 +238,7 @@ describe("Unit: Customer", () => {
       returnsNext([Promise.resolve({
         json: async () => (await Promise.resolve({
           status: false,
-          message:
-            "Some message from server",
+          message: "Some message from server",
         })),
       }) as unknown as Promise<Response>]),
     );
