@@ -1,5 +1,5 @@
-import { describe, it } from "@std/testing/bdd";
-import { stub, assertSpyCalls, assertSpyCallArgs, returnsNext } from "@std/testing/mock";
+import { describe, it } from "jsr:@std/testing/bdd";
+import { stub, assertSpyCalls, assertSpyCallArgs, returnsNext } from "jsr:@std/testing/mock";
 import { Paystack } from "../../main.ts";
 
 describe("Unit Tests for Apple Pay", () => {

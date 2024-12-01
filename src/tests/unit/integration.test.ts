@@ -1,11 +1,11 @@
-import { describe, it } from "@std/testing/bdd";
+import { describe, it } from "jsr:@std/testing/bdd";
 import { Paystack } from "../../main.ts";
 import {
   assertSpyCallArgs,
   assertSpyCalls,
   returnsNext,
   stub,
-} from "@std/testing/mock";
+} from "jsr:@std/testing/mock";
 
 describe("Unit Tests for Integration", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);

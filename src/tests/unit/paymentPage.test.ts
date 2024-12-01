@@ -1,12 +1,12 @@
-import { describe, it } from "@std/testing/bdd";
+import { describe, it } from "jsr:@std/testing/bdd";
 import { Paystack } from "../../main.ts";
-import { faker } from "@faker-js/faker";
+import { faker } from "npm:@faker-js/faker";
 import {
   assertSpyCallArgs,
   assertSpyCalls,
   returnsNext,
   stub,
-} from "@std/testing/mock";
+} from "jsr:@std/testing/mock";
 import { attachQueries } from "./handleQueries.ts";
 
 describe("Unit Tests for Payment Page", () => {

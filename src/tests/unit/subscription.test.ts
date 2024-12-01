@@ -1,13 +1,13 @@
-import { describe, it } from "@std/testing/bdd";
+import { describe, it } from "jsr:@std/testing/bdd";
 import { Paystack } from "../../main.ts";
 import {
   assertSpyCallArgs,
   assertSpyCalls,
   returnsNext,
   stub,
-} from "@std/testing/mock";
+} from "jsr:@std/testing/mock";
 import { attachQueries } from "./handleQueries.ts";
-import { faker } from "@faker-js/faker";
+import { faker } from "npm:@faker-js/faker";
 
 describe("Unit Tests for Subscription", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);

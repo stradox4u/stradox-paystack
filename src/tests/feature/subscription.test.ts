@@ -1,7 +1,7 @@
-import { describe, it } from "@std/testing/bdd";
+import { describe, it } from "jsr:@std/testing/bdd";
 import { Paystack } from "../../main.ts";
-import { expect } from "@std/expect";
-import { faker } from "@faker-js/faker";
+import { expect } from "jsr:@std/expect";
+import { faker } from "npm:@faker-js/faker";
 
 describe("Feature Tests for Subscription", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);

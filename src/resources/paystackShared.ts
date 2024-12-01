@@ -63,6 +63,6 @@ export default class PaystackShared {
       builtUrl,
       data as unknown as Record<string, string>,
     );
-    return await response.json();
+    return await response.json() as PaystackResponseInterface<T, S> | null;
   }
 }

@@ -1,6 +1,6 @@
-import { describe, it } from "@std/testing/bdd";
+import { describe, it } from "jsr:@std/testing/bdd";
 import { Paystack } from "../../main.ts";
-import { assertSpyCallArgs, assertSpyCalls, returnsNext, stub } from "@std/testing/mock";
+import { assertSpyCallArgs, assertSpyCalls, returnsNext, stub } from "jsr:@std/testing/mock";
 import { attachQueries } from "./handleQueries.ts";
 
 describe("Unit Tests for Subaccount", () => {
