@@ -7,7 +7,7 @@ import {
   stub,
 } from "@std/testing/mock";
 
-describe("Unit: Integration", () => {
+describe("Unit Tests for Integration", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   const baseUrl = "https://api.paystack.co";
 

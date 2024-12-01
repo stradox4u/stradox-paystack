@@ -4,7 +4,7 @@ import { expect } from "@std/expect";
 import { faker } from "@faker-js/faker";
 import type { BulkCreateRecipientSuccess } from "../../types/recipient.ts";
 
-describe("Feature: Transfer Recipient", () => {
+describe("Feature Tests for Transfer Recipient", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   let recipientCode: string;
 

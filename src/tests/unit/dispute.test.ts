@@ -8,7 +8,7 @@ import {
 } from "@std/testing/mock";
 import { attachQueries } from "./handleQueries.ts";
 
-describe("Unit: Dispute", () => {
+describe("Unit Tests for Dispute", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   const baseUrl = "https://api.paystack.co";
 

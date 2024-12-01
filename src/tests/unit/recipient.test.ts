@@ -9,7 +9,7 @@ import {
 import { faker } from "@faker-js/faker";
 import { attachQueries } from "./handleQueries.ts";
 
-describe("Unit: Transfer Recipient", () => {
+describe("Unit Tests for Transfer Recipient", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   const baseUrl = "https://api.paystack.co";
 

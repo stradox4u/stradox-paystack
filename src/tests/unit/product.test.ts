@@ -2,7 +2,7 @@ import { describe, it } from "@std/testing/bdd";
 import { Paystack } from "../../main.ts";
 import { assertSpyCallArgs, assertSpyCalls, returnsNext, stub } from "@std/testing/mock";
 
-describe("Unit: Product", () => {
+describe("Unit Tests for Product", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   const baseUrl = "https://api.paystack.co";
 

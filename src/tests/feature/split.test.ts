@@ -3,7 +3,7 @@ import { Paystack } from "../../main.ts";
 import { faker } from "@faker-js/faker";
 import { expect } from "@std/expect";
 
-describe("Feature: Transaction Split", () => {
+describe("Feature Tests for Transaction Split", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
   let splitId: number;
 
