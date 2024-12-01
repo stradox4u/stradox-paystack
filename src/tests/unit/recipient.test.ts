@@ -1,6 +1,11 @@
 import { describe, it } from "@std/testing/bdd";
 import { Paystack } from "../../main.ts";
-import { assertSpyCallArgs, assertSpyCalls, returnsNext, stub } from "@std/testing/mock";
+import {
+  assertSpyCallArgs,
+  assertSpyCalls,
+  returnsNext,
+  stub,
+} from "@std/testing/mock";
 import { faker } from "@faker-js/faker";
 import { attachQueries } from "./handleQueries.ts";
 
@@ -9,9 +14,17 @@ describe("Unit: Transfer Recipient", () => {
   const baseUrl = "https://api.paystack.co";
 
   it("Should correctly create a transfer recipient", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const body = {
       type: "nuban" as const,
@@ -37,9 +50,17 @@ describe("Unit: Transfer Recipient", () => {
   });
 
   it("Should correctly create transfer recipients in bulk", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const body = {
       batch: [
@@ -55,7 +76,7 @@ describe("Unit: Transfer Recipient", () => {
           account_number: faker.finance.accountNumber(),
           bank_code: "057",
         },
-      ]
+      ],
     };
 
     const expectedUrl = `${baseUrl}/transferrecipient/bulk`;
@@ -75,14 +96,22 @@ describe("Unit: Transfer Recipient", () => {
   });
 
   it("Should correctly list transfer recipients", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const queries = {
       perPage: 10,
       page: 1,
-    }
+    };
 
     const expectedUrl = attachQueries(queries, `${baseUrl}/transferrecipient`);
 
@@ -99,9 +128,17 @@ describe("Unit: Transfer Recipient", () => {
   });
 
   it("Should correctly fetch a transfer recipient", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const recipientCode = faker.string.alphanumeric(10);
     const expectedUrl = `${baseUrl}/transferrecipient/${recipientCode}`;
@@ -119,9 +156,17 @@ describe("Unit: Transfer Recipient", () => {
   });
 
   it("Should correctly update a transfer recipient", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const recipientCode = faker.string.alphanumeric(10);
 
@@ -145,9 +190,17 @@ describe("Unit: Transfer Recipient", () => {
   });
 
   it("Should correctly delete a transfer recipient", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Some message from server" })),
-    }) as unknown as Promise<Response>]));
+    using fetchStub = stub(
+      globalThis,
+      "fetch",
+      returnsNext([Promise.resolve({
+        json:
+          async () => (await Promise.resolve({
+            status: false,
+            message: "Some message from server",
+          })),
+      }) as unknown as Promise<Response>]),
+    );
 
     const recipientCode = faker.string.alphanumeric(10);
     const expectedUrl = `${baseUrl}/transferrecipient/${recipientCode}`;

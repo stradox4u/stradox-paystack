@@ -2,7 +2,7 @@ import { describe, it } from "@std/testing/bdd";
 import { Paystack } from "../../main.ts";
 import { expect } from "@std/expect";
 import { faker } from "@faker-js/faker";
-import { BulkCreateRecipientSuccess } from "../../types/recipient.ts";
+import type { BulkCreateRecipientSuccess } from "../../types/recipient.ts";
 
 describe("Feature: Transfer Recipient", () => {
   const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
@@ -41,7 +41,7 @@ describe("Feature: Transfer Recipient", () => {
           account_number: "0000000000",
           bank_code: "057",
         },
-      ]
+      ],
     };
 
     const response = await paystack.recipient.bulkCreate(body);
@@ -54,9 +54,11 @@ describe("Feature: Transfer Recipient", () => {
       expect(response.data).toHaveProperty("errors");
       expect(response.data.errors).toBeInstanceOf(Array);
 
-      const createdRecipients = response.data.success.map((recipient: BulkCreateRecipientSuccess) => {
-        return recipient.recipient_code;
-      });
+      const createdRecipients = response.data.success.map(
+        (recipient: BulkCreateRecipientSuccess) => {
+          return recipient.recipient_code;
+        },
+      );
 
       for await (const recipient of createdRecipients) {
         await paystack.recipient.delete(recipient);
