@@ -38,7 +38,8 @@ CommonJS support. Pause JSR publishing; keep existing JSR releases available.
   from `.env.example`, preserving the success assertion when configured. It is
   visibly skipped when the fixture is absent; partial configuration fails.
 - Offline replay of the four affected cases plus customer setup passes with a
-  persistent fixture. Full live-suite verification of the changes is pending.
+  persistent fixture. The user subsequently reran the live integration suite
+  and reported that all integration tests pass.
 - Integration command arguments are forwarded so individual files can be run.
 - Release-tag validation accepted `v1.0.0`; `git diff --check` passed.
 - Node 22/24/26 CI is configured; remote workflow runs are pending.
