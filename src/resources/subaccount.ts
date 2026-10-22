@@ -1,4 +1,4 @@
-import type { PaystackResponseInterface } from "../types/response.ts";
+import type { PaystackResponseInterface } from "../types/response.js";
 import type {
   CreateSubaccountBody,
   CreateSubaccountData,
@@ -8,8 +8,8 @@ import type {
   ListSubaccountsMeta,
   UpdateSubaccountBody,
   UpdateSubaccountData,
-} from "../types/subaccount.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/subaccount.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class Subaccount extends PaystackShared {
   private readonly resourceUrl = "/subaccount";
@@ -45,10 +45,10 @@ export default class Subaccount extends PaystackShared {
    */
   public list = async (
     queries: ListSubaccountQueries,
-  ): Promise<
-    | PaystackResponseInterface<ListSubaccountsDatum[], ListSubaccountsMeta>
-    | null
-  > => {
+  ): Promise<PaystackResponseInterface<
+    ListSubaccountsDatum[],
+    ListSubaccountsMeta
+  > | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
@@ -70,9 +70,14 @@ export default class Subaccount extends PaystackShared {
     const url = this.resourceUrl + "/:subaccountCode";
     const method = "GET";
 
-    return await this.paystackFetch<FetchSubaccountData>(url, method, {}, {
-      subaccountCode,
-    });
+    return await this.paystackFetch<FetchSubaccountData>(
+      url,
+      method,
+      {},
+      {
+        subaccountCode,
+      },
+    );
   };
 
   /**

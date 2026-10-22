@@ -1,9 +1,7 @@
-import { describe, it } from "@std/testing/bdd";
-import { Paystack } from "../../main.ts";
-import { expect } from "@std/expect";
-
+import { describe, expect, it } from "vitest";
+import { Paystack } from "../../main.js";
 describe("Feature Tests for Dispute", () => {
-  const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
+  const paystack = new Paystack(process.env.SECRET_KEY as string);
 
   it("Correctly list disputes", async () => {
     const response = await paystack.dispute.list({
@@ -38,7 +36,7 @@ describe("Feature Tests for Dispute", () => {
 
     if (response) {
       expect(response.status).toBe(false);
-      expect(response.message).toBe("An error occurred");
+      expect(response.message).toBe("Dispute not found");
     }
   });
 

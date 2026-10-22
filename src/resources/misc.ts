@@ -1,13 +1,13 @@
 import type {
-ListBanksDatum,
-ListBanksMeta,
+  ListBanksDatum,
+  ListBanksMeta,
   ListBanksQueries,
   ListCountriesDatum,
   ListStatesDatum,
   ListStatesQueries,
-} from "../types/misc.ts";
-import type { PaystackResponseInterface } from "../types/response.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/misc.js";
+import type { PaystackResponseInterface } from "../types/response.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class Misc extends PaystackShared {
   constructor(secretKey: string) {
@@ -22,7 +22,10 @@ export default class Misc extends PaystackShared {
    */
   public listBanks = async (
     queries: ListBanksQueries,
-  ): Promise<PaystackResponseInterface<ListBanksDatum[], ListBanksMeta> | null> => {
+  ): Promise<PaystackResponseInterface<
+    ListBanksDatum[],
+    ListBanksMeta
+  > | null> => {
     const url = "/bank";
     const method = "GET";
 
@@ -40,9 +43,9 @@ export default class Misc extends PaystackShared {
    * Get a list of countries that Paystack currently supports
    * @returns {Promise<PaystackResponseInterface<ListCountriesDatum[]> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type ListCountriesDatum[]
    */
-  public listCountries = async (): Promise<
-    PaystackResponseInterface<ListCountriesDatum[]> | null
-  > => {
+  public listCountries = async (): Promise<PaystackResponseInterface<
+    ListCountriesDatum[]
+  > | null> => {
     const url = "/country";
     const method = "GET";
 

@@ -5,9 +5,9 @@ import type {
   ListPlansDatum,
   ListPlansMeta,
   UpdatePlanBody,
-} from "../types/plan.ts";
-import type { PaystackResponseInterface } from "../types/response.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/plan.js";
+import type { PaystackResponseInterface } from "../types/response.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class Plan extends PaystackShared {
   private readonly resourceUrl = "/plan";
@@ -43,9 +43,10 @@ export default class Plan extends PaystackShared {
    */
   public list = async (
     queries: ListPlanQueries,
-  ): Promise<
-    PaystackResponseInterface<ListPlansDatum[], ListPlansMeta> | null
-  > => {
+  ): Promise<PaystackResponseInterface<
+    ListPlansDatum[],
+    ListPlansMeta
+  > | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
@@ -70,9 +71,14 @@ export default class Plan extends PaystackShared {
     const url = this.resourceUrl + "/:idOrCode";
     const method = "GET";
 
-    return await this.paystackFetch<ListPlansDatum>(url, method, {}, {
-      idOrCode,
-    });
+    return await this.paystackFetch<ListPlansDatum>(
+      url,
+      method,
+      {},
+      {
+        idOrCode,
+      },
+    );
   };
 
   /**

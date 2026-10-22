@@ -8,9 +8,9 @@ import type {
   SubmitOtpBody,
   SubmitPhoneBody,
   SubmitPinBody,
-} from "../types/charge.ts";
-import type { PaystackResponseInterface } from "../types/response.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/charge.js";
+import type { PaystackResponseInterface } from "../types/response.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class Charge extends PaystackShared {
   private readonly resourceUrl = "/charge";
@@ -145,8 +145,13 @@ export default class Charge extends PaystackShared {
     const url = this.resourceUrl + "/:reference";
     const method = "GET";
 
-    return await this.paystackFetch<CheckPendingData>(url, method, {}, {
-      reference,
-    });
+    return await this.paystackFetch<CheckPendingData>(
+      url,
+      method,
+      {},
+      {
+        reference,
+      },
+    );
   };
 }

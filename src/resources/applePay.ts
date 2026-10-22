@@ -1,9 +1,9 @@
 import type {
   ListApplePayDomainsQueries,
   ListDomainsData,
-} from "../types/applePay.ts";
-import type { PaystackResponseInterface } from "../types/response.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/applePay.js";
+import type { PaystackResponseInterface } from "../types/response.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class ApplePay extends PaystackShared {
   private readonly resourceUrl = "/apple-pay";
@@ -18,9 +18,10 @@ export default class ApplePay extends PaystackShared {
    * @param body
    * @returns {Promise<PaystackResponseInterface<undefined> | null>} status - A promise that resolves to an object containing success and a message
    */
-  public register = async (
-    body: { domainName: string; displayName: string },
-  ): Promise<PaystackResponseInterface<undefined> | null> => {
+  public register = async (body: {
+    domainName: string;
+    displayName: string;
+  }): Promise<PaystackResponseInterface<undefined> | null> => {
     const url = this.resourceUrl + "/domain";
     const method = "POST";
 
@@ -58,9 +59,9 @@ export default class ApplePay extends PaystackShared {
    * @param body
    * @returns {Promise<PaystackResponseInterface<undefined> | null>} status - A promise that resolves to an object containing success and a message
    */
-  public unregister = async (
-    body: { domainName: string },
-  ): Promise<PaystackResponseInterface<undefined> | null> => {
+  public unregister = async (body: {
+    domainName: string;
+  }): Promise<PaystackResponseInterface<undefined> | null> => {
     const url = this.resourceUrl + "/domain";
     const method = "DELETE";
 

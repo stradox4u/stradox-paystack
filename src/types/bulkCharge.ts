@@ -1,5 +1,5 @@
-import type { PaginatedDateRangedList } from "./common.ts";
-import type { Authorization, Customer, Log } from "./transaction.ts";
+import type { PaginatedDateRangedList } from "./common.js";
+import type { Authorization, Customer, Log } from "./transaction.js";
 
 export interface InitiateBulkCharge {
   authorization: string;
@@ -9,7 +9,7 @@ export interface InitiateBulkCharge {
 
 export interface FetchChargesQueries extends PaginatedDateRangedList {
   /** Either one of these values: `pending`, `success` or `failed` */
-  status: 'pending' | 'success' | 'failed';
+  status: "pending" | "success" | "failed";
 }
 
 export interface InitiateBulkChargeData {
@@ -94,4 +94,3 @@ interface ChargeTransaction {
   paidAt: string;
   createdAt: string;
 }
-

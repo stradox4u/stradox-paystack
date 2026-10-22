@@ -1,9 +1,7 @@
-import { describe, it } from "@std/testing/bdd";
-import { Paystack } from "../../main.ts";
-import { expect } from "@std/expect";
-
+import { describe, expect, it } from "vitest";
+import { Paystack } from "../../main.js";
 describe("Feature Tests for Bulk Charge", () => {
-  const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
+  const paystack = new Paystack(process.env.SECRET_KEY as string);
   let batchCode: string;
 
   it("Correctly initiates a bulk charge", async () => {

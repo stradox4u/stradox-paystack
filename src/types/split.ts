@@ -1,10 +1,10 @@
-import type { DateRangedList, PaginatedList } from "./common.ts";
+import type { DateRangedList, PaginatedList } from "./common.js";
 
-type SplitBearerType = 'subaccount' | 'account' | 'all-proportional' | 'all';
+type SplitBearerType = "subaccount" | "account" | "all-proportional" | "all";
 
 export interface CreateSplitBody {
   name: string;
-  type: 'percentage' | 'flat';
+  type: "percentage" | "flat";
   currency: string;
   subaccounts: {
     subaccount: string;
@@ -14,7 +14,8 @@ export interface CreateSplitBody {
   bearer_subaccount: string;
 }
 
-export interface ListSplitQueries extends Partial<PaginatedList>, DateRangedList {
+export interface ListSplitQueries
+  extends Partial<PaginatedList>, DateRangedList {
   name: string;
   active: boolean;
   sort_by?: string;
@@ -84,5 +85,4 @@ export interface FetchSplitData extends ListSplitsDatum {}
 
 export interface UpdateSplitData extends ListSplitsDatum {}
 
-export interface AddSubaccountSplitData extends ListSplitsDatum{}
-
+export interface AddSubaccountSplitData extends ListSplitsDatum {}

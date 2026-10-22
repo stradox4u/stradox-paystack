@@ -13,9 +13,9 @@ import type {
   ResolveDisputeData,
   UpdateDisputeBody,
   UpdateDisputeData,
-} from "../types/dispute.ts";
-import type { PaystackResponseInterface } from "../types/response.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/dispute.js";
+import type { PaystackResponseInterface } from "../types/response.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class Dispute extends PaystackShared {
   private readonly resourceUrl = "/dispute";
@@ -32,9 +32,10 @@ export default class Dispute extends PaystackShared {
    */
   public list = async (
     queries: ListDisputeQueries,
-  ): Promise<
-    PaystackResponseInterface<ListDisputeDatum[], ListDisputeMeta> | null
-  > => {
+  ): Promise<PaystackResponseInterface<
+    ListDisputeDatum[],
+    ListDisputeMeta
+  > | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
@@ -59,9 +60,14 @@ export default class Dispute extends PaystackShared {
     const url = this.resourceUrl + "/:disputeId";
     const method = "GET";
 
-    return await this.paystackFetch<ListDisputeDatum>(url, method, {}, {
-      disputeId,
-    });
+    return await this.paystackFetch<ListDisputeDatum>(
+      url,
+      method,
+      {},
+      {
+        disputeId,
+      },
+    );
   };
 
   /**
@@ -72,9 +78,9 @@ export default class Dispute extends PaystackShared {
    */
   public listTransactionDisputes = async (
     transactionId: string,
-  ): Promise<
-    PaystackResponseInterface<ListTransactionDisputesDatum[]> | null
-  > => {
+  ): Promise<PaystackResponseInterface<
+    ListTransactionDisputesDatum[]
+  > | null> => {
     const url = this.resourceUrl + "/transaction/:transactionId";
     const method = "GET";
 
@@ -144,9 +150,15 @@ export default class Dispute extends PaystackShared {
     const url = this.resourceUrl + "/:disputeId/upload_url";
     const method = "GET";
 
-    return await this.paystackFetch<GetUploadUrlData>(url, method, {}, {
-      disputeId,
-    }, queries as unknown as Record<string, unknown>);
+    return await this.paystackFetch<GetUploadUrlData>(
+      url,
+      method,
+      {},
+      {
+        disputeId,
+      },
+      queries as unknown as Record<string, unknown>,
+    );
   };
 
   /**

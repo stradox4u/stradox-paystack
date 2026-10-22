@@ -1,6 +1,6 @@
 export interface ListBanksQueries {
   /** The country from which to obtain the list of supported banks */
-  country: 'ghana' | 'kenya' | 'nigeria' | 'south africa';
+  country: "ghana" | "kenya" | "nigeria" | "south africa";
   /** Flag to enable cursor based pagination */
   use_cursor: boolean;
   /** The number of objects to return per page. Defaults to 50 and is limited to 100 records per page */
@@ -15,12 +15,12 @@ export interface ListBanksQueries {
   enabled_for_verification?: boolean;
   /** A cursor that indicates your place in the list. It can be used to fetch the next page of the list */
   next?: string;
-  /** A cursor that indicates your place in the list. It should be used to fetch the previous page of 
+  /** A cursor that indicates your place in the list. It should be used to fetch the previous page of
    * the list after an initial next request
    */
   previous?: string;
   /** The gateway type of the bank. It can be one of: `emandate` or `digitalbankmandate` */
-  gateway?: 'emandate' | 'digitalbankmandate';
+  gateway?: "emandate" | "digitalbankmandate";
   /** Type of financial channel. For Ghanaian channels, please use either `mobile_money` for mobile
    * money channels or `ghipps` for bank channels
    */

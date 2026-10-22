@@ -1,10 +1,8 @@
-import { describe, it } from "@std/testing/bdd";
-import { Paystack } from "../../main.ts";
+import { describe, expect, it } from "vitest";
+import { Paystack } from "../../main.js";
 import { faker } from "@faker-js/faker";
-import { expect } from "@std/expect";
-
 describe("Feature Tests for Subaccount", () => {
-  const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
+  const paystack = new Paystack(process.env.SECRET_KEY as string);
   let subacctCode: string;
 
   it("Correctly creates a subaccount", async () => {
@@ -13,7 +11,7 @@ describe("Feature Tests for Subaccount", () => {
       bank_code: "057",
       account_number: "0000000000",
       percentage_charge: 5,
-    }
+    };
 
     const response = await paystack.subaccount.create(body);
 
@@ -23,7 +21,10 @@ describe("Feature Tests for Subaccount", () => {
       expect(response.message).toBe("Subaccount created");
       expect(response.data).toHaveProperty("subaccount_code");
       expect(response.data).toHaveProperty("business_name", body.business_name);
-      expect(response.data).toHaveProperty("account_number", body.account_number);
+      expect(response.data).toHaveProperty(
+        "account_number",
+        body.account_number,
+      );
     }
   });
 
@@ -33,7 +34,7 @@ describe("Feature Tests for Subaccount", () => {
       page: 1,
       from: faker.date.recent(),
       to: new Date(),
-    }
+    };
     const response = await paystack.subaccount.list(queries);
 
     if (response) {
@@ -56,7 +57,7 @@ describe("Feature Tests for Subaccount", () => {
   it("Correctly updates a subaccount", async () => {
     const body = {
       business_name: faker.company.name(),
-      description: faker.lorem.sentence()
+      description: faker.lorem.sentence(),
     };
 
     const response = await paystack.subaccount.update(subacctCode, body);

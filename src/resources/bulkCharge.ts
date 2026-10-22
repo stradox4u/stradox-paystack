@@ -7,10 +7,10 @@ import type {
   InitiateBulkChargeData,
   ListBatchesDatum,
   ListBatchesMeta,
-} from "../types/bulkCharge.ts";
-import type { PaginatedDateRangedList } from "../types/common.ts";
-import type { PaystackResponseInterface } from "../types/response.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/bulkCharge.js";
+import type { PaginatedDateRangedList } from "../types/common.js";
+import type { PaystackResponseInterface } from "../types/response.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class BulkCharge extends PaystackShared {
   private readonly resourceUrl = "/bulkcharge";
@@ -34,11 +34,7 @@ export default class BulkCharge extends PaystackShared {
 
     // const bodyString = JSON.stringify("{" + JSON.stringify(body) + "}");
 
-    return await this.paystackFetch<InitiateBulkChargeData>(
-      url,
-      method,
-      body,
-    );
+    return await this.paystackFetch<InitiateBulkChargeData>(url, method, body);
   };
 
   /**
@@ -50,7 +46,10 @@ export default class BulkCharge extends PaystackShared {
    */
   public listBatches = async (
     queries: PaginatedDateRangedList,
-  ): Promise<PaystackResponseInterface<ListBatchesDatum[], ListBatchesMeta> | null> => {
+  ): Promise<PaystackResponseInterface<
+    ListBatchesDatum[],
+    ListBatchesMeta
+  > | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
@@ -76,9 +75,14 @@ export default class BulkCharge extends PaystackShared {
     const url = this.resourceUrl + "/:idOrCode";
     const method = "GET";
 
-    return await this.paystackFetch<FetchBatchData>(url, method, {}, {
-      idOrCode,
-    });
+    return await this.paystackFetch<FetchBatchData>(
+      url,
+      method,
+      {},
+      {
+        idOrCode,
+      },
+    );
   };
 
   /**
@@ -92,13 +96,22 @@ export default class BulkCharge extends PaystackShared {
   public fetchCharges = async (
     idOrCode: string,
     queries: FetchChargesQueries,
-  ): Promise<PaystackResponseInterface<FetchChargesDatum[], FetchChargesMeta> | null> => {
+  ): Promise<PaystackResponseInterface<
+    FetchChargesDatum[],
+    FetchChargesMeta
+  > | null> => {
     const url = this.resourceUrl + "/:idOrCode/charges";
     const method = "GET";
 
-    return await this.paystackFetch<FetchChargesDatum[], FetchChargesMeta>(url, method, {}, {
-      idOrCode,
-    }, queries as unknown as Record<string, unknown>);
+    return await this.paystackFetch<FetchChargesDatum[], FetchChargesMeta>(
+      url,
+      method,
+      {},
+      {
+        idOrCode,
+      },
+      queries as unknown as Record<string, unknown>,
+    );
   };
 
   /**

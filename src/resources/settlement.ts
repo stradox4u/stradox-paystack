@@ -1,12 +1,12 @@
-import type { PaystackResponseInterface } from "../types/response.ts";
+import type { PaystackResponseInterface } from "../types/response.js";
 import type {
   ListSettlementQueries,
   ListSettlementsDatum,
   ListSettlementTransactionsDatum,
   ListSettlementTransactionsQueries,
   SettlementListMeta,
-} from "../types/settlement.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/settlement.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class Settlement extends PaystackShared {
   private readonly resourceUrl = "/settlement";
@@ -23,9 +23,10 @@ export default class Settlement extends PaystackShared {
    */
   public list = async (
     queries: ListSettlementQueries,
-  ): Promise<
-    PaystackResponseInterface<ListSettlementsDatum[], SettlementListMeta> | null
-  > => {
+  ): Promise<PaystackResponseInterface<
+    ListSettlementsDatum[],
+    SettlementListMeta
+  > | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
@@ -48,12 +49,10 @@ export default class Settlement extends PaystackShared {
   public listTransactions = async (
     id: string,
     queries: ListSettlementTransactionsQueries,
-  ): Promise<
-    PaystackResponseInterface<
-      ListSettlementTransactionsDatum[],
-      SettlementListMeta
-    > | null
-  > => {
+  ): Promise<PaystackResponseInterface<
+    ListSettlementTransactionsDatum[],
+    SettlementListMeta
+  > | null> => {
     const url = this.resourceUrl + "/:id/transactions";
     const method = "GET";
 

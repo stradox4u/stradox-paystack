@@ -11,9 +11,9 @@ import type {
   UpdatePaymentRequestBody,
   UpdatePaymentRequestData,
   VerifyPaymentRequestData,
-} from "../types/paymentRequest.ts";
-import type { PaystackResponseInterface } from "../types/response.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/paymentRequest.js";
+import type { PaystackResponseInterface } from "../types/response.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class PaymentRequest extends PaystackShared {
   private readonly resourceUrl = "/paymentrequest";
@@ -49,13 +49,10 @@ export default class PaymentRequest extends PaystackShared {
    */
   public list = async (
     queries: ListPaymentRequestQueries,
-  ): Promise<
-    | PaystackResponseInterface<
-      ListPaymentRequestDatum[],
-      ListPaymentRequestMeta
-    >
-    | null
-  > => {
+  ): Promise<PaystackResponseInterface<
+    ListPaymentRequestDatum[],
+    ListPaymentRequestMeta
+  > | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
@@ -77,9 +74,14 @@ export default class PaymentRequest extends PaystackShared {
     const url = this.resourceUrl + "/:idOrCode";
     const method = "GET";
 
-    return await this.paystackFetch<FetchPaymentRequestData>(url, method, {}, {
-      idOrCode,
-    });
+    return await this.paystackFetch<FetchPaymentRequestData>(
+      url,
+      method,
+      {},
+      {
+        idOrCode,
+      },
+    );
   };
 
   /**
@@ -94,9 +96,14 @@ export default class PaymentRequest extends PaystackShared {
     const url = this.resourceUrl + "/verify/:code";
     const method = "GET";
 
-    return await this.paystackFetch<VerifyPaymentRequestData>(url, method, {}, {
-      code,
-    });
+    return await this.paystackFetch<VerifyPaymentRequestData>(
+      url,
+      method,
+      {},
+      {
+        code,
+      },
+    );
   };
 
   /**
@@ -119,14 +126,13 @@ export default class PaymentRequest extends PaystackShared {
    * Get payment requests metric
    * @returns {Promise<PaystackResponseInterface<RequestTotalData> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type RequestTotalData
    */
-  public requestTotal = async (): Promise<
-    PaystackResponseInterface<RequestTotalData> | null
-  > => {
-    const url = this.resourceUrl + "/totals";
-    const method = "GET";
+  public requestTotal =
+    async (): Promise<PaystackResponseInterface<RequestTotalData> | null> => {
+      const url = this.resourceUrl + "/totals";
+      const method = "GET";
 
-    return await this.paystackFetch<RequestTotalData>(url, method, {});
-  };
+      return await this.paystackFetch<RequestTotalData>(url, method, {});
+    };
 
   /**
    * @function finalize

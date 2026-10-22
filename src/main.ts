@@ -1,53 +1,53 @@
 /**
  * This module grants access to the Paystack object, with which we can access the various resources in the Paystack API
  * @module
- * 
+ *
  * @example
  * ```ts
  * import { Paystack } from "@stradox/paystack";
- * 
+ *
  * const paystack = new Paystack(<your_secret_key>);
- * 
+ *
  * const transaction = await paystack.transaction.initialize({
  *  amount: 10000,
  *  email: "johndoe@test.com",
  * });
  *
  * OR (to get a singleton instance of the Paystack class)
- * 
+ *
  * import { getPaystack } from "@stradox/paystack";
- * 
+ *
  * const paystack = getPaystack(<your_secret_key>);
- * 
+ *
  * const transaction = await paystack.transaction.initialize({
  *  amount: 10000,
  *  email: "johndoe@test.com",
  * });
  */
 
-import Customer from "./resources/customer.ts";
-import Split from "./resources/split.ts";
-import Terminal from "./resources/terminal.ts";
-import Transaction from './resources/transaction.ts';
-import VirtualAccount from './resources/virtualAccount.ts';
-import ApplePay from "./resources/applePay.ts";
-import Subaccount from "./resources/subaccount.ts";
-import Plan from "./resources/plan.ts";
-import Subscription from "./resources/subscription.ts";
-import Product from "./resources/product.ts";
-import PaymentPage from "./resources/paymentPage.ts";
-import PaymentRequest from "./resources/paymentRequest.ts";
-import Settlement from "./resources/settlement.ts";
-import Recipient from "./resources/recipient.ts";
-import Transfer from "./resources/transfer.ts";
-import TransferControl from "./resources/transferControl.ts";
-import BulkCharge from "./resources/bulkCharge.ts";
-import Integration from "./resources/integration.ts";
-import Charge from "./resources/charge.ts";
-import Dispute from "./resources/dispute.ts";
-import Refund from "./resources/refund.ts";
-import Verification from "./resources/verification.ts";
-import Misc from "./resources/misc.ts";
+import Customer from "./resources/customer.js";
+import Split from "./resources/split.js";
+import Terminal from "./resources/terminal.js";
+import Transaction from "./resources/transaction.js";
+import VirtualAccount from "./resources/virtualAccount.js";
+import ApplePay from "./resources/applePay.js";
+import Subaccount from "./resources/subaccount.js";
+import Plan from "./resources/plan.js";
+import Subscription from "./resources/subscription.js";
+import Product from "./resources/product.js";
+import PaymentPage from "./resources/paymentPage.js";
+import PaymentRequest from "./resources/paymentRequest.js";
+import Settlement from "./resources/settlement.js";
+import Recipient from "./resources/recipient.js";
+import Transfer from "./resources/transfer.js";
+import TransferControl from "./resources/transferControl.js";
+import BulkCharge from "./resources/bulkCharge.js";
+import Integration from "./resources/integration.js";
+import Charge from "./resources/charge.js";
+import Dispute from "./resources/dispute.js";
+import Refund from "./resources/refund.js";
+import Verification from "./resources/verification.js";
+import Misc from "./resources/misc.js";
 
 /**
  * This class aggregates the various resources in the Paystack API, and methods for interacting with them
@@ -62,7 +62,7 @@ export class Paystack {
   public subaccount: Subaccount;
   public plan: Plan;
   public subscription: Subscription;
-  public product: Product
+  public product: Product;
   public paymentPage: PaymentPage;
   public paymentRequest: PaymentRequest;
   public settlement: Settlement;
@@ -71,7 +71,7 @@ export class Paystack {
   public transferControl: TransferControl;
   public bulkCharge: BulkCharge;
   public integration: Integration;
-  public charge: Charge
+  public charge: Charge;
   public dispute: Dispute;
   public refund: Refund;
   public verification: Verification;
@@ -118,7 +118,6 @@ export class Paystack {
     return Paystack.paystackInstance;
   }
 }
-
 
 /**
  * @function getPaystack

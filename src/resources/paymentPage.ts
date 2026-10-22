@@ -9,9 +9,9 @@ import type {
   ListPaymentPageQueries,
   UpdatePaymentPageBody,
   UpdatePaymentPageData,
-} from "../types/paymentPage.ts";
-import type { PaystackResponseInterface } from "../types/response.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/paymentPage.js";
+import type { PaystackResponseInterface } from "../types/response.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class PaymentPage extends PaystackShared {
   private readonly resourceUrl = "/page";
@@ -47,10 +47,10 @@ export default class PaymentPage extends PaystackShared {
    */
   public list = async (
     queries: ListPaymentPageQueries,
-  ): Promise<
-    | PaystackResponseInterface<ListPaymentPageDatum[], ListPaymentPageMeta>
-    | null
-  > => {
+  ): Promise<PaystackResponseInterface<
+    ListPaymentPageDatum[],
+    ListPaymentPageMeta
+  > | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
@@ -72,9 +72,14 @@ export default class PaymentPage extends PaystackShared {
     const url = this.resourceUrl + "/:idOrSlug";
     const method = "GET";
 
-    return await this.paystackFetch<FetchPaymentPageData>(url, method, {}, {
-      idOrSlug,
-    });
+    return await this.paystackFetch<FetchPaymentPageData>(
+      url,
+      method,
+      {},
+      {
+        idOrSlug,
+      },
+    );
   };
 
   /**

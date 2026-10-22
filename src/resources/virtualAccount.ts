@@ -1,4 +1,4 @@
-import type { PaystackResponseInterface } from "../types/response.ts";
+import type { PaystackResponseInterface } from "../types/response.js";
 import type {
   AssignVirtualAccountBody,
   CreateVirtualAccountBody,
@@ -13,8 +13,8 @@ import type {
   RequeryVirtualAccountQueries,
   SplitTransactionData,
   SplitVirtualAccountTransactionBody,
-} from "../types/virtualAccounts.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/virtualAccounts.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class DedicatedVirtualAccount extends PaystackShared {
   private readonly resourceUrl = "/dedicated_account";
@@ -69,12 +69,10 @@ export default class DedicatedVirtualAccount extends PaystackShared {
    */
   public list = async (
     queries: ListVirtualAccountQueries,
-  ): Promise<
-    PaystackResponseInterface<
-      ListVirtualAccountsDatum[],
-      ListVirtualAccountsMeta
-    > | null
-  > => {
+  ): Promise<PaystackResponseInterface<
+    ListVirtualAccountsDatum[],
+    ListVirtualAccountsMeta
+  > | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
@@ -96,9 +94,14 @@ export default class DedicatedVirtualAccount extends PaystackShared {
     const url = this.resourceUrl + "/:accountId";
     const method = "GET";
 
-    return await this.paystackFetch<FetchVirtualAccountData>(url, method, {}, {
-      accountId,
-    });
+    return await this.paystackFetch<FetchVirtualAccountData>(
+      url,
+      method,
+      {},
+      {
+        accountId,
+      },
+    );
   };
 
   /**
@@ -130,9 +133,7 @@ export default class DedicatedVirtualAccount extends PaystackShared {
    */
   public deactivate = async (
     accountId: string,
-  ): Promise<
-    PaystackResponseInterface<DeactivateVirtualAccountData> | null
-  > => {
+  ): Promise<PaystackResponseInterface<DeactivateVirtualAccountData> | null> => {
     const url = this.resourceUrl + "/:accountId";
     const method = "DELETE";
 
@@ -170,9 +171,9 @@ export default class DedicatedVirtualAccount extends PaystackShared {
    * @param body - The dedicated virtual account number
    * @returns {Promise<PaystackResponseInterface<RemoveSplitData> | null>} response - A promise that resolves to the PaystackResponseInterface type, with a data property of type RemoveSplitData
    */
-  public removeSplit = async (
-    body: { account_number: string },
-  ): Promise<PaystackResponseInterface<RemoveSplitData> | null> => {
+  public removeSplit = async (body: {
+    account_number: string;
+  }): Promise<PaystackResponseInterface<RemoveSplitData> | null> => {
     const url = this.resourceUrl + "/split";
     const method = "DELETE";
 
@@ -188,9 +189,9 @@ export default class DedicatedVirtualAccount extends PaystackShared {
    * Get available bank providers for a dedicated virtual account
    * @returns {Promise<PaystackResponseInterface<FetchProvidersDatum[]> | null>} response - A promise that resolves to the PaystackResponseInterface type, with a data property of type FetchProvidersDatum[]
    */
-  public fetchProviders = async (): Promise<
-    PaystackResponseInterface<FetchProvidersDatum[]> | null
-  > => {
+  public fetchProviders = async (): Promise<PaystackResponseInterface<
+    FetchProvidersDatum[]
+  > | null> => {
     const url = this.resourceUrl + "/available_providers";
     const method = "GET";
 

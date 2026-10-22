@@ -1,4 +1,4 @@
-import type { PaystackResponseInterface } from "../types/response.ts";
+import type { PaystackResponseInterface } from "../types/response.js";
 import type {
   ChargeAuthorizationBody,
   ChargeAuthorizationData,
@@ -16,8 +16,8 @@ import type {
   TransactionTimelineData,
   TransactionTotalsData,
   VerifyTransactionData,
-} from "../types/transaction.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/transaction.js";
+import PaystackShared from "./paystackShared.js";
 
 /**
  * This class contains methods for working with the Transaction resource of the Paystack API
@@ -58,9 +58,14 @@ export default class Transaction extends PaystackShared {
     const url = this.resourceUrl + "/verify" + "/:reference";
     const method = "GET";
 
-    return await this.paystackFetch<VerifyTransactionData>(url, method, {}, {
-      reference,
-    });
+    return await this.paystackFetch<VerifyTransactionData>(
+      url,
+      method,
+      {},
+      {
+        reference,
+      },
+    );
   };
 
   /**
@@ -70,7 +75,10 @@ export default class Transaction extends PaystackShared {
    */
   public list = async (
     queries: ListTransactionQueries,
-  ): Promise<PaystackResponseInterface<ListTransactionData[], ListTransactionMeta> | null> => {
+  ): Promise<PaystackResponseInterface<
+    ListTransactionData[],
+    ListTransactionMeta
+  > | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
@@ -94,9 +102,14 @@ export default class Transaction extends PaystackShared {
     const url = this.resourceUrl + "/:transactionId";
     const method = "GET";
 
-    return await this.paystackFetch<FetchTransactionData>(url, method, {}, {
-      transactionId,
-    });
+    return await this.paystackFetch<FetchTransactionData>(
+      url,
+      method,
+      {},
+      {
+        transactionId,
+      },
+    );
   };
 
   /**
@@ -128,9 +141,14 @@ export default class Transaction extends PaystackShared {
     const url = this.resourceUrl + "/timeline" + "/:transactionIdOrReference";
     const method = "GET";
 
-    return await this.paystackFetch<TransactionTimelineData>(url, method, {}, {
-      transactionIdOrReference,
-    });
+    return await this.paystackFetch<TransactionTimelineData>(
+      url,
+      method,
+      {},
+      {
+        transactionIdOrReference,
+      },
+    );
   };
 
   /**

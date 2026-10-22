@@ -1,5 +1,5 @@
-import type { PaystackResponseInterface } from "../types/response.ts";
-import PaystackShared from "./paystackShared.ts";
+import type { PaystackResponseInterface } from "../types/response.js";
+import PaystackShared from "./paystackShared.js";
 
 interface UpdateTimeoutBody {
   /** Time before stopping session (in seconds). Set to 0 to cancel session timeouts */
@@ -22,14 +22,13 @@ export default class Integration extends PaystackShared {
    * Fetch the payment session timeout on your integration
    * @returns {Promise<PaystackResponseInterface<TimeoutResponseData> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type TimeoutResponseData
    */
-  public fetchTimeout = async (): Promise<
-    PaystackResponseInterface<TimeoutResponseData> | null
-  > => {
-    const url = this.resourceUrl + "/payment_session_timeout";
-    const method = "GET";
+  public fetchTimeout =
+    async (): Promise<PaystackResponseInterface<TimeoutResponseData> | null> => {
+      const url = this.resourceUrl + "/payment_session_timeout";
+      const method = "GET";
 
-    return await this.paystackFetch<TimeoutResponseData>(url, method, {});
-  };
+      return await this.paystackFetch<TimeoutResponseData>(url, method, {});
+    };
 
   /**
    * @function updateTimeout

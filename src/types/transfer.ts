@@ -1,8 +1,8 @@
-import type { PaginatedDateRangedList } from "./common.ts";
+import type { PaginatedDateRangedList } from "./common.js";
 
 export interface InitiateTransferBody {
   /** Where should we transfer from? Only `balance` for now */
-  source: 'balance';
+  source: "balance";
   /** Amount to transfer in kobo if currency is `NGN`, and pesewas if currency is `GHS` */
   amount: number;
   /** Code for transfer recipient */
@@ -30,9 +30,9 @@ export interface BulkInitiateTransferBody {
   /** Specify the currency of the transfers. Defaults to `NGN` */
   currency?: string;
   /** Where should we transfer from? Only `balance` for now */
-  source: 'balance';
+  source: "balance";
   /** A list of transfer objects. Each object should contain `amount`, `recipient` and `reference` */
-  transfers: Omit<InitiateTransferBody, 'source'>[];
+  transfers: Omit<InitiateTransferBody, "source">[];
 }
 
 export interface ListTransferQueries extends PaginatedDateRangedList {
@@ -80,7 +80,10 @@ export interface ListTransfersMeta {
   pageCount: number;
 }
 
-export interface ListTransfersDatum extends Omit<InitiateTransferData, 'recipient'> {
+export interface ListTransfersDatum extends Omit<
+  InitiateTransferData,
+  "recipient"
+> {
   recipient: Recipient;
   source_details: unknown;
   failures: unknown;

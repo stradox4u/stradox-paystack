@@ -1,5 +1,5 @@
-import type { PaginatedList } from "./common.ts";
-import type { CreateSubscriptionData } from "./subscription.ts";
+import type { PaginatedList } from "./common.js";
+import type { CreateSubscriptionData } from "./subscription.js";
 
 export interface CreatePlanBody {
   /** Name of plan */
@@ -8,7 +8,8 @@ export interface CreatePlanBody {
   amount: number;
   /** Interval in words. Valid intervals are: `daily`, 'weekly`, `monthly`,
    * `quarterly`, `biannually` (every 6 months), `annually */
-  interval: 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'biannually' | 'annually';
+  interval:
+    "daily" | "weekly" | "monthly" | "quarterly" | "biannually" | "annually";
   /** A description of this plan */
   description?: string;
   /** Set to false if you don't want invoices to be sent to your customers */

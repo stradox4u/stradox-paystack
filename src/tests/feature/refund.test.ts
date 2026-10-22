@@ -1,10 +1,8 @@
-import { describe, it } from "@std/testing/bdd";
-import { Paystack } from "../../main.ts";
+import { describe, expect, it } from "vitest";
+import { Paystack } from "../../main.js";
 import { faker } from "@faker-js/faker";
-import { expect } from "@std/expect/expect";
-
 describe("Feature Tests for Refund", () => {
-  const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
+  const paystack = new Paystack(process.env.SECRET_KEY as string);
   let transactionRef: string;
 
   it("Correctly creates a refund", async () => {
@@ -21,7 +19,7 @@ describe("Feature Tests for Refund", () => {
 
     if (response) {
       expect(response.status).toBe(false);
-      expect(response.message).toBe("Transaction was not successful");
+      expect(response.message).toBe("This transaction failed");
     }
   });
 

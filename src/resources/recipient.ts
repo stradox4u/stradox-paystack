@@ -1,4 +1,4 @@
-import type { PaginatedDateRangedList } from "../types/common.ts";
+import type { PaginatedDateRangedList } from "../types/common.js";
 import type {
   BulkCreateRecipientData,
   CreateRecipientBody,
@@ -8,9 +8,9 @@ import type {
   ListRecipientsMeta,
   UpdateRecipientBody,
   UpdateRecipientData,
-} from "../types/recipient.ts";
-import type { PaystackResponseInterface } from "../types/response.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/recipient.js";
+import type { PaystackResponseInterface } from "../types/response.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class Recipient extends PaystackShared {
   private readonly resourceUrl = "/transferrecipient";
@@ -45,9 +45,9 @@ export default class Recipient extends PaystackShared {
    * @param body
    * @returns {Promise<PaystackResponseInterface<BulkCreateRecipientData> | null>} response - A promise that resolves to the PaystackResponseInterface type, with the data property being of type BulkCreateRecipientData
    */
-  public bulkCreate = async (
-    body: { batch: CreateRecipientBody[] },
-  ): Promise<PaystackResponseInterface<BulkCreateRecipientData> | null> => {
+  public bulkCreate = async (body: {
+    batch: CreateRecipientBody[];
+  }): Promise<PaystackResponseInterface<BulkCreateRecipientData> | null> => {
     const url = this.resourceUrl + "/bulk";
     const method = "POST";
 
@@ -66,9 +66,10 @@ export default class Recipient extends PaystackShared {
    */
   public list = async (
     queries: PaginatedDateRangedList,
-  ): Promise<
-    PaystackResponseInterface<ListRecipientsDatum[], ListRecipientsMeta> | null
-  > => {
+  ): Promise<PaystackResponseInterface<
+    ListRecipientsDatum[],
+    ListRecipientsMeta
+  > | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
@@ -93,9 +94,14 @@ export default class Recipient extends PaystackShared {
     const url = this.resourceUrl + "/:idOrCode";
     const method = "GET";
 
-    return await this.paystackFetch<FetchRecipientData>(url, method, {}, {
-      idOrCode,
-    });
+    return await this.paystackFetch<FetchRecipientData>(
+      url,
+      method,
+      {},
+      {
+        idOrCode,
+      },
+    );
   };
 
   /**

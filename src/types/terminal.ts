@@ -1,30 +1,32 @@
 export type TerminalInvoiceEvent = {
   /** The type of event to push. We currently support `invoice` and `transaction` */
-  type: 'invoice';
+  type: "invoice";
   /** The action the terminal needs to perform, `process` or `view` */
-  action: 'process' | 'view';
+  action: "process" | "view";
   /** The parameters needed to perform the specified action */
   data: {
     /** The invoice_id */
     id: string;
     /** The offline_reference */
     reference: string;
-  }
-}
+  };
+};
 
 export type TerminalTransactionEvent = {
   /** The type of event to push. We currently support `invoice` and `transaction` */
-  type: 'transaction';
+  type: "transaction";
   /** The action the terminal needs to perform, `process` or `print` */
-  action: 'process' | 'print';
+  action: "process" | "print";
   /** The parameters needed to perform the specified action */
   data: {
     /** The transaction_id */
     id: string;
-  }
-}
+  };
+};
 
-export interface SendEventBody<T extends TerminalInvoiceEvent | TerminalTransactionEvent> {
+export interface SendEventBody<
+  T extends TerminalInvoiceEvent | TerminalTransactionEvent,
+> {
   type: T["type"];
   action: T["action"];
   data: T["data"];

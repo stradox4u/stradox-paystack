@@ -1,4 +1,4 @@
-import type { PaystackResponseInterface } from "../types/response.ts";
+import type { PaystackResponseInterface } from "../types/response.js";
 import type {
   BulkInitiateTransferBody,
   BulkInitiateTransferDatum,
@@ -11,8 +11,8 @@ import type {
   ListTransfersDatum,
   ListTransfersMeta,
   VerifyTransferData,
-} from "../types/transfer.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/transfer.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class Transfer extends PaystackShared {
   private readonly resourceUrl = "/transfer";
@@ -89,9 +89,10 @@ export default class Transfer extends PaystackShared {
    */
   public list = async (
     queries: ListTransferQueries,
-  ): Promise<
-    PaystackResponseInterface<ListTransfersDatum[], ListTransfersMeta> | null
-  > => {
+  ): Promise<PaystackResponseInterface<
+    ListTransfersDatum[],
+    ListTransfersMeta
+  > | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
@@ -116,9 +117,14 @@ export default class Transfer extends PaystackShared {
     const url = this.resourceUrl + "/:idOrCode";
     const method = "GET";
 
-    return await this.paystackFetch<FetchTransferData>(url, method, {}, {
-      idOrCode,
-    });
+    return await this.paystackFetch<FetchTransferData>(
+      url,
+      method,
+      {},
+      {
+        idOrCode,
+      },
+    );
   };
 
   /**
@@ -133,8 +139,13 @@ export default class Transfer extends PaystackShared {
     const url = this.resourceUrl + "/verify/:reference";
     const method = "GET";
 
-    return await this.paystackFetch<VerifyTransferData>(url, method, {}, {
-      reference,
-    });
+    return await this.paystackFetch<VerifyTransferData>(
+      url,
+      method,
+      {},
+      {
+        reference,
+      },
+    );
   };
 }

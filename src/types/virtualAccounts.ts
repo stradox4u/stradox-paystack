@@ -33,7 +33,7 @@ export interface AssignVirtualAccountBody {
    */
   preferred_bank: string;
   /** Currently accepts `NG` only */
-  country: 'NG';
+  country: "NG";
   /** Customer's account number */
   account_number?: string;
   /** Customer's Bank Verification Number */
@@ -161,7 +161,10 @@ interface Metadata {
   calling_code: string;
 }
 
-export interface DeactivateVirtualAccountData extends Omit<ListVirtualAccountsDatum, 'customer' | 'split_config'> {
+export interface DeactivateVirtualAccountData extends Omit<
+  ListVirtualAccountsDatum,
+  "customer" | "split_config"
+> {
   metadata: Record<string, unknown>;
   assignment: Assignment;
 }

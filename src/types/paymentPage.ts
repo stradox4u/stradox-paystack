@@ -1,4 +1,4 @@
-import type { DateRangedList, PaginatedList } from "./common.ts";
+import type { DateRangedList, PaginatedList } from "./common.js";
 
 export interface CreatePaymentPageBody {
   /** Name of page */
@@ -16,7 +16,7 @@ export interface CreatePaymentPageBody {
   /** The type of payment page to create. Options are `payment`, `subscription`, `product` and `plan`.
    * Defaults to `payment` if no type is specified.
    */
-  type?: 'payment' | 'subscription' | 'product' | 'plan';
+  type?: "payment" | "subscription" | "product" | "plan";
   /** The `ID` of the plan to subscribe customers on this payment page to when `type` is set to
    * `subscription`
    */

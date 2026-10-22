@@ -1,4 +1,4 @@
-import type { DateRangedList, PaginatedList } from "./common.ts";
+import type { DateRangedList, PaginatedList } from "./common.js";
 
 export interface CreateProductBody {
   /** Name of the product */
@@ -106,14 +106,12 @@ interface File {
   original_filename: string;
 }
 
-
 export interface FetchProductData extends ListProductsDatum {
   file_path: string;
   features: unknown[];
   stock_threshold: number;
   expires_in: number;
 }
-
 
 export interface UpdateProductData {
   name: string;

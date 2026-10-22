@@ -1,4 +1,4 @@
-import type { Authorization, Customer, Log, Metadata } from "./transaction.ts";
+import type { Authorization, Customer, Log, Metadata } from "./transaction.js";
 
 export interface CreateChargeBody {
   /** Customer's email address */
@@ -16,12 +16,12 @@ export interface CreateChargeBody {
   /** Use this param to indicate who bears the transaction charges. Allowed values are: `account` or `subaccount`
    * (defaults to `account`)
    */
-  bearer?: 'account' | 'subaccount';
+  bearer?: "account" | "subaccount";
   /** Bank account to charge (don't send if charging an authorization code) */
   bank?: {
     code: string;
     account_number: string;
-  }
+  };
   /** Takes the settings for the Pay with Transfer (PwT) channel. Pass in the `account_expires_at` param
    * to set the expiry time.
    */

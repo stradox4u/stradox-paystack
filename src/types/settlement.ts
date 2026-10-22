@@ -1,16 +1,17 @@
-import type { DateRangedList, PaginatedList } from "./common.ts";
-import type { Authorization, Customer, Log } from "./transaction.ts";
+import type { DateRangedList, PaginatedList } from "./common.js";
+import type { Authorization, Customer, Log } from "./transaction.js";
 
 export interface ListSettlementQueries extends PaginatedList, DateRangedList {
   /** Fetch settlements based on their state. Value can be one of `success`, `processing`, `pending` or `failed` */
-  status?: 'success' | 'processing' | 'pending' | 'failed';
+  status?: "success" | "processing" | "pending" | "failed";
   /** Provide a subaccount ID to export only settlements for that subaccount. Set to `none` to export only
    * transactions for the account.
    */
   subaccount?: string;
 }
 
-export interface ListSettlementTransactionsQueries extends PaginatedList, DateRangedList {}
+export interface ListSettlementTransactionsQueries
+  extends PaginatedList, DateRangedList {}
 
 export interface SettlementListMeta {
   total: number;

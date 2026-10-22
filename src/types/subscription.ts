@@ -1,6 +1,6 @@
-import type { PaginatedList } from "./common.ts";
-import type { ListPlansDatum } from "./plan.ts";
-import type { Authorization, Customer } from "./transaction.ts";
+import type { PaginatedList } from "./common.js";
+import type { ListPlansDatum } from "./plan.js";
+import type { Authorization, Customer } from "./transaction.js";
 
 export interface CreateSubscriptionBody {
   /** Customer's email address or customer code */
@@ -100,7 +100,6 @@ export interface FetchSubscriptionData {
   createdAt: string;
   updatedAt: string;
 }
-
 
 export interface GenerateLinkData {
   link: string;

@@ -1,13 +1,21 @@
-import type { DateRangedList, PaginatedDateRangedList, PaginatedList } from "./common.ts";
-import type { Customer, ListTransactionData } from "./transaction.ts";
+import type {
+  DateRangedList,
+  PaginatedDateRangedList,
+  PaginatedList,
+} from "./common.js";
+import type { Customer, ListTransactionData } from "./transaction.js";
 
-export interface ListDisputeQueries extends PaginatedDateRangedList{
+export interface ListDisputeQueries extends PaginatedDateRangedList {
   /** Transaction id */
-  transaction?: string
+  transaction?: string;
   /** Dispute status. Acceptable values are `awaiting-merchant-feedback`, `awaiting-bank-feedback`
    * `pending` or `resolved`
    */
-  status: 'awaiting-merchant-feedback' | 'awaiting-bank-feedback' | 'pending' | 'resolved';
+  status:
+    | "awaiting-merchant-feedback"
+    | "awaiting-bank-feedback"
+    | "pending"
+    | "resolved";
 }
 
 export interface UpdateDisputeBody {
@@ -39,7 +47,7 @@ export interface GetUploadUrlQueries {
 
 export interface ResolveDisputeBody {
   /** Dispute resolution. Accepted values: `merchant-accepted` or `declined` */
-  resolution: 'merchant-accepted' | 'declined';
+  resolution: "merchant-accepted" | "declined";
   /** Reason for resolution */
   message: string;
   /** The amount to refund, in the subunit of the supported currency */
@@ -50,11 +58,16 @@ export interface ResolveDisputeBody {
   evidence?: number;
 }
 
-export interface ExportDisputeQueries extends Required<DateRangedList>, Partial<PaginatedList> {
+export interface ExportDisputeQueries
+  extends Required<DateRangedList>, Partial<PaginatedList> {
   /** Transaction ID */
   transaction?: string;
   /** Dispute status. Acceptable values are `awaiting-merchant-feedback`, `awaiting-bank-feedback`, `pending` or `resolved` */
-  status?: 'awaiting-merchant-feedback' | 'awaiting-bank-feedback' | 'pending' | 'resolved';
+  status?:
+    | "awaiting-merchant-feedback"
+    | "awaiting-bank-feedback"
+    | "pending"
+    | "resolved";
 }
 
 export interface ListDisputeMeta {
@@ -70,7 +83,7 @@ export interface ListDisputeDatum {
   refund_amount: number;
   currency: string;
   status: string;
-  resolution: 'merchant-accepted' | 'declined' | null;
+  resolution: "merchant-accepted" | "declined" | null;
   domain: string;
   transaction: ListTransactionData;
   transaction_reference: string;
@@ -124,7 +137,7 @@ export interface ListTransactionDisputesDatum {
   refund_amount: number;
   status: string;
   domain: string;
-  resolution: 'merchant-accepted' | 'declined' | null;
+  resolution: "merchant-accepted" | "declined" | null;
   category: string;
   note: string;
   attachments: string;
@@ -155,7 +168,10 @@ interface DisputeHistory {
   updatedAt: string;
 }
 
-export interface UpdateDisputeData extends Omit<ListTransactionDisputesDatum, 'history' | 'messages' | 'integration'> {
+export interface UpdateDisputeData extends Omit<
+  ListTransactionDisputesDatum,
+  "history" | "messages" | "integration"
+> {
   source: string;
   customer: Customer;
   organization: number;

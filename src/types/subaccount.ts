@@ -1,4 +1,4 @@
-import type { DateRangedList, PaginatedList } from "./common.ts";
+import type { DateRangedList, PaginatedList } from "./common.js";
 
 export interface CreateSubaccountBody {
   /** Name of business for subaccount */
@@ -24,7 +24,7 @@ export interface CreateSubaccountBody {
   metadata?: string;
 }
 
-export interface ListSubaccountQueries extends PaginatedList, DateRangedList { }
+export interface ListSubaccountQueries extends PaginatedList, DateRangedList {}
 
 export interface UpdateSubaccountBody {
   /** Name of business for subaccount */
@@ -48,7 +48,7 @@ export interface UpdateSubaccountBody {
   /** Any of `auto`, `weekly`, `monthly` and `manual`. Auto means payout is T+1 and manual means
    * payout to the subaccount should only be made when requested. Defaults to `auto`
    */
-  settlement_schedule?: 'auto' | 'weekly' | 'monthly' | 'manual';
+  settlement_schedule?: "auto" | "weekly" | "monthly" | "manual";
   /** Stringified JSON object. Add a `custom_fields` attribute which has an array of objects
    * if you would like the fields to be added to your transaction when displayed on the dashboard.
    * Sample: `{"custom_fields": [{"display_name": "Cart ID", "variable_name": "cart_id", "value": "8393"}]}`
@@ -102,8 +102,6 @@ export interface ListSubaccountsDatum {
   currency: string;
   active: number;
 }
-
-
 
 export interface FetchSubaccountData {
   domain: string;

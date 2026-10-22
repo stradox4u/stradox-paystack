@@ -10,9 +10,9 @@ import type {
   ValidateCustomerBody,
   WhiteOrBlacklistBody,
   WhiteOrBlacklistData,
-} from "../types/customer.ts";
-import type { PaystackResponseInterface } from "../types/response.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/customer.js";
+import type { PaystackResponseInterface } from "../types/response.js";
+import PaystackShared from "./paystackShared.js";
 
 /**
  * This class contains methods for working with the Customer resource of the Paystack API
@@ -51,7 +51,10 @@ export default class Customer extends PaystackShared {
    */
   public list = async (
     queries: ListCustomerQueries,
-  ): Promise<PaystackResponseInterface<ListCustomerDatum[], ListCustomerMeta> | null> => {
+  ): Promise<PaystackResponseInterface<
+    ListCustomerDatum[],
+    ListCustomerMeta
+  > | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
@@ -76,9 +79,14 @@ export default class Customer extends PaystackShared {
     const url = this.resourceUrl + "/:emailOrCode";
     const method = "GET";
 
-    return await this.paystackFetch<FetchCustomerData>(url, method, {}, {
-      emailOrCode,
-    });
+    return await this.paystackFetch<FetchCustomerData>(
+      url,
+      method,
+      {},
+      {
+        emailOrCode,
+      },
+    );
   };
 
   /**
@@ -150,9 +158,9 @@ export default class Customer extends PaystackShared {
    * @param body
    * @returns {Promise<PaystackResponseInterface<undefined> | null>} response - A promise that resolves to an object with the request status and a message.
    */
-  public deactivateAuthorization = async (
-    body: { authorization_code: string },
-  ): Promise<PaystackResponseInterface<undefined> | null> => {
+  public deactivateAuthorization = async (body: {
+    authorization_code: string;
+  }): Promise<PaystackResponseInterface<undefined> | null> => {
     const url = this.resourceUrl + "/deactivate_authorization";
     const method = "POST";
 

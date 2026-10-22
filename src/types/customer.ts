@@ -1,5 +1,5 @@
-import type { PaginatedList, DateRangedList } from "./common.ts";
-import type { Authorization, ListTransactionData } from "./transaction.ts";
+import type { PaginatedList, DateRangedList } from "./common.js";
+import type { Authorization, ListTransactionData } from "./transaction.js";
 
 export interface CreateCustomerBody {
   /** Customer's email address */
@@ -16,7 +16,7 @@ export interface CreateCustomerBody {
   metadata?: Record<string, unknown>;
 }
 
-export interface ListCustomerQueries extends PaginatedList, DateRangedList { }
+export interface ListCustomerQueries extends PaginatedList, DateRangedList {}
 
 export interface UpdateCustomerBody {
   /** Customer's first name */
@@ -37,7 +37,7 @@ export interface ValidateCustomerBody {
   /** Customer's last name */
   last_name: string;
   /** Predefined types of identification. only `bank account` is supported at the moment */
-  type: 'bank_account';
+  type: "bank_account";
   /** Customer's identification number */
   value: string;
   /** 2 letter country code of identification issuer */
@@ -48,9 +48,9 @@ export interface ValidateCustomerBody {
    * required if type is `bank_account`
    */
   bank_code: string;
-  /** Customer's bank account number 
+  /** Customer's bank account number
    * required if type is `bank_account`
-  */
+   */
   account_number: string;
   /** Customer's middle name */
   middle_name?: string;
@@ -60,7 +60,7 @@ export interface WhiteOrBlacklistBody {
   /** customer code or email address */
   customer: string;
   /** all customers start with default; use allow to whitelist, and deny to blacklist */
-  risk_action: 'default' | 'allow' | 'deny';
+  risk_action: "default" | "allow" | "deny";
 }
 
 export interface CreateCustomerData {
