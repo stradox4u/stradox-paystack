@@ -119,8 +119,25 @@ try {
       stdio: "inherit",
     });
   }
+  const publishReport = JSON.parse(
+    npm([
+      "publish",
+      process.argv[2] ?? archive,
+      "--dry-run",
+      "--ignore-scripts",
+      "--offline",
+      "--json",
+      "--access",
+      "public",
+      "--tag",
+      "next",
+    ]),
+  );
+  const publication = publishReport[manifest.name] ?? publishReport;
+  assert.equal(publication.name, manifest.name);
+  assert.equal(publication.version, manifest.version);
   console.log(
-    `Packed ${manifest.name}@${manifest.version}: ESM, CommonJS, and TypeScript consumers passed.`,
+    `Packed ${manifest.name}@${manifest.version}: ESM, CommonJS, TypeScript consumers, and publish dry-run passed.`,
   );
 } finally {
   rmSync(temporary, { recursive: true, force: true });
