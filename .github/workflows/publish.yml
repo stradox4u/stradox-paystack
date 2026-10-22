@@ -43,7 +43,7 @@ jobs:
           mkdir -p artifacts
           npm pack --ignore-scripts --pack-destination artifacts
       - name: Check release artifact
-        run: npm run test:package -- artifacts/*.tgz
+        run: npm run test:package -- ./artifacts/*.tgz
       - uses: actions/upload-artifact@v4
         with:
           name: npm-package
@@ -51,4 +51,4 @@ jobs:
       - name: Publish validated artifact
         env:
           NPM_DIST_TAG: ${{ steps.release.outputs.dist-tag }}
-        run: npm publish artifacts/*.tgz --access public --tag "$NPM_DIST_TAG"
+        run: npm publish ./artifacts/*.tgz --access public --tag "$NPM_DIST_TAG"

@@ -27,7 +27,9 @@ npm run test:package
 
 The package check builds and packs into a temporary directory, installs the
 archive offline, checks its contents, and verifies JavaScript ESM/CommonJS plus
-TypeScript NodeNext/Bundler consumers. It makes no Paystack requests.
+TypeScript NodeNext/Bundler consumers. It also performs an offline
+`npm publish --dry-run` using the supplied archive path. It makes no Paystack
+requests and does not upload a package.
 
 Run integration tests separately with test-mode credentials when needed; they
 are not part of the release workflow. Complete `RELEASE_CHECKLIST.md` with actual
@@ -53,6 +55,16 @@ Tags must match the manifest and point to a commit contained in `main`. The
 workflow checks, builds, packs, and tests the archive before publishing that
 exact archive. The archive is also retained as a workflow artifact. Existing
 JSR versions remain available; no new JSR publication is configured.
+
+## If publication fails before upload
+
+Local archive arguments must start with `./` or be absolute paths. For example,
+use `npm publish ./artifacts/package.tgz`, because `artifacts/package.tgz` can be
+interpreted as a GitHub repository shorthand.
+
+After merging a workflow fix, create a new release commit and matching version
+tag (for example, `1.0.0-rc.2` / `v1.0.0-rc.2`). Rerunning the old tag uses its
+original commit and workflow, so it does not pick up a later fix.
 
 ## If verification fails after publication
 
