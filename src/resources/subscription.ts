@@ -1,4 +1,4 @@
-import type { PaystackResponseInterface } from "../types/response.ts";
+import type { PaystackResponseInterface } from "../types/response.js";
 import type {
   CreateSubscriptionBody,
   CreateSubscriptionData,
@@ -8,8 +8,8 @@ import type {
   ListSubscriptionsDatum,
   ListSubscriptionsMeta,
   ToggleSubscriptionBody,
-} from "../types/subscription.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/subscription.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class Subscription extends PaystackShared {
   private readonly resourceUrl = "/subscription";
@@ -45,10 +45,10 @@ export default class Subscription extends PaystackShared {
    */
   public list = async (
     queries: ListSubscriptionQueries,
-  ): Promise<
-    | PaystackResponseInterface<ListSubscriptionsDatum[], ListSubscriptionsMeta>
-    | null
-  > => {
+  ): Promise<PaystackResponseInterface<
+    ListSubscriptionsDatum[],
+    ListSubscriptionsMeta
+  > | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
@@ -70,9 +70,14 @@ export default class Subscription extends PaystackShared {
     const url = this.resourceUrl + "/:idOrCode";
     const method = "GET";
 
-    return await this.paystackFetch<FetchSubscriptionData>(url, method, {}, {
-      idOrCode,
-    });
+    return await this.paystackFetch<FetchSubscriptionData>(
+      url,
+      method,
+      {},
+      {
+        idOrCode,
+      },
+    );
   };
 
   /**
@@ -125,9 +130,14 @@ export default class Subscription extends PaystackShared {
     const url = this.resourceUrl + "/:code/manage/link";
     const method = "GET";
 
-    return await this.paystackFetch<GenerateLinkData>(url, method, {}, {
-      code,
-    });
+    return await this.paystackFetch<GenerateLinkData>(
+      url,
+      method,
+      {},
+      {
+        code,
+      },
+    );
   };
 
   /**

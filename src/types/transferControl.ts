@@ -2,7 +2,7 @@ export interface ResendOtpBody {
   /** Transfer code */
   transfer_code: string;
   /** Either `resend_otp` or `transfer` */
-  reason: 'resend_otp' | 'transfer';
+  reason: "resend_otp" | "transfer";
 }
 
 export interface FinalizeDisableOtpBody {
@@ -36,4 +36,3 @@ export interface FetchLedgerDatum {
   createdAt: string;
   updatedAt: string;
 }
-

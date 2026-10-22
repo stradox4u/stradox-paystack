@@ -1,4 +1,4 @@
-import type { PaystackResponseInterface } from "../types/response.ts";
+import type { PaystackResponseInterface } from "../types/response.js";
 import type {
   AddSubaccountSplitBody,
   AddSubaccountSplitData,
@@ -10,8 +10,8 @@ import type {
   ListSplitsMeta,
   UpdateSplitBody,
   UpdateSplitData,
-} from "../types/split.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/split.js";
+import PaystackShared from "./paystackShared.js";
 
 /**
  * This class contains methods for working with the Split resource of the Paystack API
@@ -48,9 +48,10 @@ export default class Split extends PaystackShared {
    */
   public list = async (
     queries: ListSplitQueries,
-  ): Promise<
-    PaystackResponseInterface<ListSplitsDatum[], ListSplitsMeta> | null
-  > => {
+  ): Promise<PaystackResponseInterface<
+    ListSplitsDatum[],
+    ListSplitsMeta
+  > | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
@@ -74,9 +75,14 @@ export default class Split extends PaystackShared {
     const url = this.resourceUrl + "/:splitId";
     const method = "GET";
 
-    return await this.paystackFetch<FetchSplitData>(url, method, {}, {
-      splitId,
-    });
+    return await this.paystackFetch<FetchSplitData>(
+      url,
+      method,
+      {},
+      {
+        splitId,
+      },
+    );
   };
 
   /**

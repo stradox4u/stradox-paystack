@@ -1,11 +1,8 @@
-import { describe, it } from "@std/testing/bdd";
-import { Paystack } from "../../main.ts";
+import { describe, expect, it } from "vitest";
+import { Paystack } from "../../main.js";
 import { faker } from "@faker-js/faker";
-import { expect } from "@std/expect";
-
 describe("Feature Tests for Transaction Split", () => {
-  const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
-  let splitId: number;
+  const paystack = new Paystack(process.env.SECRET_KEY as string);
 
   it("Correctly creates a transaction split", async () => {
     const body = {

@@ -1,6 +1,6 @@
 export interface CreateRecipientBody {
   /** Recipient type. It could be one of `nuban`, `ghipss`, `mobile_money` or `basa` */
-  type: 'nuban' | 'ghipss' | 'mobile_money' | 'basa';
+  type: "nuban" | "ghipss" | "mobile_money" | "basa";
   /** The recipient's name according to their account registration */
   name: string;
   /** The recipient's account number */
@@ -96,6 +96,9 @@ interface Metadata {
   job?: string;
 }
 
-export interface FetchRecipientData extends Omit<ListRecipientsDatum, 'integration'> {}
+export interface FetchRecipientData extends Omit<
+  ListRecipientsDatum,
+  "integration"
+> {}
 
 export interface UpdateRecipientData extends FetchRecipientData {}

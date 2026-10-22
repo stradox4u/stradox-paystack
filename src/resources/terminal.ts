@@ -1,4 +1,4 @@
-import type { PaystackResponseInterface } from "../types/response.ts";
+import type { PaystackResponseInterface } from "../types/response.js";
 import type {
   FetchEventStatusData,
   FetchStatusData,
@@ -11,8 +11,8 @@ import type {
   TerminalInvoiceEvent,
   TerminalTransactionEvent,
   UpdateTerminalBody,
-} from "../types/terminal.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/terminal.js";
+import PaystackShared from "./paystackShared.js";
 
 /**
  * This class contains methods for working with the Terminal resource of the Paystack API
@@ -60,10 +60,15 @@ export default class Terminal extends PaystackShared {
     const url = this.resourceUrl + "/:terminalId/event/:eventId";
     const method = "GET";
 
-    return await this.paystackFetch<FetchEventStatusData>(url, method, {}, {
-      terminalId,
-      eventId,
-    });
+    return await this.paystackFetch<FetchEventStatusData>(
+      url,
+      method,
+      {},
+      {
+        terminalId,
+        eventId,
+      },
+    );
   };
 
   /**
@@ -78,9 +83,14 @@ export default class Terminal extends PaystackShared {
     const url = this.resourceUrl + "/:terminalId/presence";
     const method = "GET";
 
-    return await this.paystackFetch<FetchStatusData>(url, method, {}, {
-      terminalId,
-    });
+    return await this.paystackFetch<FetchStatusData>(
+      url,
+      method,
+      {},
+      {
+        terminalId,
+      },
+    );
   };
 
   /**
@@ -91,9 +101,10 @@ export default class Terminal extends PaystackShared {
    */
   public list = async (
     queries: ListTerminalQueries,
-  ): Promise<
-    PaystackResponseInterface<ListTerminalDatum[], ListTerminalMeta> | null
-  > => {
+  ): Promise<PaystackResponseInterface<
+    ListTerminalDatum[],
+    ListTerminalMeta
+  > | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 
@@ -118,9 +129,14 @@ export default class Terminal extends PaystackShared {
     const url = this.resourceUrl + "/:terminalId";
     const method = "GET";
 
-    return await this.paystackFetch<FetchTerminalData>(url, method, {}, {
-      terminalId,
-    });
+    return await this.paystackFetch<FetchTerminalData>(
+      url,
+      method,
+      {},
+      {
+        terminalId,
+      },
+    );
   };
 
   /**
@@ -153,9 +169,9 @@ export default class Terminal extends PaystackShared {
    * @param {CommissionTerminalBody} body
    * @returns {Promise<PaystackResponseInterface<undefined> | null>} response - A promise that resolves to the PaystackResponseInterface type, with a boolean status property and a message property
    */
-  public commission = async (
-    body: { serial_number: string },
-  ): Promise<PaystackResponseInterface<undefined> | null> => {
+  public commission = async (body: {
+    serial_number: string;
+  }): Promise<PaystackResponseInterface<undefined> | null> => {
     const url = this.resourceUrl + "/commission_device";
     const method = "POST";
 
@@ -172,9 +188,9 @@ export default class Terminal extends PaystackShared {
    * @param {CommissionTerminalBody} body
    * @returns {Promise<PaystackResponseInterface<undefined> | null>} response - A promise that resolves to the PaystackResponseInterface type, with a boolean status property and a message property
    */
-  public decommission = async (
-    body: { serial_number: string },
-  ): Promise<PaystackResponseInterface<undefined> | null> => {
+  public decommission = async (body: {
+    serial_number: string;
+  }): Promise<PaystackResponseInterface<undefined> | null> => {
     const url = this.resourceUrl + "/decommission_device";
     const method = "POST";
 

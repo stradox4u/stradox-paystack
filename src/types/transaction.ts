@@ -1,8 +1,9 @@
-import type { DateRangedList, PaginatedList } from "./common.ts";
+import type { DateRangedList, PaginatedList } from "./common.js";
 
-type BearerType = 'account' | 'subaccount';
+type BearerType = "account" | "subaccount";
 
-type TransactionStatus = 'failed' | 'success' | 'abandoned' | 'pending' | 'cancelled';
+type TransactionStatus =
+  "failed" | "success" | "abandoned" | "pending" | "cancelled";
 
 export interface InitializeTransactionBody {
   amount: number;
@@ -34,16 +35,18 @@ export interface ChargeAuthorizationBody {
   reference?: string;
   currency?: string;
   metadata?: Record<string, unknown>;
-  channels?: 'card' | 'bank'[],
+  channels?: "card" | "bank"[];
   subaccount?: string;
   transaction_charge?: number;
   bearer?: BearerType;
   queue?: boolean;
 }
 
-export interface TotalTransactionQueries extends PaginatedList, DateRangedList {}
+export interface TotalTransactionQueries
+  extends PaginatedList, DateRangedList {}
 
-export interface ExportTransactionQueries extends PaginatedList, DateRangedList {
+export interface ExportTransactionQueries
+  extends PaginatedList, DateRangedList {
   customer?: number;
   status?: TransactionStatus;
   currency?: string;

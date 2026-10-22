@@ -1,8 +1,6 @@
-import { describe, it } from "@std/testing/bdd";
-import { Paystack } from "../../main.ts";
-import { expect } from "@std/expect";
-
-const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
+import { describe, expect, it } from "vitest";
+import { Paystack } from "../../main.js";
+const paystack = new Paystack(process.env.SECRET_KEY as string);
 
 describe("Feature Tests for Apple Pay", () => {
   const domain = "example.com";

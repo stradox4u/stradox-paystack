@@ -1,36 +1,54 @@
-name: Publish @stradox/paystack to jsr
+name: Publish npm package
+
 on:
   push:
-    branches:
-      - main
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
       id-token: write
-
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: denoland/setup-deno@v2
+      - uses: actions/checkout@v6
         with:
-          deno-version: v2.x
-
-      - name: Setup Deno
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - name: Verify release is on main
+        run: git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+      - name: Verify version and select npm dist-tag
+        id: release
         env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          MY_ACCT_NAME: ${{ secrets.MY_ACCT_NAME }}
-          MY_ACCT_NUMBER: ${{ secrets.MY_ACCT_NUMBER }}
-          MY_ACCT_TYPE: ${{ secrets.MY_ACCT_TYPE }}
-          MY_BANK_CODE: ${{ secrets.MY_BANK_CODE }}
-          MY_COUNTRY_CODE: ${{ secrets.MY_COUNTRY_CODE }}
-          MY_DOCUMENT_TYPE: ${{ secrets.MY_DOCUMENT_TYPE }}
-          MY_DOCUMENT_NUMBER: ${{ secrets.MY_DOCUMENT_NUMBER }}
-          MY_CARD_BIN: ${{ secrets.MY_CARD_BIN }}
-        run: deno test --allow-env --allow-net
-
-      - name: Publish package
-        run: deno publish
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: node scripts/check-release.mjs >> "$GITHUB_OUTPUT"
+      - name: Install npm with trusted publishing support
+        run: npm install --global npm@11
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
+      - name: Pack release artifact
+        run: |
+          mkdir -p artifacts
+          npm pack --ignore-scripts --pack-destination artifacts
+      - name: Check release artifact
+        run: npm run test:package -- artifacts/*.tgz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: npm-package
+          path: artifacts/*.tgz
+      - name: Publish validated artifact
+        env:
+          NPM_DIST_TAG: ${{ steps.release.outputs.dist-tag }}
+        run: npm publish artifacts/*.tgz --access public --tag "$NPM_DIST_TAG"

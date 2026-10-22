@@ -1,5 +1,9 @@
-import type { DateRangedList, PaginatedList } from "./common.ts";
-import type { Authorization, Customer, ListTransactionData } from "./transaction.ts";
+import type { DateRangedList, PaginatedList } from "./common.js";
+import type {
+  Authorization,
+  Customer,
+  ListTransactionData,
+} from "./transaction.js";
 
 interface LineItem {
   name: string;
@@ -32,7 +36,7 @@ export interface CreatePaymentRequestBody {
   /** Indicate if request should be saved as draft. Defaults to false and overrides send_notification */
   draft?: boolean;
   /** Set to `true` to create a draft payment request (adds an auto incrementing payment request number if none
-   * is provided) even if there are no `line_items` or `tax` passed. 
+   * is provided) even if there are no `line_items` or `tax` passed.
    */
   has_invoice?: boolean;
   /** Numeric value of the payment request. Payment requests will start from 1 and auto increment from there.
@@ -44,7 +48,8 @@ export interface CreatePaymentRequestBody {
   split_code?: string;
 }
 
-export interface ListPaymentRequestQueries extends PaginatedList, DateRangedList {
+export interface ListPaymentRequestQueries
+  extends PaginatedList, DateRangedList {
   /** Filter by customer ID */
   customer: string;
   /** Filter by payment request status */
@@ -60,7 +65,10 @@ export interface FinalizePaymentRequestBody {
   send_notification: boolean;
 }
 
-export type UpdatePaymentRequestBody = Omit<CreatePaymentRequestBody, 'has_invoice'>;
+export type UpdatePaymentRequestBody = Omit<
+  CreatePaymentRequestBody,
+  "has_invoice"
+>;
 
 export interface CreatePaymentRequestData {
   id: number;
@@ -114,7 +122,7 @@ export interface ListPaymentRequestDatum {
   created_at: string;
 }
 
-interface RequestCustomer extends Omit<Customer, 'metadata'> {
+interface RequestCustomer extends Omit<Customer, "metadata"> {
   metadata: Metadata;
 }
 
@@ -155,7 +163,10 @@ export interface FetchPaymentRequestData {
   pending_amount: number;
 }
 
-export interface FullPaymentRequestCustomer extends Omit<RequestCustomer, 'international_format_phone'> {
+export interface FullPaymentRequestCustomer extends Omit<
+  RequestCustomer,
+  "international_format_phone"
+> {
   transactions: ListTransactionData[];
   subscriptions: unknown[];
   authorizations: Authorization[];
@@ -197,7 +208,6 @@ interface Integration {
   allowed_currencies: string[];
 }
 
-
 export interface RequestTotalData {
   pending: CurrencyData[];
   successful: CurrencyData[];
@@ -209,8 +219,12 @@ interface CurrencyData {
   amount: number;
 }
 
-export interface FinalizePaymentRequestData extends Omit<VerifyPaymentRequestData, 'integration'> {}
+export interface FinalizePaymentRequestData extends Omit<
+  VerifyPaymentRequestData,
+  "integration"
+> {}
 
-export interface UpdatePaymentRequestData extends Omit<FinalizePaymentRequestData, 'pending_amount'> {}
-
-
+export interface UpdatePaymentRequestData extends Omit<
+  FinalizePaymentRequestData,
+  "pending_amount"
+> {}

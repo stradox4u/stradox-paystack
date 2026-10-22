@@ -1,5 +1,5 @@
-import type { PaginatedDateRangedList } from "./common.ts";
-import type { ListTransactionData } from "./transaction.ts";
+import type { PaginatedDateRangedList } from "./common.js";
+import type { ListTransactionData } from "./transaction.js";
 
 export interface CreateRefundBody {
   /** Transaction reference or id */
@@ -17,7 +17,7 @@ export interface CreateRefundBody {
   merchant_note?: string;
 }
 
-export interface ListRefundQueries extends Partial<PaginatedDateRangedList>{
+export interface ListRefundQueries extends Partial<PaginatedDateRangedList> {
   /** The transaction ID of the refunded transaction */
   transaction: string;
   /** Any of the supported currencies */

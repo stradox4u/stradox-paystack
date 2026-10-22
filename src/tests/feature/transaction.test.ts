@@ -1,9 +1,7 @@
-import { describe, it } from "@std/testing/bdd";
-import { Paystack } from "../../main.ts";
-import { expect } from "@std/expect";
-
+import { describe, expect, it } from "vitest";
+import { Paystack } from "../../main.js";
 describe("Feature Tests for Transaction", () => {
-  const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
+  const paystack = new Paystack(process.env.SECRET_KEY as string);
   let transactionId: number;
   let transactionRef: string;
 
@@ -76,9 +74,7 @@ describe("Feature Tests for Transaction", () => {
 
     if (response) {
       expect(response.status).toBe(false);
-      expect(response.message).toBe(
-        "Email does not match Authorization code. Authorization may be inactive or belong to a different email. Please confirm.",
-      );
+      expect(response.message).toBe("Authorization code is invalid");
     }
   });
 

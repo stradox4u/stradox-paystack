@@ -1,29 +1,14 @@
-import { describe, it } from "@std/testing/bdd";
-import { Paystack } from "../../main.ts";
-import {
-  assertSpyCallArgs,
-  assertSpyCalls,
-  returnsNext,
-  stub,
-} from "@std/testing/mock";
-import { attachQueries } from "./handleQueries.ts";
+import { describe, expect, it } from "vitest";
+import { mockPaystackFetch, TEST_SECRET_KEY } from "./mockFetch.js";
+import { Paystack } from "../../main.js";
+import { attachQueries } from "./handleQueries.js";
 
 describe("Unit Tests for Transaction", () => {
-  const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
+  const paystack = new Paystack(TEST_SECRET_KEY);
   const baseUrl = "https://api.paystack.co";
 
   it("Should correctly initialize a transaction", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const body = {
       amount: 500_000,
@@ -34,30 +19,26 @@ describe("Unit Tests for Transaction", () => {
 
     await paystack.transaction.initialize(body);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(body),
-    }]);
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(body),
+        },
+      ],
+    );
   });
 
   it("Should correctly verify a transaction", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const reference = "OPLKJHGF";
 
@@ -65,28 +46,24 @@ describe("Unit Tests for Transaction", () => {
 
     await paystack.transaction.verify(reference);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-      },
-    }]);
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            Accept: "application/json",
+          },
+        },
+      ],
+    );
   });
 
   it("Should correctly list transactions", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const queries = {
       perPage: 10,
@@ -96,59 +73,48 @@ describe("Unit Tests for Transaction", () => {
 
     await paystack.transaction.list(queries);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [
-      `${expectedUrl}?perPage=${queries.perPage}&page=${queries.page}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-          Accept: "application/json",
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        `${expectedUrl}?perPage=${queries.perPage}&page=${queries.page}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            Accept: "application/json",
+          },
         },
-      },
-    ]);
+      ],
+    );
   });
 
   it("Should correctly fetch a transaction", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const transactionId = "OPLKJHGF";
     const expectedUrl = `${baseUrl}/transaction/${transactionId}`;
 
     await paystack.transaction.fetch(transactionId);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-      },
-    }]);
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            Accept: "application/json",
+          },
+        },
+      ],
+    );
   });
 
   it("Should correctly charge an authorization", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const body = {
       amount: (500_000).toString(),
@@ -160,58 +126,50 @@ describe("Unit Tests for Transaction", () => {
 
     await paystack.transaction.chargeAuthorization(body);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(body),
-    }]);
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(body),
+        },
+      ],
+    );
   });
 
   it("Should correctly view transaction timeline", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const transactionRef = "OPLKJHGF";
     const expectedUrl = `${baseUrl}/transaction/timeline/${transactionRef}`;
 
     await paystack.transaction.timeline(transactionRef);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-      },
-    }]);
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            Accept: "application/json",
+          },
+        },
+      ],
+    );
   });
 
   it("Should correctly get transaction totals", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const queries = {
       perPage: 10,
@@ -222,28 +180,24 @@ describe("Unit Tests for Transaction", () => {
 
     await paystack.transaction.totals(queries);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-      },
-    }]);
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            Accept: "application/json",
+          },
+        },
+      ],
+    );
   });
 
   it("Should correctly export transactions", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const queries = {
       perPage: 10,
@@ -254,28 +208,24 @@ describe("Unit Tests for Transaction", () => {
 
     await paystack.transaction.export(queries);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-      },
-    }]);
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            Accept: "application/json",
+          },
+        },
+      ],
+    );
   });
 
   it("Should correctly retrieve a partial debit", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const body = {
       authorization_code: "AUTH_8dfhjjdt",
@@ -288,15 +238,21 @@ describe("Unit Tests for Transaction", () => {
 
     await paystack.transaction.partialDebit(body);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(body),
-    }]);
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(body),
+        },
+      ],
+    );
   });
 });

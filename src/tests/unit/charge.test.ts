@@ -1,30 +1,12 @@
-import { describe, it } from "@std/testing/bdd";
-import { Paystack } from "../../main.ts";
-import {
-  assertSpyCallArgs,
-  assertSpyCalls,
-  returnsNext,
-  stub,
-} from "@std/testing/mock";
-
+import { describe, expect, it } from "vitest";
+import { mockPaystackFetch, TEST_SECRET_KEY } from "./mockFetch.js";
+import { Paystack } from "../../main.js";
 describe("Unit Tests for Charge", () => {
-  const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
+  const paystack = new Paystack(TEST_SECRET_KEY);
   const baseUrl = "https://api.paystack.co";
 
   it("Should correctly create a charge", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([
-        Promise.resolve({
-          json: async () =>
-            await Promise.resolve({
-              status: false,
-              message: "Some message from server",
-            }),
-        }) as unknown as Promise<Response>,
-      ]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const body = {
       amount: 1_000_000,
@@ -45,33 +27,26 @@ describe("Unit Tests for Charge", () => {
 
     await paystack.charge.create(body);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [
-      expectedUrl,
-      {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
-          Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "POST",
+          body: JSON.stringify(body),
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
         },
-      },
-    ]);
+      ],
+    );
   });
 
   it("Should correctly submit a PIN", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const body = {
       pin: "1234",
@@ -82,33 +57,26 @@ describe("Unit Tests for Charge", () => {
 
     await paystack.charge.submitPin(body);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [
-      expectedUrl,
-      {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
-          Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "POST",
+          body: JSON.stringify(body),
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
         },
-      },
-    ]);
+      ],
+    );
   });
 
   it("Should correctly submit an OTP", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const body = {
       otp: "123456",
@@ -119,33 +87,26 @@ describe("Unit Tests for Charge", () => {
 
     await paystack.charge.submitOtp(body);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [
-      expectedUrl,
-      {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
-          Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "POST",
+          body: JSON.stringify(body),
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
         },
-      },
-    ]);
+      ],
+    );
   });
 
   it("Should correctly submit a phone number", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const body = {
       phone: "+2348012345678",
@@ -156,33 +117,26 @@ describe("Unit Tests for Charge", () => {
 
     await paystack.charge.submitPhone(body);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [
-      expectedUrl,
-      {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
-          Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "POST",
+          body: JSON.stringify(body),
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
         },
-      },
-    ]);
+      ],
+    );
   });
 
   it("Should correctly submit a birthday", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const body = {
       birthday: "1990-01-01",
@@ -193,33 +147,26 @@ describe("Unit Tests for Charge", () => {
 
     await paystack.charge.submitBirthday(body);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [
-      expectedUrl,
-      {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
-          Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "POST",
+          body: JSON.stringify(body),
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
         },
-      },
-    ]);
+      ],
+    );
   });
 
   it("Should correctly submit an address", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const body = {
       address: "123, Main Street, Lagos",
@@ -233,33 +180,26 @@ describe("Unit Tests for Charge", () => {
 
     await paystack.charge.submitAddress(body);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [
-      expectedUrl,
-      {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
-          Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "POST",
+          body: JSON.stringify(body),
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
         },
-      },
-    ]);
+      ],
+    );
   });
 
   it("Should correctly check a pending charge", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const reference = "ref_01";
 
@@ -267,16 +207,19 @@ describe("Unit Tests for Charge", () => {
 
     await paystack.charge.checkPending(reference);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [
-      expectedUrl,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-          Accept: "application/json",
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            Accept: "application/json",
+          },
         },
-      },
-    ]);
+      ],
+    );
   });
 });

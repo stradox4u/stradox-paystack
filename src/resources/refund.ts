@@ -3,9 +3,9 @@ import type {
   CreateRefundData,
   ListRefundDatum,
   ListRefundQueries,
-} from "../types/refund.ts";
-import type { PaystackResponseInterface } from "../types/response.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/refund.js";
+import type { PaystackResponseInterface } from "../types/response.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class Refund extends PaystackShared {
   private readonly resourceUrl = "/refund";
@@ -66,8 +66,13 @@ export default class Refund extends PaystackShared {
     const url = this.resourceUrl + "/:refundId";
     const method = "GET";
 
-    return await this.paystackFetch<ListRefundDatum>(url, method, {}, {
-      refundId,
-    });
+    return await this.paystackFetch<ListRefundDatum>(
+      url,
+      method,
+      {},
+      {
+        refundId,
+      },
+    );
   };
 }

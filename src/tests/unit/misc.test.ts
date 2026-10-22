@@ -1,29 +1,13 @@
-import { describe, it } from "@std/testing/bdd";
-import { Paystack } from "../../main.ts";
-import { attachQueries } from "./handleQueries.ts";
-import {
-  assertSpyCallArgs,
-  assertSpyCalls,
-  returnsNext,
-  stub,
-} from "@std/testing/mock";
-
+import { describe, expect, it } from "vitest";
+import { mockPaystackFetch, TEST_SECRET_KEY } from "./mockFetch.js";
+import { Paystack } from "../../main.js";
+import { attachQueries } from "./handleQueries.js";
 describe("Unit Tests for Misc", () => {
-  const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
+  const paystack = new Paystack(TEST_SECRET_KEY);
   const baseUrl = "https://api.paystack.co";
 
   it("Should properly list banks", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const queries = {
       country: "nigeria" as const,
@@ -35,55 +19,47 @@ describe("Unit Tests for Misc", () => {
 
     await paystack.misc.listBanks(queries);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-      },
-    }]);
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            Accept: "application/json",
+          },
+        },
+      ],
+    );
   });
 
   it("Should properly list countries", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const expectedUrl = `${baseUrl}/country`;
 
     await paystack.misc.listCountries();
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-      },
-    }]);
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            Accept: "application/json",
+          },
+        },
+      ],
+    );
   });
 
   it("Should properly list states", async () => {
-    using fetchStub = stub(
-      globalThis,
-      "fetch",
-      returnsNext([Promise.resolve({
-        json:
-          async () => (await Promise.resolve({
-            status: false,
-            message: "Some message from server",
-          })),
-      }) as unknown as Promise<Response>]),
-    );
+    const fetchStub = mockPaystackFetch();
 
     const queries = {
       country: "CA",
@@ -96,13 +72,19 @@ describe("Unit Tests for Misc", () => {
 
     await paystack.misc.listStates(queries);
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: "application/json",
-      },
-    }]);
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            Accept: "application/json",
+          },
+        },
+      ],
+    );
   });
 });

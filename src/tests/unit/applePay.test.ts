@@ -1,19 +1,19 @@
-import { describe, it } from "@std/testing/bdd";
-import { stub, assertSpyCalls, assertSpyCallArgs, returnsNext } from "@std/testing/mock";
-import { Paystack } from "../../main.ts";
+import { describe, expect, it } from "vitest";
+import { mockPaystackFetch, TEST_SECRET_KEY } from "./mockFetch.js";
+import { Paystack } from "../../main.js";
 
 describe("Unit Tests for Apple Pay", () => {
-  const domain = 'example.com';
-  const displayName = 'example domain';
-  const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
+  const domain = "example.com";
+  const displayName = "example domain";
+  const paystack = new Paystack(TEST_SECRET_KEY);
   const baseUrl = "https://api.paystack.co";
 
-  
   it("Should register a domain for Apple Pay", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: false, message: "Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association" })),
-    }) as unknown as Promise<Response>]));
-
+    const fetchStub = mockPaystackFetch({
+      status: false,
+      message:
+        "Domain could not be registered on Apple Pay. Please verify that the correct file is hosted at https://example.com/.well-known/apple-developer-merchantid-domain-association",
+    });
 
     await paystack.applePay.register({
       domainName: domain,
@@ -22,22 +22,29 @@ describe("Unit Tests for Apple Pay", () => {
 
     const expectedUrl = `${baseUrl}/apple-pay/domain`;
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: 'POST',
-      body: JSON.stringify({ domainName: domain, displayName }),
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      }
-    }]);
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "POST",
+          body: JSON.stringify({ domainName: domain, displayName }),
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        },
+      ],
+    );
   });
 
   it("Should correctly list domains for Apple Pay", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: true, message: "Domains retrieved" })),
-    }) as unknown as Promise<Response>]));
+    const fetchStub = mockPaystackFetch({
+      status: true,
+      message: "Domains retrieved",
+    });
 
     await paystack.applePay.list({
       use_cursor: false,
@@ -45,20 +52,27 @@ describe("Unit Tests for Apple Pay", () => {
 
     const expectedUrl = `${baseUrl}/apple-pay/domain?use_cursor=false`;
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        Accept: 'application/json',
-      }
-    }]);
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            Accept: "application/json",
+          },
+        },
+      ],
+    );
   });
 
   it("Should correctly unregister a domain for Apple Pay", async () => {
-    using fetchStub = stub(globalThis, 'fetch', returnsNext([Promise.resolve({
-      json: async () => (await Promise.resolve({ status: true, message: "Domain deregistered successfully" })),
-    }) as unknown as Promise<Response>]));
+    const fetchStub = mockPaystackFetch({
+      status: true,
+      message: "Domain deregistered successfully",
+    });
 
     await paystack.applePay.unregister({
       domainName: domain,
@@ -66,15 +80,21 @@ describe("Unit Tests for Apple Pay", () => {
 
     const expectedUrl = `${baseUrl}/apple-pay/domain`;
 
-    assertSpyCalls(fetchStub, 1);
-    assertSpyCallArgs(fetchStub, 0, [expectedUrl, {
-      method: 'DELETE',
-      body: JSON.stringify({ domainName: domain }),
-      headers: {
-        Authorization: `Bearer ${Deno.env.get("SECRET_KEY")}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      }
-    }]);
+    expect(fetchStub).toHaveBeenCalledTimes(1);
+    expect(fetchStub).toHaveBeenNthCalledWith(
+      1,
+      ...[
+        expectedUrl,
+        {
+          method: "DELETE",
+          body: JSON.stringify({ domainName: domain }),
+          headers: {
+            Authorization: `Bearer ${TEST_SECRET_KEY}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        },
+      ],
+    );
   });
 });

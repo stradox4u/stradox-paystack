@@ -1,12 +1,12 @@
-import type { PaystackResponseInterface } from "../types/response.ts";
+import type { PaystackResponseInterface } from "../types/response.js";
 import type {
   ResolveAccountData,
   ResolveAccountQueries,
   ResolveBinData,
   ValidateAccountBody,
   ValidateAccountData,
-} from "../types/verification.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/verification.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class Verification extends PaystackShared {
   private readonly resourceUrl = "/bank";

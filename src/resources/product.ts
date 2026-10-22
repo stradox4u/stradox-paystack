@@ -6,9 +6,9 @@ import type {
   ListProductsDatum,
   ListProductsMeta,
   UpdateProductData,
-} from "../types/product.ts";
-import type { PaystackResponseInterface } from "../types/response.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/product.js";
+import type { PaystackResponseInterface } from "../types/response.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class Product extends PaystackShared {
   private readonly resourceUrl = "/product";
@@ -44,9 +44,10 @@ export default class Product extends PaystackShared {
    */
   public list = async (
     queries: ListProductQueries,
-  ): Promise<
-    PaystackResponseInterface<ListProductsDatum[], ListProductsMeta> | null
-  > => {
+  ): Promise<PaystackResponseInterface<
+    ListProductsDatum[],
+    ListProductsMeta
+  > | null> => {
     const url = this.resourceUrl;
     const method = "GET";
 

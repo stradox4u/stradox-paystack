@@ -2,8 +2,8 @@ import type {
   FetchData,
   FetchHeaders,
   FetchMethod,
-} from "../types/endpoint.ts";
-import type { PaystackResponseInterface } from "../types/response.ts";
+} from "../types/endpoint.js";
+import type { PaystackResponseInterface } from "../types/response.js";
 
 /**
  * This class collects shared methods and functionality for reaching the Paystack API
@@ -59,10 +59,10 @@ export default class PaystackShared {
       data.body = JSON.stringify(body);
     }
 
-    const response = await fetch(
-      builtUrl,
-      data as unknown as Record<string, string>,
-    );
-    return await response.json();
+    const response = await fetch(builtUrl, {
+      ...data,
+      headers: { ...headers },
+    });
+    return (await response.json()) as PaystackResponseInterface<T, S> | null;
   }
 }

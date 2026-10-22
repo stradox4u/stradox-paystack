@@ -1,11 +1,10 @@
-import { describe, it } from "@std/testing/bdd";
-import { Paystack } from "../../main.ts";
-import { expect } from "@std/expect";
+import { describe, expect, it } from "vitest";
+import { Paystack } from "../../main.js";
 import { faker } from "@faker-js/faker";
-import type { BulkCreateRecipientSuccess } from "../../types/recipient.ts";
+import type { BulkCreateRecipientSuccess } from "../../types/recipient.js";
 
 describe("Feature Tests for Transfer Recipient", () => {
-  const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
+  const paystack = new Paystack(process.env.SECRET_KEY as string);
   let recipientCode: string;
 
   it("Correctly creates a transfer recipient", async () => {

@@ -1,12 +1,12 @@
-import type { PaystackResponseInterface } from "../types/response.ts";
+import type { PaystackResponseInterface } from "../types/response.js";
 import type {
   CheckBalanceDatum,
   FetchLedgerDatum,
   FetchLedgerMeta,
   FinalizeDisableOtpBody,
   ResendOtpBody,
-} from "../types/transferControl.ts";
-import PaystackShared from "./paystackShared.ts";
+} from "../types/transferControl.js";
+import PaystackShared from "./paystackShared.js";
 
 export default class TransferControl extends PaystackShared {
   private readonly resourceUrl = "/transfer";
@@ -20,9 +20,9 @@ export default class TransferControl extends PaystackShared {
    * Fetch the available balance on your integration
    * @returns {Promise<PaystackResponseInterface<CheckBalanceDatum[]> | null>} response - A promise that resolves to the PaystackResponseInterface type, with a data property of type CheckBalanceDatum[]
    */
-  public checkBalance = async (): Promise<
-    PaystackResponseInterface<CheckBalanceDatum[]> | null
-  > => {
+  public checkBalance = async (): Promise<PaystackResponseInterface<
+    CheckBalanceDatum[]
+  > | null> => {
     const url = "/balance";
     const method = "GET";
 
@@ -34,9 +34,10 @@ export default class TransferControl extends PaystackShared {
    * Fetch all pay-ins and pay-outs that occurred on your integration
    * @returns {Promise<PaystackResponseInterface<FetchLedgerDatum[], FetchLedgerMeta> | null>} response - A promise that resolves to the PaystackResponseInterface type, with a data property of type FetchLedgerDatum[] and a meta property of type FetchLedgerMeta
    */
-  public fetchLedger = async (): Promise<
-    PaystackResponseInterface<FetchLedgerDatum[], FetchLedgerMeta> | null
-  > => {
+  public fetchLedger = async (): Promise<PaystackResponseInterface<
+    FetchLedgerDatum[],
+    FetchLedgerMeta
+  > | null> => {
     const url = "/balance/ledger";
     const method = "GET";
 
@@ -73,14 +74,13 @@ export default class TransferControl extends PaystackShared {
    * the use of OTPs. No arguments required. You will get an OTP to complete the request.
    * @returns {Promise<PaystackResponseInterface<undefined> | null>} response - A promise that resolves to the PaystackResponseInterface type, with a boolean status property and a message property
    */
-  public disableOtp = async (): Promise<
-    PaystackResponseInterface<undefined> | null
-  > => {
-    const url = this.resourceUrl + "/disable_otp";
-    const method = "POST";
+  public disableOtp =
+    async (): Promise<PaystackResponseInterface<undefined> | null> => {
+      const url = this.resourceUrl + "/disable_otp";
+      const method = "POST";
 
-    return await this.paystackFetch<undefined>(url, method, {});
-  };
+      return await this.paystackFetch<undefined>(url, method, {});
+    };
 
   /**
    * @function finalizeDisableOtp
@@ -107,12 +107,11 @@ export default class TransferControl extends PaystackShared {
    * this endpoint helps turn OTP requirement back on. No arguments required.
    * @returns {Promise<PaystackResponseInterface<undefined> | null>} response - A promise that resolves to the PaystackResponseInterface type, with a boolean status property and a message property
    */
-  public enableOtp = async (): Promise<
-    PaystackResponseInterface<undefined> | null
-  > => {
-    const url = this.resourceUrl + "/enable_otp";
-    const method = "POST";
+  public enableOtp =
+    async (): Promise<PaystackResponseInterface<undefined> | null> => {
+      const url = this.resourceUrl + "/enable_otp";
+      const method = "POST";
 
-    return await this.paystackFetch<undefined>(url, method, {});
-  };
+      return await this.paystackFetch<undefined>(url, method, {});
+    };
 }

@@ -12,4 +12,5 @@ export interface DateRangedList {
   to?: Date;
 }
 
-export interface PaginatedDateRangedList extends PaginatedList, DateRangedList {}
+export interface PaginatedDateRangedList
+  extends PaginatedList, DateRangedList {}

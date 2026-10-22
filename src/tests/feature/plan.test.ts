@@ -1,10 +1,8 @@
-import { describe, it } from "@std/testing/bdd";
-import { Paystack } from "../../main.ts";
+import { describe, expect, it } from "vitest";
+import { Paystack } from "../../main.js";
 import { faker } from "@faker-js/faker";
-import { expect } from "@std/expect/expect";
-
 describe("Feature Tests for Plan", () => {
-  const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
+  const paystack = new Paystack(process.env.SECRET_KEY as string);
   let planCode: string;
 
   it("Correctly creates a plan", async () => {

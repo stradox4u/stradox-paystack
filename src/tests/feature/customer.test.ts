@@ -1,10 +1,12 @@
-import { describe, it } from "@std/testing/bdd";
-import { Paystack } from "../../main.ts";
-import { expect } from "@std/expect";
+import { describe, expect, it } from "vitest";
+import { Paystack } from "../../main.js";
 import { faker } from "@faker-js/faker";
+import { getCustomerValidationFixture } from "../integration-env.js";
+
+const validationFixture = getCustomerValidationFixture(process.env);
 
 describe("Feature Tests for Customer", () => {
-  const paystack = new Paystack(Deno.env.get("SECRET_KEY") as string);
+  const paystack = new Paystack(process.env.SECRET_KEY as string);
   let customerCode: string;
 
   it("Correctly creates a customer", async () => {
@@ -80,22 +82,17 @@ describe("Feature Tests for Customer", () => {
     }
   });
 
-  it("Correctly validates a customer", async () => {
-    const response = await paystack.customer.validate(customerCode, {
-      account_number: "0123456789",
-      bank_code: "057",
-      bvn: "12345678901",
-      type: "bank_account",
-      country: "NG",
-      first_name: faker.person.firstName(),
-      last_name: faker.person.lastName(),
-      value: "0123456789",
-    });
+  it.skipIf(!validationFixture)("Correctly validates a customer", async () => {
+    // Reuse a dedicated customer: associating one BVN with a new customer on
+    // every run eventually exceeds Paystack's per-integration limit.
+    const fixture = validationFixture!;
+    const response = await paystack.customer.validate(
+      fixture.customerCode,
+      fixture.body,
+    );
 
-    if (response) {
-      expect(response.status).toBe(true);
-      expect(response.message).toBe("Customer Identification in progress");
-    }
+    expect(response?.status, response?.message).toBe(true);
+    expect(response?.message).toBe("Customer Identification in progress");
   });
 
   it("Correctly deactivates an authorization", async () => {
