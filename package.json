@@ -1,6 +1,6 @@
 {
   "name": "@stradox/paystack",
-  "version": "1.0.0",
+  "version": "1.0.0-rc.1",
   "description": "A strongly typed Paystack API wrapper for Node.js",
   "license": "MIT",
   "type": "module",
