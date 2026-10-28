@@ -49,6 +49,8 @@ import Refund from "./resources/refund.js";
 import Verification from "./resources/verification.js";
 import Misc from "./resources/misc.js";
 
+export type * from "./types/index.js";
+
 /**
  * This class aggregates the various resources in the Paystack API, and methods for interacting with them
  */
