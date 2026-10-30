@@ -48,6 +48,8 @@ import Dispute from "./resources/dispute.js";
 import Refund from "./resources/refund.js";
 import Verification from "./resources/verification.js";
 import Misc from "./resources/misc.js";
+import Webhook from "./resources/webhook.js";
+import type { PaystackOptions } from "./types/options.js";
 
 export type * from "./types/index.js";
 
@@ -78,10 +80,11 @@ export class Paystack {
   public refund: Refund;
   public verification: Verification;
   public misc: Misc;
+  public webhook: Webhook;
 
   private static paystackInstance: Paystack;
 
-  constructor(secretKey: string) {
+  constructor(secretKey: string, options: PaystackOptions = {}) {
     this.transaction = new Transaction(secretKey);
     this.split = new Split(secretKey);
     this.terminal = new Terminal(secretKey);
@@ -105,17 +108,22 @@ export class Paystack {
     this.refund = new Refund(secretKey);
     this.verification = new Verification(secretKey);
     this.misc = new Misc(secretKey);
+    this.webhook = new Webhook(secretKey, options.webhook);
   }
 
   /**
    * @function getInstance
-   * This method creates and returns a singleton instance of the Paystack class
+   * This method creates and returns a singleton instance of the Paystack class. The secret key and options only apply on the first call.
    * @param secretKey
+   * @param options
    * @returns {Paystack}
    */
-  public static getInstance(secretKey: string): Paystack {
+  public static getInstance(
+    secretKey: string,
+    options?: PaystackOptions,
+  ): Paystack {
     if (!Paystack.paystackInstance) {
-      Paystack.paystackInstance = new Paystack(secretKey);
+      Paystack.paystackInstance = new Paystack(secretKey, options);
     }
     return Paystack.paystackInstance;
   }
@@ -125,8 +133,12 @@ export class Paystack {
  * @function getPaystack
  * This function gives us an instance the Paystack class, with which we can access the various resources in the Paystack API
  * @param {string} secretKey
+ * @param {PaystackOptions} options
  * @returns {Paystack}
  */
-export function getPaystack(secretKey: string): Paystack {
-  return Paystack.getInstance(secretKey);
+export function getPaystack(
+  secretKey: string,
+  options?: PaystackOptions,
+): Paystack {
+  return Paystack.getInstance(secretKey, options);
 }
