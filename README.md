@@ -55,6 +55,119 @@ const paystack = new Paystack(process.env.PAYSTACK_SECRET_KEY);
 `getPaystack` keeps the first client instance within each loaded module format.
 Use `new Paystack(secretKey)` when working with multiple Paystack accounts.
 
+### Webhooks
+
+Paystack sends Events, such as `charge.success`, to your webhook URL.
+`paystack.webhook.verify()` checks that a request came from Paystack and returns
+the Event, with its data typed for each Event type.
+
+Pass the request body exactly as Paystack sent it. The signature covers the raw
+bytes, so a body that has been parsed into JSON can't be verified.
+
+```typescript
+import express from "express";
+import { Paystack } from "@stradox/paystack";
+
+const paystack = new Paystack(process.env.PAYSTACK_SECRET_KEY!);
+const app = express();
+
+app.post(
+  "/webhooks/paystack",
+  express.raw({ type: "application/json" }),
+  (req, res) => {
+    const result = paystack.webhook.verify({
+      rawBody: req.body, // a Buffer, because of express.raw()
+      signature: req.headers["x-paystack-signature"],
+    });
+    if (!result.status) {
+      console.warn(result.reason, result.message);
+      return res.sendStatus(401);
+    }
+
+    const { event } = result;
+    switch (event.event) {
+      case "charge.success":
+        // event.data is typed as ChargeSuccessEventData
+        break;
+      case "transfer.failed":
+        // event.data is typed as TransferFailedEventData
+        break;
+      default:
+        // Paystack can add Event types after this version was released.
+        // Acknowledge them rather than throwing.
+        break;
+    }
+    res.sendStatus(200);
+  },
+);
+```
+
+In other frameworks:
+
+- **Fetch-style handlers** (Next.js route handlers, Hono, Bun): pass
+  `await request.text()` as `rawBody` and
+  `request.headers.get("x-paystack-signature")` as `signature`.
+- **NestJS:** create the app with `NestFactory.create(AppModule, { rawBody: true })`
+  and pass `req.rawBody`. `@Post()` responds with `201` by default, so add
+  `@HttpCode(200)` to the webhook route.
+
+When `status` is `false`, `reason` says why:
+
+| `reason`             | Meaning                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------- |
+| `missing_signature`  | The request has no `x-paystack-signature` header.                                                 |
+| `invalid_signature`  | The signature doesn't match. Check that the body is raw and the secret key is for the right mode. |
+| `invalid_payload`    | The body is correctly signed but isn't a Paystack Event.                                          |
+| `missing_ip`         | IP checking is on, but no `ip` was passed.                                                        |
+| `ip_not_allowlisted` | The request came from an address that isn't on the IP allowlist.                                  |
+
+`verify()` never throws for a bad request. It only throws a `TypeError` when
+`rawBody` isn't a string or `Uint8Array` (such as a `Buffer`), which means the
+body was parsed before it reached `verify()`.
+
+Handling Events well:
+
+- Respond with `200` quickly. Paystack retries failed deliveries for up to 72
+  hours, so move slow work to a queue.
+- Paystack can deliver the same Event more than once. Make handlers safe to run
+  twice, for example by recording the references you've processed.
+- Before fulfilling an order, confirm the payment with
+  `paystack.transaction.verify(reference)`.
+- Keep a `default` branch when switching on `event.event`, and don't throw from
+  it.
+
+#### IP allowlist
+
+Paystack sends Webhooks from `52.31.139.75`, `52.49.173.169` and
+`52.214.14.220`, in both test and live mode. Paystack's documentation calls this
+IP whitelisting. To also reject requests from any other address, turn on
+`checkIp` and pass the request's IP address:
+
+```typescript
+const paystack = new Paystack(process.env.PAYSTACK_SECRET_KEY!, {
+  webhook: { checkIp: true },
+});
+
+const result = paystack.webhook.verify({ rawBody, signature, ip: req.ip });
+```
+
+If your app runs behind a proxy or load balancer, configure it to report the
+client's address (for example, Express's `trust proxy` setting). Otherwise every
+Webhook is rejected as `ip_not_allowlisted`.
+
+If Paystack changes its addresses, you can supply the new ones without waiting
+for a package update. `ipAllowlist` replaces the built-in list:
+
+```typescript
+const paystack = new Paystack(process.env.PAYSTACK_SECRET_KEY!, {
+  webhook: { checkIp: true, ipAllowlist: ["52.31.139.75", "52.49.173.169"] },
+});
+```
+
+The constructor throws a `TypeError` when `ipAllowlist` is empty, contains
+something that isn't an IP address, or is supplied without `checkIp: true`.
+With `getPaystack`, options only apply on the first call.
+
 ### Upgrading to 1.0.0
 
 - Install directly from npm; JSR publishing is paused.
@@ -218,6 +331,8 @@ The following methods are exposed by the `Paystack` class:
   - split
   - removeSplit
   - fetchProviders
+- webhook
+  - verify
 
 ## Development and testing
 

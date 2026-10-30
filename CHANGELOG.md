@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.2.0 (unreleased)
+
+- Add `paystack.webhook.verify()`, which checks that a Webhook came from Paystack
+  and returns its Event. Every Paystack Event type is typed, and `PaystackEvent`
+  narrows on `event.event`.
+- Add optional IP allowlist checking with
+  `new Paystack(secretKey, { webhook: { checkIp: true } })`. `ipAllowlist`
+  replaces Paystack's addresses when supplied.
+- `getPaystack` accepts the same options as the `Paystack` constructor.
+
 ## 1.0.0 (unreleased)
 
 - Move development, tests, and releases from Deno to Node.js and npm.

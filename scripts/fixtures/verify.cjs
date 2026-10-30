@@ -1,4 +1,5 @@
 const assert = require("node:assert/strict");
+const { createHmac } = require("node:crypto");
 
 module.exports = async ({ Paystack, getPaystack }) => {
   const client = new Paystack("sk_test_package_check");
@@ -7,6 +8,23 @@ module.exports = async ({ Paystack, getPaystack }) => {
   assert.equal(
     getPaystack("sk_test_package_check"),
     getPaystack("sk_test_package_check"),
+  );
+  const rawBody = JSON.stringify({
+    event: "charge.success",
+    data: { reference: "ref_package_check" },
+  });
+  const signature = createHmac("sha512", "sk_test_package_check")
+    .update(rawBody)
+    .digest("hex");
+  const verified = client.webhook.verify({ rawBody, signature });
+  assert.equal(verified.status, true);
+  assert.equal(verified.event.data.reference, "ref_package_check");
+  const ipChecked = new Paystack("sk_test_package_check", {
+    webhook: { checkIp: true },
+  });
+  assert.equal(
+    ipChecked.webhook.verify({ rawBody, signature }).reason,
+    "missing_ip",
   );
   const originalFetch = globalThis.fetch;
   let calls = 0;
