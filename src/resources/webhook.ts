@@ -6,7 +6,12 @@ import type {
   VerifyWebhookResult,
   WebhookFailureReason,
   WebhookOptions,
+  WebhookSignatureHeaders,
+  WebhookVerifier,
+  WebhookVerifierOptions,
 } from "../types/webhook.js";
+
+const SIGNATURE_TOLERANCE_SECONDS = 300;
 
 /**
  * The addresses Paystack sends Webhooks from, in both test and live mode
@@ -17,15 +22,54 @@ const PAYSTACK_IP_ALLOWLIST = [
   "52.214.14.220",
 ];
 
+interface SignatureScheme {
+  header: keyof WebhookSignatureHeaders;
+  emptySignatureIsMissing: boolean;
+  verify(rawBody: string | Uint8Array, signature: string, key: string): boolean;
+  invalidSignatureMessage: string;
+}
+
+const LEGACY_SIGNATURE: SignatureScheme = {
+  header: "x-paystack-signature",
+  emptySignatureIsMissing: true,
+  verify: verifyLegacySignature,
+  invalidSignatureMessage:
+    "The x-paystack-signature header doesn't match the request body. Check that you're passing the raw body exactly as received, and the secret key for the right mode (test or live).",
+};
+
+const TIMESTAMPED_SIGNATURE: SignatureScheme = {
+  header: "paystack-signature",
+  emptySignatureIsMissing: false,
+  verify: verifyTimestampedSignature,
+  invalidSignatureMessage:
+    "The paystack-signature header could not be verified. Check the raw request body, the signing secret for the right mode (test or live), and the server clock.",
+};
+
 /**
  * This class contains methods for checking the Webhooks Paystack sends to your server
  */
-export default class Webhook {
-  private readonly secretKey: string;
+export default class Webhook implements WebhookVerifier {
+  readonly #signatureScheme: SignatureScheme;
+  readonly #verificationKey: string;
   private readonly ipAllowlist: readonly string[] | null;
 
-  constructor(secretKey: string, options: WebhookOptions = {}) {
-    this.secretKey = secretKey;
+  constructor(options: WebhookOptions = {}, secretKey?: string) {
+    const { signingSecret } = options;
+    if (signingSecret === undefined && secretKey !== undefined) {
+      this.#signatureScheme = LEGACY_SIGNATURE;
+      this.#verificationKey = secretKey;
+    } else {
+      if (
+        typeof signingSecret !== "string" ||
+        !/^whsec_\S+$/.test(signingSecret)
+      ) {
+        throw new TypeError(
+          "signingSecret must be a Paystack whsec_ signing secret.",
+        );
+      }
+      this.#signatureScheme = TIMESTAMPED_SIGNATURE;
+      this.#verificationKey = signingSecret;
+    }
     this.ipAllowlist = buildIpAllowlist(options);
   }
 
@@ -37,7 +81,7 @@ export default class Webhook {
    */
   public verify = ({
     rawBody,
-    signature,
+    headers,
     ip,
   }: VerifyWebhookInput): VerifyWebhookResult => {
     if (typeof rawBody !== "string" && !(rawBody instanceof Uint8Array)) {
@@ -61,24 +105,23 @@ export default class Webhook {
       }
     }
 
+    const scheme = this.#signatureScheme;
+    const signature = headers?.[scheme.header];
     if (
       signature === undefined ||
       signature === null ||
-      signature.length === 0
+      (scheme.emptySignatureIsMissing && signature.length === 0)
     ) {
       return failure(
         "missing_signature",
-        "The request has no x-paystack-signature header.",
+        `The request has no ${scheme.header} header.`,
       );
     }
     if (
       typeof signature !== "string" ||
-      !this.verifySignature(rawBody, signature)
+      !scheme.verify(rawBody, signature, this.#verificationKey)
     ) {
-      return failure(
-        "invalid_signature",
-        "The x-paystack-signature header doesn't match the request body. Check that you're passing the raw body exactly as received, and the secret key for the right mode (test or live).",
-      );
+      return failure("invalid_signature", scheme.invalidSignatureMessage);
     }
 
     const event = parseEvent(rawBody);
@@ -90,19 +133,68 @@ export default class Webhook {
     }
     return { status: true, event };
   };
+}
 
-  private verifySignature(
-    rawBody: string | Uint8Array,
-    signature: string,
-  ): boolean {
-    const expected = Buffer.from(
-      createHmac("sha512", this.secretKey).update(rawBody).digest("hex"),
-    );
-    const received = Buffer.from(signature);
-    return (
-      expected.length === received.length && timingSafeEqual(expected, received)
-    );
+/** Create a verifier for a service that receives Paystack Webhooks. */
+export function createWebhookVerifier(
+  options: WebhookVerifierOptions,
+): WebhookVerifier {
+  return new Webhook(options);
+}
+
+function verifyLegacySignature(
+  rawBody: string | Uint8Array,
+  signature: string,
+  secretKey: string,
+): boolean {
+  const expected = Buffer.from(
+    createHmac("sha512", secretKey).update(rawBody).digest("hex"),
+  );
+  const received = Buffer.from(signature);
+  return (
+    expected.length === received.length && timingSafeEqual(expected, received)
+  );
+}
+
+function verifyTimestampedSignature(
+  rawBody: string | Uint8Array,
+  header: string,
+  signingSecret: string,
+): boolean {
+  let timestamp: string | undefined;
+  const signatures: string[] = [];
+  for (const field of header.split(",")) {
+    const separator = field.indexOf("=");
+    if (separator === -1) continue;
+
+    const name = field.slice(0, separator).trim();
+    const value = field.slice(separator + 1).trim();
+    if (name === "t") {
+      if (timestamp !== undefined || !/^[0-9]+$/.test(value)) return false;
+      timestamp = value;
+    } else if (name === "v1") {
+      const signature = /^whk_[^:\s]+:([0-9a-f]{128})$/.exec(value);
+      if (signature) signatures.push(signature[1]);
+    }
   }
+
+  if (timestamp === undefined || signatures.length === 0) return false;
+  const signedAt = Number(timestamp);
+  const now = Math.floor(Date.now() / 1000);
+  if (
+    !Number.isSafeInteger(signedAt) ||
+    Math.abs(now - signedAt) > SIGNATURE_TOLERANCE_SECONDS
+  ) {
+    return false;
+  }
+
+  const expected = createHmac("sha512", signingSecret)
+    .update(`${timestamp}.`)
+    .update(rawBody)
+    .digest();
+  return signatures.some((signature) =>
+    timingSafeEqual(expected, Buffer.from(signature, "hex")),
+  );
 }
 
 function buildIpAllowlist(options: WebhookOptions): readonly string[] | null {

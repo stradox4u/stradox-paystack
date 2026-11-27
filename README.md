@@ -64,11 +64,22 @@ the Event, with its data typed for each Event type.
 Pass the request body exactly as Paystack sent it. The signature covers the raw
 bytes, so a body that has been parsed into JSON can't be verified.
 
+Set `webhook.signingSecret` to the `whsec_` credential for your test or live Mode.
+The verifier then requires `Paystack-Signature` and checks that its timestamp is
+within five minutes of the server clock. A client configured with only the API
+secret key verifies the deprecated `X-Paystack-Signature` header. Pass both header
+values by name so the verifier can read the one it requires.
+
 ```typescript
 import express from "express";
 import { Paystack } from "@stradox/paystack";
 
-const paystack = new Paystack(process.env.PAYSTACK_SECRET_KEY!);
+const signingSecret = process.env.PAYSTACK_WEBHOOK_SIGNING_SECRET;
+if (!signingSecret) throw new Error("Set PAYSTACK_WEBHOOK_SIGNING_SECRET");
+
+const paystack = new Paystack(process.env.PAYSTACK_SECRET_KEY!, {
+  webhook: { signingSecret },
+});
 const app = express();
 
 app.post(
@@ -77,7 +88,10 @@ app.post(
   (req, res) => {
     const result = paystack.webhook.verify({
       rawBody: req.body, // a Buffer, because of express.raw()
-      signature: req.headers["x-paystack-signature"],
+      headers: {
+        "paystack-signature": req.headers["paystack-signature"],
+        "x-paystack-signature": req.headers["x-paystack-signature"],
+      },
     });
     if (!result.status) {
       console.warn(result.reason, result.message);
@@ -102,24 +116,42 @@ app.post(
 );
 ```
 
-In other frameworks:
+For a webhook-only service, use the standalone verifier with the same
+`.verify({ rawBody, headers, ip })` interface and an independent signing secret.
+
+```typescript
+import { createWebhookVerifier } from "@stradox/paystack";
+
+const signingSecret = process.env.PAYSTACK_WEBHOOK_SIGNING_SECRET;
+if (!signingSecret) throw new Error("Set PAYSTACK_WEBHOOK_SIGNING_SECRET");
+
+const webhook = createWebhookVerifier({ signingSecret });
+```
+
+Each verifier uses one signing secret. During rotation, Paystack includes a
+signature for each active secret, so instances configured with either secret can
+verify the same delivery. Deploy the new secret before the overlap ends.
+[Paystack's signing guide](https://paystack.com/docs/v2/developer-tools/integration/webhooks#verify-webhook-signatures)
+
+For other frameworks, pass the same signature headers by lowercase name.
 
 - **Fetch-style handlers** (Next.js route handlers, Hono, Bun): pass
-  `await request.text()` as `rawBody` and
-  `request.headers.get("x-paystack-signature")` as `signature`.
+  `new Uint8Array(await request.arrayBuffer())` as `rawBody`. Read the signature
+  values with `request.headers.get("paystack-signature")` and
+  `request.headers.get("x-paystack-signature")`.
 - **NestJS:** create the app with `NestFactory.create(AppModule, { rawBody: true })`
   and pass `req.rawBody`. `@Post()` responds with `201` by default, so add
   `@HttpCode(200)` to the webhook route.
 
-When `status` is `false`, `reason` says why:
+When `status` is `false`, check `reason`.
 
-| `reason`             | Meaning                                                                                           |
-| -------------------- | ------------------------------------------------------------------------------------------------- |
-| `missing_signature`  | The request has no `x-paystack-signature` header.                                                 |
-| `invalid_signature`  | The signature doesn't match. Check that the body is raw and the secret key is for the right mode. |
-| `invalid_payload`    | The body is correctly signed but isn't a Paystack Event.                                          |
-| `missing_ip`         | IP checking is on, but no `ip` was passed.                                                        |
-| `ip_not_allowlisted` | The request came from an address that isn't on the IP allowlist.                                  |
+| `reason`             | Meaning                                                                                       |
+| -------------------- | --------------------------------------------------------------------------------------------- |
+| `missing_signature`  | The required header is absent, or the required `X-Paystack-Signature` header is empty.        |
+| `invalid_signature`  | The required header failed verification. An empty `Paystack-Signature` also fails this check. |
+| `invalid_payload`    | The body is correctly signed but isn't a Paystack Event.                                      |
+| `missing_ip`         | IP checking is on, but no `ip` was passed.                                                    |
+| `ip_not_allowlisted` | The request came from an address that isn't on the IP allowlist.                              |
 
 `verify()` never throws for a bad request. It only throws a `TypeError` when
 `rawBody` isn't a string or `Uint8Array` (such as a `Buffer`), which means the
@@ -140,32 +172,33 @@ Handling Events well:
 
 Paystack sends Webhooks from `52.31.139.75`, `52.49.173.169` and
 `52.214.14.220`, in both test and live mode. Paystack's documentation calls this
-IP whitelisting. To also reject requests from any other address, turn on
-`checkIp` and pass the request's IP address:
+IP whitelisting. Turn on `checkIp` and pass the request's IP address to check
+the allowlist.
 
 ```typescript
-const paystack = new Paystack(process.env.PAYSTACK_SECRET_KEY!, {
-  webhook: { checkIp: true },
-});
+const webhook = createWebhookVerifier({ signingSecret, checkIp: true });
 
-const result = paystack.webhook.verify({ rawBody, signature, ip: req.ip });
+const result = webhook.verify({ rawBody, headers, ip: req.ip });
 ```
 
 If your app runs behind a proxy or load balancer, configure it to report the
 client's address (for example, Express's `trust proxy` setting). Otherwise every
 Webhook is rejected as `ip_not_allowlisted`.
 
-If Paystack changes its addresses, you can supply the new ones without waiting
-for a package update. `ipAllowlist` replaces the built-in list:
+Supply `ipAllowlist` to replace the built-in list. The Paystack client accepts
+these options under `webhook`.
 
 ```typescript
 const paystack = new Paystack(process.env.PAYSTACK_SECRET_KEY!, {
-  webhook: { checkIp: true, ipAllowlist: ["52.31.139.75", "52.49.173.169"] },
+  webhook: {
+    signingSecret,
+    checkIp: true,
+    ipAllowlist: ["52.31.139.75", "52.49.173.169"],
+  },
 });
 ```
 
-The constructor throws a `TypeError` when `ipAllowlist` is empty, contains
-something that isn't an IP address, or is supplied without `checkIp: true`.
+Verifier setup throws a `TypeError` for an invalid signing secret or IP allowlist.
 With `getPaystack`, options only apply on the first call.
 
 ### Upgrading to 1.0.0
