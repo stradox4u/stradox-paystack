@@ -28,8 +28,10 @@ The delivery of an Event to the URL set on your Paystack dashboard.
 _Avoid_: Callback
 
 **Secret key**:
-The key that authenticates your API calls and that Paystack signs Events with. Test mode and live mode each have their own.
-_Avoid_: Webhook secret, signing secret
+The credential that authenticates API calls and signs the legacy `X-Paystack-Signature` header. Test Mode and live Mode each have their own.
+
+**Webhook signing secret**:
+The `whsec_` credential Paystack uses to sign Webhooks with the `Paystack-Signature` header. Each Mode has its own Webhook signing secret, which can be rotated independently of the Secret key.
 
 **IP allowlist**:
 The Paystack IP addresses that Webhooks are sent from. Requests from any other address are treated as forged.

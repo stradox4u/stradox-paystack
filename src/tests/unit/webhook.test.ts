@@ -1,17 +1,28 @@
 import { createHmac } from "node:crypto";
-import { describe, expect, expectTypeOf, it } from "vitest";
-import { Paystack, getPaystack } from "../../main.js";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  expectTypeOf,
+  it,
+  vi,
+} from "vitest";
+import { Paystack, createWebhookVerifier, getPaystack } from "../../main.js";
 import type {
   ChargeSuccessEventData,
   InvoiceCreateEventData,
   PaystackOptions,
   SubscriptionExpiringCardsEventDatum,
   WebhookFailureReason,
+  WebhookVerifier,
 } from "../../main.js";
 import { TEST_SECRET_KEY } from "./mockFetch.js";
 import { chargeSuccess, invoiceCreate, sampleEvents } from "./webhookEvents.js";
 
 const PAYSTACK_IPS = ["52.31.139.75", "52.49.173.169", "52.214.14.220"];
+const SIGNING_SECRET = "whsec_test_webhook";
+const SIGNED_AT = 1760270400;
 
 function sign(body: string | Uint8Array, secretKey = TEST_SECRET_KEY) {
   return createHmac("sha512", secretKey).update(body).digest("hex");
@@ -19,7 +30,20 @@ function sign(body: string | Uint8Array, secretKey = TEST_SECRET_KEY) {
 
 function signedRequest(event: unknown = chargeSuccess) {
   const rawBody = JSON.stringify(event);
-  return { rawBody, signature: sign(rawBody) };
+  return { rawBody, headers: { "x-paystack-signature": sign(rawBody) } };
+}
+
+function timestampedSignature(
+  rawBody: string | Uint8Array,
+  timestamp = SIGNED_AT,
+  secret = SIGNING_SECRET,
+  keyId = "whk_test",
+) {
+  const digest = createHmac("sha512", secret)
+    .update(`${timestamp}.`)
+    .update(rawBody)
+    .digest("hex");
+  return `t=${timestamp},v1=${keyId}:${digest}`;
 }
 
 describe("Unit Tests for Webhook", () => {
@@ -39,23 +63,23 @@ describe("Unit Tests for Webhook", () => {
     });
 
     it("Should accept the raw body as a Buffer or Uint8Array", () => {
-      const { rawBody, signature } = signedRequest();
+      const { rawBody, headers } = signedRequest();
       for (const body of [
         Buffer.from(rawBody),
         new TextEncoder().encode(rawBody),
       ]) {
         expect(
-          paystack.webhook.verify({ rawBody: body, signature }),
+          paystack.webhook.verify({ rawBody: body, headers }),
         ).toMatchObject({ status: true, event: chargeSuccess });
       }
     });
 
     it("Should reject a body that changed after it was signed", () => {
-      const { rawBody, signature } = signedRequest();
+      const { rawBody, headers } = signedRequest();
       expect(
         paystack.webhook.verify({
           rawBody: rawBody.replace('"amount":10000', '"amount":1'),
-          signature,
+          headers,
         }),
       ).toMatchObject({ status: false, reason: "invalid_signature" });
     });
@@ -65,16 +89,23 @@ describe("Unit Tests for Webhook", () => {
       expect(
         paystack.webhook.verify({
           rawBody,
-          signature: sign(rawBody, "sk_test_someone_else"),
+          headers: {
+            "x-paystack-signature": sign(rawBody, "sk_test_someone_else"),
+          },
         }),
       ).toMatchObject({ status: false, reason: "invalid_signature" });
     });
 
-    it.each([undefined, null, "", []])(
-      "Should report a missing signature for %j",
-      (signature) => {
+    it.each([undefined, null, "", []].map((signature) => ({ signature })))(
+      "Should report a missing signature for $signature",
+      ({ signature }) => {
         const { rawBody } = signedRequest();
-        expect(paystack.webhook.verify({ rawBody, signature })).toEqual({
+        expect(
+          paystack.webhook.verify({
+            rawBody,
+            headers: { "x-paystack-signature": signature },
+          }),
+        ).toEqual({
           status: false,
           reason: "missing_signature",
           message: expect.any(String),
@@ -83,18 +114,22 @@ describe("Unit Tests for Webhook", () => {
     );
 
     it("Should reject a signature header sent more than once", () => {
-      const { rawBody, signature } = signedRequest();
+      const { rawBody, headers } = signedRequest();
+      const signature = headers["x-paystack-signature"];
       expect(
-        paystack.webhook.verify({ rawBody, signature: [signature, signature] }),
+        paystack.webhook.verify({
+          rawBody,
+          headers: { "x-paystack-signature": [signature, signature] },
+        }),
       ).toMatchObject({ status: false, reason: "invalid_signature" });
     });
 
     it("Should throw when given a parsed body", () => {
-      const { rawBody, signature } = signedRequest();
+      const { rawBody, headers } = signedRequest();
       expect(() =>
         paystack.webhook.verify({
           rawBody: JSON.parse(rawBody) as unknown as string,
-          signature,
+          headers,
         }),
       ).toThrow(TypeError);
     });
@@ -103,10 +138,180 @@ describe("Unit Tests for Webhook", () => {
       "Should report a correctly signed body that isn't an Event: %s",
       (rawBody) => {
         expect(
-          paystack.webhook.verify({ rawBody, signature: sign(rawBody) }),
+          paystack.webhook.verify({
+            rawBody,
+            headers: { "x-paystack-signature": sign(rawBody) },
+          }),
         ).toMatchObject({ status: false, reason: "invalid_payload" });
       },
     );
+  });
+
+  describe("timestamped signature", () => {
+    const client = new Paystack(TEST_SECRET_KEY, {
+      webhook: { signingSecret: SIGNING_SECRET },
+    });
+    const standalone = createWebhookVerifier({ signingSecret: SIGNING_SECRET });
+    const legacyRequest = signedRequest();
+    const { rawBody } = legacyRequest;
+
+    beforeEach(() => {
+      vi.useFakeTimers({ toFake: ["Date"] });
+      vi.setSystemTime(SIGNED_AT * 1000);
+    });
+
+    afterEach(() => vi.useRealTimers());
+
+    it.each([
+      ["the client", client.webhook],
+      ["the standalone verifier", standalone],
+    ] as const)(
+      "Should verify a timestamped signature through %s",
+      (_entryPoint, verifier) => {
+        const body = Buffer.from(rawBody);
+        expect(
+          verifier.verify({
+            rawBody: body,
+            headers: { "paystack-signature": timestampedSignature(body) },
+          }),
+        ).toEqual({ status: true, event: chargeSuccess });
+      },
+    );
+
+    it("Should verify every signature entry against the configured secret during rotation", () => {
+      const oldSecret = "whsec_old_webhook";
+      const oldVerifier = createWebhookVerifier({ signingSecret: oldSecret });
+      const oldSignature = timestampedSignature(
+        rawBody,
+        SIGNED_AT,
+        oldSecret,
+        "whk_old",
+      );
+      const newEntry = timestampedSignature(rawBody).split(",")[1];
+      const request = {
+        rawBody,
+        headers: {
+          "paystack-signature": `${oldSignature},v2=unused, ${newEntry}`,
+        },
+      };
+
+      expect(oldVerifier.verify(request).status).toBe(true);
+      expect(standalone.verify(request).status).toBe(true);
+    });
+
+    it.each([-300, 300])(
+      "Should accept a timestamp offset of %i seconds",
+      (offset) => {
+        expect(
+          standalone.verify({
+            rawBody,
+            headers: {
+              "paystack-signature": timestampedSignature(
+                rawBody,
+                SIGNED_AT + offset,
+              ),
+            },
+          }).status,
+        ).toBe(true);
+      },
+    );
+
+    it.each([-301, 301])(
+      "Should reject a timestamp offset of %i seconds even with a valid legacy signature",
+      (offset) => {
+        expect(
+          client.webhook.verify({
+            rawBody,
+            headers: {
+              ...legacyRequest.headers,
+              "paystack-signature": timestampedSignature(
+                rawBody,
+                SIGNED_AT + offset,
+              ),
+            },
+          }),
+        ).toMatchObject({ status: false, reason: "invalid_signature" });
+      },
+    );
+
+    it("Should require the current header even with a valid legacy signature", () => {
+      expect(client.webhook.verify(legacyRequest)).toMatchObject({
+        status: false,
+        reason: "missing_signature",
+      });
+      expect(paystack.webhook.verify(legacyRequest).status).toBe(true);
+    });
+
+    it("Should reject a signature from another signing secret even with a valid legacy signature", () => {
+      expect(
+        client.webhook.verify({
+          rawBody,
+          headers: {
+            ...legacyRequest.headers,
+            "paystack-signature": timestampedSignature(
+              rawBody,
+              SIGNED_AT,
+              "whsec_other",
+            ),
+          },
+        }),
+      ).toMatchObject({ status: false, reason: "invalid_signature" });
+    });
+
+    it("Should verify the raw bytes before parsing the Event", () => {
+      const body = Buffer.from(` ${rawBody}\n`);
+      const headers = { "paystack-signature": timestampedSignature(body) };
+      expect(standalone.verify({ rawBody: body, headers }).status).toBe(true);
+      expect(standalone.verify({ rawBody, headers })).toMatchObject({
+        status: false,
+        reason: "invalid_signature",
+      });
+    });
+
+    const validSignature = timestampedSignature(rawBody);
+    it.each([
+      ["with an empty value", ""],
+      ["with no signature entry", `t=${SIGNED_AT}`],
+      ["with an invalid digest", `t=${SIGNED_AT},v1=whk_test:abc`],
+      ["without a timestamp", validSignature.replace(`t=${SIGNED_AT},`, "")],
+      [
+        "with an invalid timestamp",
+        validSignature.replace(`t=${SIGNED_AT}`, "t=NaN"),
+      ],
+      ["with a repeated timestamp", `${validSignature},t=${SIGNED_AT}`],
+      ["sent more than once", [validSignature, validSignature]],
+    ] as const)("Should reject a current header %s", (_case, signature) => {
+      expect(
+        client.webhook.verify({
+          rawBody,
+          headers: {
+            ...legacyRequest.headers,
+            "paystack-signature": signature,
+          },
+        }),
+      ).toMatchObject({ status: false, reason: "invalid_signature" });
+    });
+
+    it("Should apply the standalone verifier's IP allowlist", () => {
+      const verifier = createWebhookVerifier({
+        signingSecret: SIGNING_SECRET,
+        checkIp: true,
+        ipAllowlist: ["203.0.113.9"],
+      });
+      const request = {
+        rawBody,
+        headers: { "paystack-signature": timestampedSignature(rawBody) },
+      };
+      expect(
+        verifier.verify({ ...request, ip: PAYSTACK_IPS[0] }),
+      ).toMatchObject({
+        status: false,
+        reason: "ip_not_allowlisted",
+      });
+      expect(verifier.verify({ ...request, ip: "203.0.113.9" }).status).toBe(
+        true,
+      );
+    });
   });
 
   describe("IP allowlist", () => {
@@ -147,7 +352,7 @@ describe("Unit Tests for Webhook", () => {
       expect(
         ipChecked.webhook.verify({
           rawBody: "{}",
-          signature: "bad",
+          headers: { "x-paystack-signature": "bad" },
           ip: "203.0.113.9",
         }),
       ).toMatchObject({ status: false, reason: "ip_not_allowlisted" });
@@ -169,6 +374,18 @@ describe("Unit Tests for Webhook", () => {
   });
 
   describe("options", () => {
+    it.each(["", "whsec_", "sk_test_other", "whsec_contains whitespace"])(
+      "Should throw for an invalid signing secret: %j",
+      (signingSecret) => {
+        expect(() => createWebhookVerifier({ signingSecret })).toThrow(
+          TypeError,
+        );
+        expect(
+          () => new Paystack(TEST_SECRET_KEY, { webhook: { signingSecret } }),
+        ).toThrow(TypeError);
+      },
+    );
+
     it.each([[[]], [["not-an-ip"]], [["10.0.0.1", "10.0.0.300"]]])(
       "Should throw for the ipAllowlist %j",
       (ipAllowlist) => {
@@ -238,9 +455,11 @@ describe("Unit Tests for Webhook", () => {
       expect(allowed).toHaveLength(3);
     });
 
-    it("Should keep the signature and IP checks private", () => {
-      // @ts-expect-error verifySignature is private
-      expect(typeof paystack.webhook.verifySignature).toBe("function");
+    it("Should expose the same verifier interface for both entry points", () => {
+      expectTypeOf(paystack.webhook).toEqualTypeOf<WebhookVerifier>();
+      expectTypeOf(
+        createWebhookVerifier,
+      ).returns.toEqualTypeOf<WebhookVerifier>();
     });
   });
 });

@@ -1,6 +1,6 @@
 import type { PaystackEvent } from "./events.js";
 
-export type WebhookOptions =
+type WebhookIpOptions =
   | {
       /** Only accept Webhooks sent from an address on the IP allowlist */
       checkIp: true;
@@ -12,11 +12,28 @@ export type WebhookOptions =
       ipAllowlist?: never;
     };
 
+export type WebhookOptions = WebhookIpOptions & {
+  /** The `whsec_` credential for the current signing scheme. */
+  signingSecret?: string;
+};
+
+export type WebhookVerifierOptions = WebhookIpOptions & {
+  /** The `whsec_` credential for the current signing scheme. */
+  signingSecret: string;
+};
+
+type SignatureHeaderValue = string | readonly string[] | null | undefined;
+
+export interface WebhookSignatureHeaders {
+  "paystack-signature"?: SignatureHeaderValue;
+  "x-paystack-signature"?: SignatureHeaderValue;
+}
+
 export interface VerifyWebhookInput {
   /** The request body exactly as Paystack sent it, before any JSON parsing */
   rawBody: string | Uint8Array;
-  /** The value of the `x-paystack-signature` header */
-  signature: string | string[] | null | undefined;
+  /** Signature headers keyed by their lowercase HTTP names */
+  headers: WebhookSignatureHeaders;
   /** The address the request came from. Only used when `checkIp` is on. */
   ip?: string;
 }
@@ -31,3 +48,7 @@ export type WebhookFailureReason =
 export type VerifyWebhookResult =
   | { status: true; event: PaystackEvent }
   | { status: false; reason: WebhookFailureReason; message: string };
+
+export interface WebhookVerifier {
+  verify(input: VerifyWebhookInput): VerifyWebhookResult;
+}

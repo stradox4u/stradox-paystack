@@ -1,8 +1,14 @@
-import { Paystack, getPaystack } from "@stradox/paystack";
+import {
+  Paystack,
+  createWebhookVerifier,
+  getPaystack,
+} from "@stradox/paystack";
 import type {
   InitiateTransferBody,
   InitiateTransferData,
   PaystackEvent,
+  WebhookSignatureHeaders,
+  WebhookVerifier,
 } from "@stradox/paystack";
 
 const client: Paystack = getPaystack("sk_test_types");
@@ -30,8 +36,11 @@ async function verifyTypes() {
 client.transaction.initialize({ amount: 10000 });
 void verifyTypes;
 
-function handleWebhook(rawBody: string, signature: string | null) {
-  const result = client.webhook.verify({ rawBody, signature });
+const verifier: WebhookVerifier = createWebhookVerifier({
+  signingSecret: "whsec_types",
+});
+function handleWebhook(rawBody: string, headers: WebhookSignatureHeaders) {
+  const result = verifier.verify({ rawBody, headers });
   if (!result.status) return result.reason;
   const event: PaystackEvent = result.event;
   switch (event.event) {
@@ -44,8 +53,14 @@ function handleWebhook(rawBody: string, signature: string | null) {
   }
 }
 new Paystack("sk_test_types", {
-  webhook: { checkIp: true, ipAllowlist: ["52.31.139.75"] },
+  webhook: {
+    signingSecret: "whsec_types",
+    checkIp: true,
+    ipAllowlist: ["52.31.139.75"],
+  },
 });
+// @ts-expect-error The standalone verifier requires a signing secret.
+createWebhookVerifier({ checkIp: true });
 // @ts-expect-error ipAllowlist only applies when checkIp is true.
 new Paystack("sk_test_types", { webhook: { ipAllowlist: ["52.31.139.75"] } });
 void handleWebhook;

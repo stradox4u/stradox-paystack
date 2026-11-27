@@ -50,8 +50,10 @@ import Verification from "./resources/verification.js";
 import Misc from "./resources/misc.js";
 import Webhook from "./resources/webhook.js";
 import type { PaystackOptions } from "./types/options.js";
+import type { WebhookVerifier } from "./types/webhook.js";
 
 export type * from "./types/index.js";
+export { createWebhookVerifier } from "./resources/webhook.js";
 
 /**
  * This class aggregates the various resources in the Paystack API, and methods for interacting with them
@@ -80,7 +82,7 @@ export class Paystack {
   public refund: Refund;
   public verification: Verification;
   public misc: Misc;
-  public webhook: Webhook;
+  public webhook: WebhookVerifier;
 
   private static paystackInstance: Paystack;
 
@@ -108,7 +110,7 @@ export class Paystack {
     this.refund = new Refund(secretKey);
     this.verification = new Verification(secretKey);
     this.misc = new Misc(secretKey);
-    this.webhook = new Webhook(secretKey, options.webhook);
+    this.webhook = new Webhook(options.webhook, secretKey);
   }
 
   /**

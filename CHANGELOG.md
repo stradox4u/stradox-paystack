@@ -5,6 +5,10 @@
 - Add `paystack.webhook.verify()`, which checks that a Webhook came from Paystack
   and returns its Event. Every Paystack Event type is typed, and `PaystackEvent`
   narrows on `event.event`.
+- Verify the timestamped `Paystack-Signature` header with `webhook.signingSecret`.
+  Clients configured with only an API secret key verify `X-Paystack-Signature`.
+- Add `createWebhookVerifier({ signingSecret })` for webhook-only services. Both
+  entry points accept the raw body and signature headers keyed by name.
 - Add optional IP allowlist checking with
   `new Paystack(secretKey, { webhook: { checkIp: true } })`. `ipAllowlist`
   replaces Paystack's addresses when supplied.
